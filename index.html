@@ -250,7 +250,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 .isaret.secili.bulundu, .isaret.secili.normal, .isaret.secili.kacti { box-shadow: 0 0 0 3px var(--vurgu-zemin); }
 .ttab { display: flex; flex-direction: column; font-size: 13px; font-variant-numeric: tabular-nums; }
 .t-sat { display: grid; grid-template-columns: 32px minmax(0, .85fr) minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, .8fr); align-items: center; gap: 6px; min-height: 38px; padding: 3px 0; border-top: 1px solid var(--cizgi); }
-.t-sat.bas { border-top: 0; min-height: 0; padding-bottom: 6px; font-size: 12px; font-weight: 500; color: var(--metin2); line-height: 1.2; }
+.t-sat.bas { border-top: 0; min-height: 0; padding-bottom: 6px; align-items: end; font-size: 12px; font-weight: 500; color: var(--metin2); line-height: 1.2; }
 .t-sat span:last-child { text-align: right; }
 .t-is { display: flex; }
 .t-sat .isaret { position: static; transform: none; width: 28px; height: 28px; font-size: 15px; }
@@ -384,6 +384,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 @media (max-width: 560px) {
   .hatlar { gap: 10px; }
   .hat { padding: 10px 10px 12px; gap: 8px; }
+  .zincir { grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr) 12px minmax(0, 1fr) 12px 52px; }
   .hat-yazi h2 { font-size: 20px; }
   .hat-yazi p { font-size: 13px; }
   .mini { width: 64px; height: 48px; }
@@ -417,9 +418,11 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   .hesap { font-size: 14px; }
 }
 @media (max-width: 380px) {
-  .zincir { grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr) 12px minmax(0, 1fr) 12px 52px; }
   .yuva.dolu span { font-size: 12px; }
   .marka span { display: none; }
+}
+@media (max-width: 370px) {
+  .yuva.dolu span { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sv-pkt { display: none; }
@@ -491,7 +494,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     sap2: SAP,
     sap3: SAP,
     belge: { ad: 'Tanker belgesi', acik: 'Tankerle birlikte gelir. Dolum tesisinde tankere kaç litre yakıt yüklendiğini yazar.', hat: ['teslimat'], sira: 0, ikon: 'belge' },
-    mudur: { ad: 'İstasyon müdürü', acik: 'Yakıtı teslim alır. Belgedeki litreyi ve tarihi SAP’ye elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
+    mudur: { ad: 'İstasyon müdürünün girişi', acik: 'İstasyon müdürü yakıtı teslim alır. Tanker belgesindeki litreyi ve tarihi SAP’ye elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
     pompa: { ad: 'Pompa sayacı', acik: 'Tabancadan müşterinin aracına akan yakıtı litre litre sayar.', hat: ['satis'], sira: 0, ikon: 'pompa' },
     kasa: { ad: 'Kasa', acik: 'Satışı kapatır ve fişi keser. Saati, litreyi ve tutarı kaydeder.', hat: ['satis'], sira: 1, ikon: 'kasa' },
     kamera: { ad: 'Güvenlik kamerası', acik: 'Pompa alanını kaydeder. Görüntü üretir ama litre kaydı üretmez.', tuzak: true, ikon: 'kamera' },
@@ -542,9 +545,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     3: { hat: 'teslimat', kisa: 'Çift kayıt', yer: 'Teslimat · 12 Ekim', gozlem: 'T-4437 numaralı belge iki kez görünüyor.', hata: true, kaynak: 'mudur',
       aciklama: 'Aynı teslimat belgesi iki kez girilmiş, 5.000 litre fazladan teslimat yazıldı. Elle girişte en sık görülen hata.',
       ipucu: { belge: 'Belge tek, üzerinde tek bir teslimat var. İkinci kayıt sonradan oluşmuş.', aktarim: 'Aktarım kaydı çoğaltmaz. Kayıt iki kez girilmiş.', sap1: 'SAP girileni saklar. Kaydı kim girdi?' } },
-    4: { hat: 'teslimat', kisa: 'Yanlış tarih', yer: 'Teslimat · 1 Ekim', gozlem: 'Belgedeki tarih 30 Eylül, girilen tarih 1 Ekim.', hata: true, kaynak: 'mudur',
-      aciklama: 'Yakıt 30 Eylül gecesi gelmiş ama 1 Ekim tarihiyle girilmiş. Ay başı stoğunda zaten olan 5.000 litre, Ekim teslimatı olarak bir kez daha sayıldı.',
-      ipucu: { belge: 'Belgedeki tarih doğru, 30 Eylül yazıyor. Yanlış tarih girişte oluşmuş.', aktarim: 'Aktarım tarihi değiştirmez. Tarihi kim girdi?', sap1: 'SAP girilen tarihi saklar. Tarihi kim girdi?' } },
+    4: { hat: 'teslimat', kisa: 'Yanlış tarih', yer: 'Teslimat · 1 Ekim', gozlem: 'Tanker belgesindeki tarih 30 Eylül, istasyon müdürünün girdiği tarih 1 Ekim.', hata: true, kaynak: 'mudur',
+      aciklama: 'Yakıt 30 Eylül gecesi gelmiş ama istasyon müdürü 1 Ekim tarihiyle girmiş. Ay başı stoğunda zaten olan 5.000 litre, Ekim teslimatı olarak bir kez daha sayıldı.',
+      ipucu: { belge: 'Tanker belgesindeki tarih doğru, 30 Eylül yazıyor. Yanlış tarih girişte oluşmuş.', aktarim: 'Aktarım tarihi değiştirmez. Tarihi kim girdi?', sap1: 'SAP girilen tarihi saklar. Tarihi kim girdi?' } },
     5: { hat: 'satis', kisa: 'Eksik saatler', yer: 'Satış · 14 Ekim, 14.00 ile 18.00', gozlem: 'Öğleden sonra dört saat boyunca hiç satış kaydı yok.', hata: true, kaynak: 'aktarim',
       aciklama: 'Satış durmadı. O gün 14.00 ile 18.00 arasında istasyonun bağlantısı koptu. Aynı saatlerde ne satış kaydı ne stok ölçümü SAP’ye ulaştı. Bu dört saatte satılan 12.245 litre kayıtlarda hiç yok.',
       ipucu: { pompa: 'Pompalar o saatlerde de çalıştı. Veri gelişi şeridine bakın, aynı saatlerde stok ölçümü de gelmemiş.', kasa: 'Kasa fişleri kesti. Veri gelişi şeridine bakın, aynı saatlerde stok ölçümü de yok. İki ayrı verinin ortak yolu ne?', sap1: 'SAP’ye bu saatlerden hiç kayıt ulaşmadı. Kayıtlar istasyondan SAP’ye giderken nerede kaybolmuş olabilir?' } },
@@ -680,7 +683,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       if (r.m === 3 && !ilk3) { isr = '<button type="button" class="isaret" data-i="3" aria-label="İşaret 3">3</button>'; ilk3 = true; }
       return '<div class="t-sat"><span class="t-is">' + isr + '</span><span>' + r.no + '</span><span>' + r.belge + '</span><span>' + r.giris + '</span><span>' + tl(r.l) + '</span></div>';
     }).join('');
-    return '<div class="ttab"><div class="t-sat bas"><span></span><span>Belge</span><span>Belgedeki tarih</span><span>Girilen tarih</span><span>Litre</span></div>' + satirlar +
+    return '<div class="ttab"><div class="t-sat bas"><span></span><span>Belge</span><span>Tanker belgesindeki tarih</span><span>İstasyon müdürünün girdiği tarih</span><span>Litre</span></div>' + satirlar +
       '<div class="t-top"><span>Ekim toplamı</span><span>' + tl(VERI.teslimat) + ' litre</span></div></div>';
   }
   function panel(h, baslik, alt, icerik) {
