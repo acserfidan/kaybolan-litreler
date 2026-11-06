@@ -544,14 +544,13 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       d += 'L' + hX(i).toFixed(1) + ' ' + Y(x).toFixed(1) + 'L' + hX(i + 1).toFixed(1) + ' ' + Y(x).toFixed(1);
     }
     var k = VERI.hafta.kopma, ek = haftaEkleri(W, Hh, y0, y1, ymax, [0, 2000, 4000], function (x) { return x / 1000; });
-    var svg = tarama('tr-satis') + ek.svg + '<path d="' + d + '" class="gr-alan"/>' +
-      '<rect x="' + hX(k[0]).toFixed(1) + '" y="' + y0 + '" width="' + (hX(k[1]) - hX(k[0])).toFixed(1) + '" height="' + (y1 - y0) + '" fill="url(#tr-satis)" class="gr-bosluk"/>';
-    var yok = '<span class="gr-not" style="left:' + (100 * hX((k[0] + k[1]) / 2) / W).toFixed(2) + '%;top:' + (100 * (y0 - 14) / Hh).toFixed(2) + '%">veri yok</span>';
-    var isr = isaretBtn(5, hX((k[0] + k[1]) / 2), Y(1700), W, Hh) + isaretBtn(6, hX(5 * 24 + 3.5), Y(v[5 * 24 + 3]) - 30, W, Hh);
+    var svg = ek.svg + '<path d="' + d + '" class="gr-alan"/>';
+    var yok = '';
+    var isr = isaretBtn(5, hX((k[0] + k[1]) / 2), Y(4000) - 4, W, Hh) + isaretBtn(6, hX(5 * 24 + 3.5), Y(v[5 * 24 + 3]) - 30, W, Hh);
     return grafik(W, Hh, svg, ek.yazi + yok + isr);
   }
   function gelisSeridi() {
-    var W = 640, Hh = 74, k = VERI.hafta.kopma, bw = (HX1 - HX0) / 168, svg = tarama('tr-gelis'), yazi = '';
+    var W = 640, Hh = 74, k = VERI.hafta.kopma, bw = (HX1 - HX0) / 168, svg = '', yazi = '';
     [['Stok', 10], ['Satış', 40]].forEach(function (r) {
       for (var i = 0; i < 168; i++) {
         if (i >= k[0] && i < k[1]) continue;
@@ -559,7 +558,6 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       }
       yazi += '<span class="gy" style="top:' + (100 * (r[1] + 9) / Hh).toFixed(2) + '%;width:' + (100 * (HX0 - 8) / W).toFixed(2) + '%">' + r[0] + '</span>';
     });
-    svg += '<rect x="' + hX(k[0]).toFixed(1) + '" y="4" width="' + (hX(k[1]) - hX(k[0])).toFixed(1) + '" height="60" fill="url(#tr-gelis)" class="gr-bosluk"/>';
     for (var d = 1; d < 7; d++) svg += '<path d="M' + hX(24 * d).toFixed(1) + ' 4V64" class="gr-gun"/>';
     return grafik(W, Hh, svg, yazi);
   }
