@@ -138,10 +138,23 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 .hatlar { display: flex; flex-direction: column; gap: 12px; }
 .hat { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 10px; transition: border-color .3s; }
 .hat.tamam { border-color: var(--metin2); }
-.hat-ust { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; }
-.hat-ust h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1; }
-.hat-etiket { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--metin2); padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--cizgi); opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; white-space: nowrap; }
-.hat.tamam .hat-etiket { opacity: 1; transform: none; }
+.hat-ust { display: flex; align-items: center; gap: 12px; }
+.mini { flex: none; width: 78px; height: 54px; border-radius: 10px; background: var(--kagit); border: 1.5px solid var(--cizgi); display: grid; place-items: center; }
+.mini svg { display: block; width: 68px; height: 45px; }
+.mk-c { fill: var(--yuzey); stroke: var(--metin2); stroke-width: 1.6; stroke-linejoin: round; }
+.mk-s { fill: none; stroke: var(--metin2); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.mk-zemin { fill: none; stroke: var(--cizgi); stroke-width: 1.6; }
+.mk-yakit { fill: var(--vurgu-zemin); }
+.mk-seviye { fill: none; stroke: var(--kesik); stroke-width: 1.2; stroke-dasharray: 2.5 2.5; }
+.mk-cubuk { stroke: var(--metin); stroke-width: 2; stroke-linecap: round; }
+.mk-dolu { fill: var(--metin); }
+.mk-sam { fill: var(--kagit); stroke: var(--metin); stroke-width: 1.4; }
+.hat-yazi { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.hat-yazi h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.05; }
+.hat-yazi p { margin: 0; font-size: 14px; line-height: 1.35; color: var(--metin2); }
+.hat-etiket { display: none; align-self: flex-start; align-items: center; gap: 6px; margin-top: 4px; font-size: 13px; font-weight: 500; color: var(--metin2); padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--cizgi); white-space: nowrap; }
+.hat.tamam .hat-etiket { display: inline-flex; animation: belir .45s ease-out; }
+@keyframes belir { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .hat-etiket.elle { color: var(--vurgu); border-color: var(--vurgu); }
 .hat-etiket .ik { width: 15px; height: 15px; }
 .zincir { display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr) 18px 60px; align-items: center; }
@@ -211,7 +224,10 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 @media (max-width: 560px) {
   .hatlar { gap: 10px; }
   .hat { padding: 10px 10px 12px; gap: 8px; }
-  .hat-ust h2 { font-size: 20px; }
+  .hat-yazi h2 { font-size: 20px; }
+  .hat-yazi p { font-size: 13px; }
+  .mini { width: 64px; height: 48px; }
+  .mini svg { width: 56px; height: 37px; }
   .hat-etiket { font-size: 12px; padding: 2px 8px; }
   .yuva { height: 68px; }
   .dok { gap: 8px; padding-block: 8px calc(10px + env(safe-area-inset-bottom, 0px)); }
@@ -238,6 +254,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   .sv-pkt { display: none; }
   .sv-boru, .sv-teslim, .hat.tamam .tel i, .yuva.yeni, .yuva.salla, .not.yanip, .fark.oyna { animation: none; }
   .hat.tamam .tel i { opacity: 0; }
+  .hat.tamam .hat-etiket { animation: none; }
 }
 </style>
 
@@ -246,6 +263,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-pompa" viewBox="0 0 24 24"><rect x="4" y="3.5" width="10" height="17" rx="1.5"/><rect x="6.5" y="6" width="5" height="4" rx=".6"/><path d="M14 9h2.2a1.3 1.3 0 0 1 1.3 1.3V16a1.5 1.5 0 0 0 3 0V8.5l-2-2"/><path d="M3 20.5h12"/></symbol>
   <symbol id="i-kasa" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></symbol>
+  <symbol id="i-bilgisayar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8.5 20.5h7M12 16v4.5"/><path d="M12 13V7.6M9.7 9.8 12 7.5l2.3 2.3"/></symbol>
   <symbol id="i-aktarim" viewBox="0 0 24 24"><path d="M7.5 18.5H7a4 4 0 0 1-.6-7.95 5.5 5.5 0 0 1 10.6-1.3A4 4 0 0 1 17 18.5h-.5"/><path d="M12 20.5v-8M9.2 15.2 12 12.5l2.8 2.7"/></symbol>
   <symbol id="i-prob" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="11" rx="5.5"/><path d="M12 3v15M10.3 3h3.4"/><path d="M5.5 15h3M15.5 15h3"/></symbol>
   <symbol id="i-konsol" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12.5" rx="1.5"/><path d="m6.5 13 3-3.5 2.5 2 4.5-4.5"/><path d="M9 20.5h6M12 16.5v4"/></symbol>
@@ -283,31 +301,56 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 
 <script>
 (function () {
-  var KEY = 'kaybolan-litreler-1';
+  var KEY = 'kaybolan-litreler-2';
   var HATLAR = {
-    satis: { ad: 'Satış', etiket: 'Otomatik · her satışta', tur: 'oto',
-      bitti: 'Her satışta kendiliğinden oluşuyor. Pompadan kasaya, kasadan merkeze gidiyor.' },
-    stok: { ad: 'Stok', etiket: 'Otomatik · 15 dakikada bir', tur: 'oto',
-      bitti: 'On beş dakikada bir ölçülüyor. Seviye önce litreye çevriliyor, sonra merkeze gidiyor.' },
-    teslimat: { ad: 'Teslimat', etiket: 'Elle · her teslimatta', tur: 'elle',
-      bitti: 'Bu hatta insan eli var. Litre ve tarih, istasyon müdürü ne girdiyse o.' }
+    stok: { ad: 'Stok', alt: 'Yeraltı tankındaki motorin miktarı', etiket: 'Otomatik · 15 dakikada bir', tur: 'oto',
+      bitti: 'On beş dakikada bir kendiliğinden ölçülüyor. Yükseklik önce litreye çevriliyor, sonra merkeze gidiyor.' },
+    teslimat: { ad: 'Teslimat', alt: 'Tankerle istasyona gelen motorin', etiket: 'Elle · her teslimatta', tur: 'elle',
+      bitti: 'Bu hatta insan eli var. Litre ve tarih, istasyon müdürü ne girdiyse o.' },
+    satis: { ad: 'Satış', alt: 'Her satış işlemi, yani bir müşterinin pompadan aldığı motorin', etiket: 'Otomatik · her satış işleminde', tur: 'oto',
+      bitti: 'Her müşteride kendiliğinden oluşuyor. Pompadan kasaya, kasadan istasyon bilgisayarına, oradan merkeze gidiyor.' }
   };
-  var SIRA = ['satis', 'stok', 'teslimat'];
-  var AKTARIM = { ad: 'Merkeze aktarım', acik: 'İstasyondaki kayıtları internet üzerinden genel müdürlüğe gönderir.', hat: ['satis', 'stok'], sira: 2, ikon: 'aktarim' };
+  var SIRA = ['stok', 'teslimat', 'satis'];
+  var BILGISAYAR = { ad: 'İstasyon bilgisayarı', acik: 'Tankın ve pompaların verisini toplar, internet üzerinden genel müdürlüğe gönderir.', hat: ['stok', 'satis'], sira: 2, ikon: 'bilgisayar' };
   var B = {
-    pompa: { ad: 'Pompa sayacı', acik: 'Tabancadan akan yakıtı litre litre sayar.', hat: ['satis'], sira: 0, ikon: 'pompa' },
+    cubuk: { ad: 'Ölçüm çubuğu', acik: 'Yeraltı tankının içinde duran çubuk. Motorinin tankta ne kadar yükseldiğini ölçer.', hat: ['stok'], sira: 0, ikon: 'prob' },
+    ekran: { ad: 'Tank ekranı', acik: 'Çubuğun ölçtüğü yüksekliği litreye çevirir. Örneğin 1,8 metre, 21.400 litre demek.', hat: ['stok'], sira: 1, ikon: 'konsol' },
+    bil1: BILGISAYAR,
+    bil2: BILGISAYAR,
+    belge: { ad: 'Tanker belgesi', acik: 'Tankerle birlikte gelir. Dolum tesisinde tankere kaç litre motorin yüklendiğini yazar.', hat: ['teslimat'], sira: 0, ikon: 'belge' },
+    mudur: { ad: 'İstasyon müdürü', acik: 'Motorini teslim alır. Belgedeki litreyi ve tarihi sisteme elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
+    sap: { ad: 'SAP', acik: 'Şirketin satın alma ve stok kayıtlarını tuttuğu sistem. Müdürün girdiği teslimat burada durur.', hat: ['teslimat'], sira: 2, ikon: 'sap' },
+    pompa: { ad: 'Pompa sayacı', acik: 'Tabancadan müşterinin aracına akan motorini litre litre sayar.', hat: ['satis'], sira: 0, ikon: 'pompa' },
     kasa: { ad: 'Kasa', acik: 'Satışı kapatır ve fişi keser. Saati, litreyi ve tutarı kaydeder.', hat: ['satis'], sira: 1, ikon: 'kasa' },
-    akt1: AKTARIM,
-    akt2: AKTARIM,
-    prob: { ad: 'Tank probu', acik: 'Yeraltı tankının içindeki ölçüm çubuğu. Yakıtın seviyesini ve sıcaklığını ölçer.', hat: ['stok'], sira: 0, ikon: 'prob' },
-    konsol: { ad: 'Tank konsolu', acik: 'Probun ölçtüğü seviyeyi tankın kalibrasyon tablosuyla litreye çevirir.', hat: ['stok'], sira: 1, ikon: 'konsol' },
-    belge: { ad: 'Teslimat belgesi', acik: 'Tankerle birlikte gelir. Dolum tesisinde tankere kaç litre yüklendiğini yazar.', hat: ['teslimat'], sira: 0, ikon: 'belge' },
-    mudur: { ad: 'İstasyon müdürü', acik: 'Teslimatı kabul eder. Litreyi ve tarihi sisteme elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
-    sap: { ad: 'SAP', acik: 'Şirketin satın alma ve stok kayıtlarını tuttuğu sistem.', hat: ['teslimat'], sira: 2, ikon: 'sap' },
     kamera: { ad: 'Güvenlik kamerası', acik: 'Pompa alanını kaydeder. Görüntü üretir ama litre kaydı üretmez.', tuzak: true, ikon: 'kamera' },
     anket: { ad: 'Müşteri anketi', acik: 'Müşteri memnuniyetini ölçer. Litre kaydı üretmez.', tuzak: true, ikon: 'anket' }
   };
-  var TEPSI = ['kasa', 'prob', 'sap', 'kamera', 'akt1', 'mudur', 'pompa', 'belge', 'anket', 'konsol', 'akt2'];
+  var TEPSI = ['kasa', 'cubuk', 'sap', 'kamera', 'bil1', 'mudur', 'pompa', 'belge', 'anket', 'ekran', 'bil2'];
+  var MINI = {
+    stok: '<svg viewBox="0 0 72 48" aria-hidden="true"><defs><clipPath id="mk-tank"><rect x="8" y="19" width="56" height="25" rx="12.5"/></clipPath></defs>' +
+      '<path d="M2 11H70" class="mk-zemin"/>' +
+      '<rect x="8" y="19" width="56" height="25" rx="12.5" class="mk-c"/>' +
+      '<g clip-path="url(#mk-tank)"><rect x="8" y="30" width="56" height="16" class="mk-yakit"/></g>' +
+      '<path d="M12 30H60" class="mk-seviye"/>' +
+      '<rect x="8" y="19" width="56" height="25" rx="12.5" class="mk-s"/>' +
+      '<path d="M50 5V40" class="mk-cubuk"/><rect x="47" y="3" width="6" height="3.5" rx="1" class="mk-dolu"/><rect x="47.4" y="27.5" width="5.2" height="5" rx="1.3" class="mk-sam"/>' +
+      '</svg>',
+    teslimat: '<svg viewBox="0 0 72 48" aria-hidden="true"><path d="M2 41H70" class="mk-zemin"/>' +
+      '<rect x="5" y="15" width="42" height="19" rx="9.5" class="mk-c"/>' +
+      '<path d="M49 34V20h10l7 7.5V34z" class="mk-c"/>' +
+      '<path d="M52 23h6l3.4 4H52z" class="mk-s"/>' +
+      '<path d="M3 34.5H68" class="mk-s"/>' +
+      '<circle cx="14" cy="37.5" r="3.5" class="mk-c"/><circle cx="35" cy="37.5" r="3.5" class="mk-c"/><circle cx="58" cy="37.5" r="3.5" class="mk-c"/>' +
+      '</svg>',
+    satis: '<svg viewBox="0 0 72 48" aria-hidden="true"><path d="M2 43H70" class="mk-zemin"/>' +
+      '<rect x="7" y="9" width="17" height="34" rx="2.5" class="mk-c"/>' +
+      '<rect x="10.5" y="13" width="10" height="7" rx="1" class="mk-s"/>' +
+      '<path d="M24 19h3a2 2 0 0 1 2 2v9a3 3 0 0 0 3 3h2" class="mk-s"/>' +
+      '<path d="M34 38v-7l5-6h18l6 6v7z" class="mk-c"/>' +
+      '<path d="M41 30l2.6-3h10.8l2.6 3z" class="mk-s"/>' +
+      '<circle cx="40.5" cy="39.5" r="3.5" class="mk-c"/><circle cx="56.5" cy="39.5" r="3.5" class="mk-c"/>' +
+      '</svg>'
+  };
   var SURE = 300;
 
   var S, U = { secili: null, hedef: null, not: null };
@@ -405,7 +448,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
         '<span class="tel" aria-hidden="true"><i></i></span>';
     }
     return '<div class="hat" id="h-' + h + '">' +
-      '<div class="hat-ust"><h2>' + L.ad + '</h2><span class="hat-etiket ' + L.tur + '">' + ikon(L.tur === 'oto' ? 'oto' : 'mudur') + L.etiket + '</span></div>' +
+      '<div class="hat-ust"><span class="mini">' + MINI[h] + '</span>' +
+      '<div class="hat-yazi"><h2>' + L.ad + '</h2><p>' + L.alt + '</p>' +
+      '<span class="hat-etiket ' + L.tur + '">' + ikon(L.tur === 'oto' ? 'oto' : 'mudur') + L.etiket + '</span></div></div>' +
       '<div class="zincir">' + z + '<div class="uc">' + ikon('platform') + '<span>Veri platformu</span></div></div>' +
       '</div>';
   }
@@ -416,7 +461,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     }).join('');
     return '<section class="sahne r1">' +
       '<div class="baslik"><div class="ust-s"><p class="ust">1. tur · Doğumu</p><span class="sure" id="sure"></span></div><h1>Veri nasıl oluşuyor?</h1>' +
-      '<p class="giris-metin">Kayıp oranı üç hattan gelen veriyle hesaplanıyor. Her hattı, verinin doğduğu yerden veri platformuna kadar kurun.</p></div>' +
+      '<p class="giris-metin">Kayıp oranı üç veriden hesaplanıyor. Tankta ne kadar motorin var, tankerle ne kadar geldi, müşterilere ne kadar satıldı? Her verinin yolunu, doğduğu yerden veri platformuna kadar kurun.</p></div>' +
       '<div class="ipucu">' + ikon('dokun') + '<span>Önce bir bloğa, sonra boş yuvaya dokunun.</span></div>' +
       '<div class="hatlar">' + SIRA.map(hatHtml).join('') + '</div>' +
       '<div class="ozet" id="ozet" hidden></div>' +
@@ -428,9 +473,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     var dogru = Object.keys(S.r1.yer).length;
     return '<h2>Üç hat da veri platformunda buluştu</h2>' +
       '<ul class="ozet-l">' +
-      '<li><b>Satış</b><span>' + ikon('oto') + 'Otomatik</span><span>Her satışta</span></li>' +
       '<li><b>Stok</b><span>' + ikon('oto') + 'Otomatik</span><span>15 dakikada bir</span></li>' +
       '<li class="elle"><b>Teslimat</b><span>' + ikon('mudur') + 'Elle</span><span>Her teslimatta</span></li>' +
+      '<li><b>Satış</b><span>' + ikon('oto') + 'Otomatik</span><span>Her satış işleminde</span></li>' +
       '</ul>' +
       '<p>Panodaki tek bir sayı, üç ayrı yoldan ve farklı sıklıkla gelen veriden hesaplanıyor. Teslimat hattına insan eli değiyor. Güvenlik kamerası ve müşteri anketi de veri üretiyor ama bu hesaba girmiyor.</p>' +
       '<p class="ozet-skor">' + dogru + ' doğru yerleştirme, ' + S.r1.hata + ' hatalı deneme.</p>' +
