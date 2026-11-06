@@ -31,7 +31,7 @@
   color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(100px + env(safe-area-inset-top, 0px)); }
 body { background: var(--zemin); color: var(--metin); font-family: var(--govde); font-size: 16px; line-height: 1.5; }
 button, input { font: inherit; color: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
@@ -350,6 +350,29 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 .skor span { font-size: 16px; color: var(--metin2); }
 .skor b { font-family: var(--display); font-weight: 600; font-size: 64px; line-height: 1; color: var(--vurgu); font-variant-numeric: tabular-nums; }
 #son-sonuc { display: flex; flex-direction: column; gap: 16px; }
+
+.ozet-alan { display: flex; flex-direction: column; gap: 14px; }
+.hesap-kart { background: var(--kagit); border: 2px solid var(--metin2); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.hesap-kart h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1.1; }
+.hk-a, .hk-not { margin: 0; font-size: 15px; line-height: 1.5; color: var(--metin2); }
+.hk-not { font-size: 14px; }
+.htab { display: flex; flex-direction: column; font-size: 15px; font-variant-numeric: tabular-nums; }
+.h-sat { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr) minmax(0, .9fr); gap: 2px 12px; padding: 8px 0; border-top: 1px solid var(--cizgi); align-items: baseline; }
+.h-sat.bas { border-top: 0; padding-top: 0; font-size: 12px; font-weight: 500; color: var(--metin2); }
+.h-sat > span:nth-child(2), .h-sat > span:nth-child(3) { text-align: right; }
+.h-sat > span:nth-child(2) { color: var(--metin2); }
+.h-sat > span.h-fark { color: var(--vurgu); font-weight: 500; }
+.h-sat .h-ne { grid-column: 1 / -1; text-align: left !important; font-size: 13px; line-height: 1.35; color: var(--metin2) !important; font-weight: 400; }
+.h-sat.vurgulu { font-weight: 500; }
+.h-sat.son { border-top: 1.5px solid var(--metin2); }
+.hgraf-b { margin: 6px 0 0; font-size: 15px; font-weight: 500; }
+.hgraf { display: flex; flex-direction: column; gap: 9px; }
+.hg-sat { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 2fr) 46px; align-items: center; gap: 10px; font-size: 13px; line-height: 1.25; }
+.hg-iz { height: 14px; border-radius: 7px; background: var(--zemin); overflow: hidden; }
+.hg-iz i { display: block; height: 100%; width: var(--w); border-radius: 7px; background: var(--kesik); }
+.hg-sat.ilk .hg-iz i { background: var(--vurgu); }
+.hg-sat.son .hg-iz i { background: var(--metin); }
+.hg-sat b { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .alt { max-width: 760px; margin: 0 auto; padding-block: 18px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--metin2); }
 .alt button { background: none; border: 0; padding: 6px 0; color: var(--metin2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
@@ -782,13 +805,13 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   };
   var KOLON_SIRA = ['kSatis', 'kOrt', 'kTeslimat', 'kFiyat', 'kKapanis', 'kTl', 'kAcilis'];
   var IZ = {
-    1: { terim: 'kapanis', fark: 3544, etki: 'Çubuk takıldığı için ay sonu stoğu 3.544 litre eksik görünüyordu.',
+    1: { terim: 'kapanis', fark: 3544, etki: 'Çubuk takıldığı için ay sonu stoğu 3.544 litre eksik görünüyordu.', nereden: 'Doğrusu ay sonunda yapılan elle ölçümden geliyor. Tank elle ölçüldü, 80.400 litre çıktı.',
       ipucu: { acilis: 'Çubuk ayın sonunda takıldı, ay başı ölçümü sağlam.', teslimat: 'Bu hata bir ölçümde, stok tablosunda.', satis: 'Bu hata bir ölçümde, stok tablosunda.', yok: 'Donmuş ölçüm ay sonu stoğunu da donmuş gösterdi. Ay sonu stoğu formülde var.' } },
-    3: { terim: 'teslimat', fark: -5000, etki: 'Aynı belge iki kez girildiği için teslimat 5.000 litre fazla görünüyordu.',
+    3: { terim: 'teslimat', fark: -5000, etki: 'Aynı belge iki kez girildiği için teslimat 5.000 litre fazla görünüyordu.', nereden: 'Doğrusu tanker belgesinden geliyor. T-4437 tek bir belge, yani tek bir teslimat.',
       ipucu: { acilis: 'Bu kayıt teslimat tablosunda.', satis: 'Bu kayıt teslimat tablosunda.', kapanis: 'Bu kayıt teslimat tablosunda.', yok: 'Çift kayıt teslimat toplamını büyüttü. Teslimat formülde var.' } },
-    4: { terim: 'teslimat', fark: -5000, etki: '30 Eylül’de gelen yakıt Ekim’e yazıldığı için teslimat 5.000 litre fazla görünüyordu.',
+    4: { terim: 'teslimat', fark: -5000, etki: '30 Eylül’de gelen yakıt Ekim’e yazıldığı için teslimat 5.000 litre fazla görünüyordu.', nereden: 'Doğrusu tanker belgesinden geliyor. Belgede 30 Eylül yazıyor.',
       ipucu: { acilis: 'Ay başı stoğu ölçümle bulunuyor ve doğru. Yanlış olan, aynı yakıtın Ekim teslimatına da yazılması.', satis: 'Bu kayıt teslimat tablosunda.', kapanis: 'Bu kayıt teslimat tablosunda.', yok: 'Yanlış tarih, Eylül’ün yakıtını Ekim teslimatına ekledi. Teslimat formülde var.' } },
-    5: { terim: 'satis', fark: 12245, etki: 'Dört saatlik satış SAP’ye ulaşmadığı için satış 12.245 litre eksik görünüyordu.',
+    5: { terim: 'satis', fark: 12245, etki: 'Dört saatlik satış SAP’ye ulaşmadığı için satış 12.245 litre eksik görünüyordu.', nereden: 'Doğrusu pompa endeksinden ve kasanın gün sonu Z raporundan geliyor. Pompalar bağlantı kopsa da saymaya devam etti.',
       ipucu: { acilis: 'Kaybolan kayıtlar satış kayıtlarıydı.', teslimat: 'Kaybolan kayıtlar satış kayıtlarıydı.', kapanis: 'Ay sonu ölçümü sağlam geldi. Kaybolan, o dört saatin satış kayıtları.', yok: 'Eksik saatler satış toplamını küçülttü. Satış formülde iki yerde var.' } },
     7: { terim: 'yok', fark: 0, etki: 'Kayıp oranı litreyle hesaplanıyor. Fiyat hatası TL’li raporları bozar ama bu sayıya ulaşmaz.',
       ipucu: { acilis: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?', teslimat: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?', satis: 'Satış litre olarak giriyor. Fiyat hatası litreyi değiştirmedi.', kapanis: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?' } }
@@ -822,7 +845,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       '<div class="formul-satir"><span class="fk">Kayıp</span><em>=</em><span>Ay başı stok</span><em>+</em><span>Teslimat</span><em>−</em><span>Satış</span><em>−</em><span>Ay sonu stok</span></div>' +
       '<div class="terimler">' + satir + '</div><p class="hesap" id="hesap" hidden></p></div>' +
       '<div class="izler" id="izler" hidden></div>' +
-      '<div class="ozet" id="ozet3" hidden></div>' +
+      '<div class="ozet-alan" id="ozet3" hidden></div>' +
       '<div class="dok" id="dok3"><div class="not" id="not3" role="status" aria-live="polite"></div><div class="bloklar kolonlar" id="kolonlar">' + cip + '</div><div class="kart" id="kart3" hidden></div></div>' +
       '</section>';
   }
@@ -910,7 +933,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     var st = S.r3.iz[n] || { yanlis: [] };
     var bas = '<div class="kart-bas"><span class="rozet">' + n + '</span><div><b>' + M[n].kisa + '</b><p>' + M[n].gozlem + '</p></div></div>';
     if (st.durum === 'bitti') {
-      el.innerHTML = bas + '<p class="kart-sonuc iyi">' + ikon('check') + '<span>' + (IZ[n].terim === 'yok' ? 'Doğru, bu sayıya ulaşmıyor' : 'Doğru, ' + TERIM.filter(function (x) { return x.id === IZ[n].terim; })[0].ad.toLocaleLowerCase('tr') + ' düzeltildi') + '</span></p><p class="kart-ac">' + IZ[n].etki + '</p><div class="ileri"><button type="button" class="tus ana" id="iz-kapat">Devam ' + ikon('ok') + '</button></div>';
+      el.innerHTML = bas + '<p class="kart-sonuc iyi">' + ikon('check') + '<span>' + (IZ[n].terim === 'yok' ? 'Doğru, bu sayıya ulaşmıyor' : 'Doğru, ' + TERIM.filter(function (x) { return x.id === IZ[n].terim; })[0].ad.toLocaleLowerCase('tr') + ' düzeltildi') + '</span></p><p class="kart-ac">' + IZ[n].etki + '</p>' + (IZ[n].nereden ? '<p class="kart-yer">' + ikon('bilgi') + '<span>' + IZ[n].nereden + '</span></p>' : '') + '<div class="ileri"><button type="button" class="tus ana" id="iz-kapat">Devam ' + ikon('ok') + '</button></div>';
       return;
     }
     var sec = TERIM.concat([{ id: 'yok', ad: 'Hiçbirini' }]).map(function (x) {
@@ -920,10 +943,32 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     el.innerHTML = bas + '<p class="kart-s">Bu hata hangi terimi bozdu?</p><div class="terim-sec">' + sec + '</div>' + (st.ipucu ? '<p class="kart-ipucu">' + ikon('bilgi') + '<span>' + st.ipucu + '</span></p>' : '');
   }
   function ozet3Html(v) {
-    return '<h2>Kaçak yok, veri bozuktu</h2>' +
-      '<ul class="ozet-l ozet-k"><li><b>Panoda görünen</b><span>%1,9 · 28.789 litre</span></li><li><b>Düzeltilmiş veriyle</b><span>' + oranYazi(v.oran) + ' · ' + tl(v.kayip) + ' litre</span></li></ul>' +
+    var d = { acilis: VERI.acilis, teslimat: VERI.teslimatDogru, satis: VERI.satisDogru, kapanis: VERI.kapanisDogru };
+    var p = { acilis: VERI.acilis, teslimat: VERI.teslimat, satis: VERI.satis, kapanis: VERI.kapanis };
+    var ne = { acilis: 'Sağlam', teslimat: tl(p.teslimat - d.teslimat) + ' litre fazla yazıldı (çift kayıt ve yanlış tarih)',
+      satis: tl(d.satis - p.satis) + ' litre eksik kaldı (eksik saatler)', kapanis: tl(d.kapanis - p.kapanis) + ' litre eksik okundu (donmuş ölçüm)' };
+    var satir = function (ad, pv, dv, not, cls) {
+      return '<div class="h-sat' + (cls ? ' ' + cls : '') + '"><span>' + ad + '</span><span>' + pv + '</span><span class="' + (pv !== dv ? 'h-fark' : '') + '">' + dv + '</span>' + (not ? '<span class="h-ne">' + not + '</span>' : '') + '</div>';
+    };
+    var tablo = '<div class="htab"><div class="h-sat bas"><span></span><span>Panoda</span><span>Doğrusu</span></div>' +
+      TERIM.map(function (x) { return satir(x.ad, tl(p[x.id]), tl(d[x.id]), ne[x.id]); }).join('') +
+      satir('Kayıp', tl(VERI.kayip), tl(VERI.kayipDogru), '', 'vurgulu son') +
+      satir('Kayıp oranı', oranYazi(VERI.kayip / VERI.satis), oranYazi(VERI.kayipDogru / VERI.satisDogru), 'Kayıp bölü satış', 'vurgulu') + '</div>';
+    var adim = [{ ad: 'Panoda', v: Object.assign({}, p) }], cur = Object.assign({}, p);
+    [[1, 'Donmuş ölçüm düzeldi'], [3, 'Çift kayıt düzeldi'], [4, 'Yanlış tarih düzeldi'], [5, 'Eksik saatler düzeldi']].forEach(function (a) {
+      cur[IZ[a[0]].terim] += IZ[a[0]].fark; adim.push({ ad: a[1], v: Object.assign({}, cur) });
+    });
+    var oranlar = adim.map(function (s) { return (s.v.acilis + s.v.teslimat - s.v.satis - s.v.kapanis) / s.v.satis; }), mx = oranlar[0];
+    var grafik = '<div class="hgraf" role="img" aria-label="Her düzeltmeden sonra kayıp oranı">' + adim.map(function (s, i) {
+      return '<div class="hg-sat' + (i === 0 ? ' ilk' : i === adim.length - 1 ? ' son' : '') + '"><span>' + s.ad + '</span><span class="hg-iz"><i style="--w:' + (100 * oranlar[i] / mx).toFixed(1) + '%"></i></span><b>' + oranYazi(oranlar[i]) + '</b></div>';
+    }).join('') + '</div>';
+    return '<div class="hesap-kart"><h2>%1,9 nasıl %0,2 oldu?</h2>' +
+      '<p class="hk-a">Kayıp ölçülen bir sayı değil, formülden artan fark. Terimlerdeki her hata doğrudan kayba ekleniyor.</p>' + tablo +
+      '<p class="hgraf-b">Her düzeltmeden sonra kayıp oranı</p>' + grafik +
+      '<p class="hk-not">Yanlış fiyat bu oranı değiştirmedi, çünkü kayıp litreyle hesaplanıyor.</p></div>' +
+      '<div class="ozet"><h2>Kaçak yok, veri bozuktu</h2>' +
       '<p>Panodaki %1,9’un 1,7 puanı veriden geliyordu. Dört kolon, iki formül ve beş hata. Bir sayının soy ağacını bilen, onu bozan hatayı da bulur.</p>' +
-      '<button type="button" class="tus acik" id="karar-gec">Son karara geç ' + ikon('ok') + '</button>';
+      '<button type="button" class="tus acik" id="karar-gec">Son karara geç ' + ikon('ok') + '</button></div>';
   }
   function kolonTik(k) {
     if (agacTamam()) return;
