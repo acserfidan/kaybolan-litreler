@@ -280,6 +280,77 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 .ozet .rozet, .ozet-l .rozet { display: inline-grid; place-items: center; justify-content: center; background: var(--vurgu-acik); color: var(--metin); }
 .ozet .rozet.bos { background: transparent; border: 1.5px solid var(--ozet-metin2); color: var(--ozet-metin2); }
 
+.pano { background: var(--kagit); border: 2px solid var(--metin2); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color .4s; }
+.pano-ust { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--metin2); }
+.pano-ust .ik { width: 18px; height: 18px; }
+.pano-ic { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
+.pano-d { margin: 2px 0 0; font-family: var(--display); font-weight: 600; font-size: 72px; line-height: .95; color: var(--vurgu); font-variant-numeric: tabular-nums; transition: color .5s; }
+.pano-sag { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; font-size: 14px; color: var(--metin2); font-variant-numeric: tabular-nums; }
+.pano-sag p { margin: 0; }
+.pano-durum { margin-top: 4px; padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--cizgi); font-size: 13px; font-weight: 500; }
+.pano.duzeldi { border-color: var(--metin); }
+.pano.duzeldi .pano-d { color: var(--metin); }
+.pano.duzeldi .pano-durum { background: var(--metin); border-color: var(--metin); color: var(--tus-metin); }
+.agac { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.formul-satir { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.formul-satir span { padding: 4px 12px; border-radius: 999px; border: 1.5px solid var(--cizgi); background: var(--kagit); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.formul-satir span.fk { border-color: var(--metin2); }
+.formul-satir em { font-style: normal; font-family: var(--display); font-weight: 600; font-size: 19px; line-height: 1; color: var(--metin2); }
+.terimler { position: relative; display: flex; flex-direction: column; margin-top: 4px; }
+.terimler::before { content: ""; position: absolute; left: 6px; top: 26px; bottom: 26px; border-left: 2px dashed var(--kesik); }
+.terim { position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) minmax(0, 1.35fr); align-items: center; gap: 12px; padding: 7px 0; }
+.dugum { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--metin2); background: var(--kagit); z-index: 1; transition: background .3s, border-color .3s; }
+.terim.bagli .dugum { background: var(--metin2); }
+.terim.degisti .dugum { background: var(--vurgu); border-color: var(--vurgu); }
+.terim-ad { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.terim-ad b { font-weight: 500; font-size: 15px; }
+.terim-deger { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--kesik); }
+.terim.bagli .terim-deger { color: var(--metin); }
+.terim.degisti .terim-deger { color: var(--vurgu); }
+.kok { min-height: 54px; min-width: 0; border-radius: 12px; border: 2px dashed var(--kesik); background: transparent; display: flex; align-items: center; gap: 8px; padding: 6px 10px; text-align: left; font-size: 13px; line-height: 1.2; cursor: pointer; transition: border-color .2s, background .2s; }
+.kok-bos { color: var(--kesik); font-weight: 500; }
+.kok:hover { border-color: var(--metin2); }
+.secim-var .kok:not(.dolu) { border-color: var(--metin2); background: var(--kagit); }
+.kok.hedef, .secim-var .kok.hedef { border-color: var(--vurgu); background: var(--vurgu-zemin); }
+.kok.dolu { border: 2px solid var(--cizgi); background: var(--kagit); cursor: default; font-weight: 500; }
+.kok.dolu .ik { width: 20px; height: 20px; color: var(--metin2); }
+.kok.salla { animation: salla .4s; }
+.hesap { margin: 4px 0 0; padding-top: 10px; border-top: 1.5px solid var(--cizgi); font-size: 15px; line-height: 1.7; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hesap b { font-weight: 500; color: var(--vurgu); }
+.izler { display: flex; flex-direction: column; gap: 8px; }
+.izler h2 { margin: 6px 0 0; font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+.izler-a { margin: 0 0 4px; font-size: 15px; color: var(--metin2); }
+.iz { display: grid; grid-template-columns: 30px minmax(0, 1fr) 22px; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--cizgi); background: var(--kagit); text-align: left; cursor: pointer; transition: border-color .2s, background .2s; }
+.iz:hover { border-color: var(--metin2); }
+.iz.secili { border-color: var(--vurgu); background: var(--vurgu-zemin); }
+.iz.tamam { border-color: var(--metin2); }
+.iz.tamam .rozet { background: var(--vurgu); }
+.iz-yazi { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.iz-yazi b { font-weight: 500; }
+.iz-yazi span { font-size: 14px; line-height: 1.35; color: var(--metin2); }
+.iz-durum .ik { width: 20px; height: 20px; color: var(--metin); }
+.terim-sec { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.terim-sec .tus { min-height: 44px; padding: 8px 12px; font-size: 15px; }
+.terim-sec .tus:last-child { grid-column: 1 / -1; }
+.secim.yanlis { border-color: var(--vurgu); background: var(--vurgu-zemin); color: var(--vurgu); }
+.ozet-l.ozet-k li { grid-template-columns: minmax(0, 1fr) auto; }
+.ozet-l.ozet-u li { grid-template-columns: 30px minmax(0, 1fr); row-gap: 2px; }
+.ozet-l.ozet-u li span:last-child { grid-column: 2; text-align: left; }
+.kpi-d.duz { color: var(--metin); }
+.cubuk.soluk i::after { background: var(--kesik); }
+.cubuk.soluk b, .cubuk.soluk span:first-child { color: var(--kesik); }
+.karsilastir { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.karsilastir > div { flex: 1 1 180px; display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--cizgi); background: var(--yuzey); }
+.karsilastir > div:last-child { border-color: var(--metin); }
+.karsilastir span { font-size: 13px; color: var(--metin2); }
+.karsilastir b { font-weight: 500; font-size: 17px; }
+.karsilastir > .ik { color: var(--metin2); }
+.son-msj { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.15; text-wrap: balance; }
+.skor { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.skor span { font-size: 16px; color: var(--metin2); }
+.skor b { font-family: var(--display); font-weight: 600; font-size: 64px; line-height: 1; color: var(--vurgu); font-variant-numeric: tabular-nums; }
+#son-sonuc { display: flex; flex-direction: column; gap: 16px; }
+
 .alt { max-width: 760px; margin: 0 auto; padding-block: 18px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--metin2); }
 .alt button { background: none; border: 0; padding: 6px 0; color: var(--metin2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
 .alt button[data-onay] { color: var(--vurgu); }
@@ -316,6 +387,11 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   .ttab { font-size: 12px; }
   .t-sat { gap: 4px; grid-template-columns: 30px minmax(0, .85fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, .75fr); }
   .kart-bas p, .kart-ac { font-size: 14px; }
+  .terim { grid-template-columns: 14px minmax(0, .9fr) minmax(0, 1.4fr); gap: 10px; }
+  .terim-deger { font-size: 19px; }
+  .pano-d { font-size: 60px; }
+  .pano-sag { align-items: flex-start; text-align: left; }
+  .hesap { font-size: 14px; }
 }
 @media (max-width: 380px) {
   .zincir { grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr) 12px minmax(0, 1fr) 12px 52px; }
@@ -688,23 +764,257 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     S.r2.bitti = cozulen() === M_SIRA.length;
     kaydet(); r2Guncelle();
   }
+  var R3SURE = 300;
+  var TERIM = [
+    { id: 'acilis', ad: 'Ay başı stok', isaret: '+' },
+    { id: 'teslimat', ad: 'Teslimat', isaret: '+' },
+    { id: 'satis', ad: 'Satış', isaret: '−' },
+    { id: 'kapanis', ad: 'Ay sonu stok', isaret: '−' }
+  ];
+  var KOLON = {
+    kAcilis: { ad: 'Stok · 1 Ekim 00.00 ölçümü', terim: 'acilis', ikon: 'prob' },
+    kTeslimat: { ad: 'Teslimat · Ekim toplamı, litre', terim: 'teslimat', ikon: 'belge' },
+    kSatis: { ad: 'Satış · Ekim toplamı, litre', terim: 'satis', ikon: 'kasa' },
+    kKapanis: { ad: 'Stok · 31 Ekim 24.00 ölçümü', terim: 'kapanis', ikon: 'prob' },
+    kTl: { ad: 'Satış · Ekim toplamı, TL', tuzak: 'Kayıp litreyle hesaplanıyor. TL’li toplam bu formüle girmez.', ikon: 'kasa' },
+    kOrt: { ad: 'Stok · Ekim ortalaması', tuzak: 'Formül ortalamayı değil, ayın başındaki ve sonundaki stoğu kullanıyor.', ikon: 'prob' },
+    kFiyat: { ad: 'Fiyat · ortalama litre fiyatı', tuzak: 'Fiyat bu formülde yok. Kayıp litreyle hesaplanıyor.', ikon: 'kasa' }
+  };
+  var KOLON_SIRA = ['kSatis', 'kOrt', 'kTeslimat', 'kFiyat', 'kKapanis', 'kTl', 'kAcilis'];
+  var IZ = {
+    1: { terim: 'kapanis', fark: 3544, etki: 'Çubuk takıldığı için ay sonu stoğu 3.544 litre eksik görünüyordu.',
+      ipucu: { acilis: 'Çubuk ayın sonunda takıldı, ay başı ölçümü sağlam.', teslimat: 'Bu hata bir ölçümde, stok tablosunda.', satis: 'Bu hata bir ölçümde, stok tablosunda.', yok: 'Donmuş ölçüm ay sonu stoğunu da donmuş gösterdi. Ay sonu stoğu formülde var.' } },
+    3: { terim: 'teslimat', fark: -5000, etki: 'Aynı belge iki kez girildiği için teslimat 5.000 litre fazla görünüyordu.',
+      ipucu: { acilis: 'Bu kayıt teslimat tablosunda.', satis: 'Bu kayıt teslimat tablosunda.', kapanis: 'Bu kayıt teslimat tablosunda.', yok: 'Çift kayıt teslimat toplamını büyüttü. Teslimat formülde var.' } },
+    4: { terim: 'teslimat', fark: -5000, etki: '30 Eylül’de gelen yakıt Ekim’e yazıldığı için teslimat 5.000 litre fazla görünüyordu.',
+      ipucu: { acilis: 'Ay başı stoğu ölçümle bulunuyor ve doğru. Yanlış olan, aynı yakıtın Ekim teslimatına da yazılması.', satis: 'Bu kayıt teslimat tablosunda.', kapanis: 'Bu kayıt teslimat tablosunda.', yok: 'Yanlış tarih, Eylül’ün yakıtını Ekim teslimatına ekledi. Teslimat formülde var.' } },
+    5: { terim: 'satis', fark: 12245, etki: 'Dört saatlik satış SAP’ye ulaşmadığı için satış 12.245 litre eksik görünüyordu.',
+      ipucu: { acilis: 'Kaybolan kayıtlar satış kayıtlarıydı.', teslimat: 'Kaybolan kayıtlar satış kayıtlarıydı.', kapanis: 'Ay sonu ölçümü sağlam geldi. Kaybolan, o dört saatin satış kayıtları.', yok: 'Eksik saatler satış toplamını küçülttü. Satış formülde iki yerde var.' } },
+    7: { terim: 'yok', fark: 0, etki: 'Kayıp oranı litreyle hesaplanıyor. Fiyat hatası TL’li raporları bozar ama bu sayıya ulaşmaz.',
+      ipucu: { acilis: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?', teslimat: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?', satis: 'Satış litre olarak giriyor. Fiyat hatası litreyi değiştirmedi.', kapanis: 'Kayıp oranı litreyle hesaplanıyor. Fiyat bu formülde var mı?' } }
+  };
+  var IZ_SIRA = [1, 3, 4, 5, 7];
+  function oranYazi(x) { return '%' + (x * 100).toFixed(1).replace('.', ','); }
+  function degerler() {
+    var v = { acilis: VERI.acilis, teslimat: VERI.teslimat, satis: VERI.satis, kapanis: VERI.kapanis };
+    IZ_SIRA.forEach(function (n) { var st = S.r3.iz[n]; if (st && st.durum === 'bitti' && IZ[n].terim !== 'yok') v[IZ[n].terim] += IZ[n].fark; });
+    v.kayip = v.acilis + v.teslimat - v.satis - v.kapanis;
+    v.oran = v.kayip / v.satis;
+    return v;
+  }
+  function agacTamam() { return TERIM.every(function (x) { return !!S.r3.kok[x.id]; }); }
   function r3Html() {
-    return '<section class="sahne">' +
-      '<div class="baslik"><p class="ust">3. tur · Verinin soy ağacı</p><h1>Panodaki sayı nereden geliyor?</h1>' +
-      '<p class="giris-metin">Bu tur bir sonraki adımda eklenecek.</p></div>' +
-      '<div class="ileri"><button type="button" class="tus ikincil" id="r2-don">2. tura dön</button></div>' +
+    var satir = TERIM.map(function (x) {
+      return '<div class="terim" id="tr-' + x.id + '"><span class="dugum" aria-hidden="true"></span>' +
+        '<div class="terim-ad"><b>' + x.ad + '</b><span class="terim-deger" id="td-' + x.id + '">?</span></div>' +
+        '<button type="button" class="kok" id="kk-' + x.id + '" data-terim="' + x.id + '"><span class="kok-bos">Kaynağı seçin</span></button></div>';
+    }).join('');
+    var cip = KOLON_SIRA.map(function (k) {
+      return '<button type="button" class="blok kolon" id="kc-' + k + '" data-kolon="' + k + '">' + ikon(KOLON[k].ikon) + '<span>' + KOLON[k].ad + '</span></button>';
+    }).join('');
+    return '<section class="sahne r3">' +
+      '<div class="baslik"><div class="ust-s"><p class="ust">3. tur · Verinin soy ağacı</p><span class="sure" id="sure"></span></div><h1>Panodaki sayı nereden geliyor?</h1>' +
+      '<p class="giris-metin">Panodaki %1,9 tek bir sayı ama arkasında dört ayrı veri var. Önce her terimin SAP’de hangi kolondan geldiğini bulun, sonra 2. turdaki hataları bu ağaçta izleyin.</p></div>' +
+      '<div class="pano" id="pano"><div class="pano-ust">' + ikon('platform') + '<span>Yönetim panosu · İstasyon 7 · Ekim</span></div>' +
+      '<div class="pano-ic"><div><p class="kpi-l">Yakıt kayıp oranı</p><p class="pano-d" id="pano-d">%1,9</p></div>' +
+      '<div class="pano-sag"><p id="pano-l"></p><p id="pano-s"></p><span class="pano-durum" id="pano-durum"></span></div></div></div>' +
+      '<div class="agac"><div class="formul-satir"><span class="fk">Kayıp oranı</span><em>=</em><span class="fk">Kayıp</span><em>÷</em><span class="fk">Satış</span></div>' +
+      '<div class="formul-satir"><span class="fk">Kayıp</span><em>=</em><span>Ay başı stok</span><em>+</em><span>Teslimat</span><em>−</em><span>Satış</span><em>−</em><span>Ay sonu stok</span></div>' +
+      '<div class="terimler">' + satir + '</div><p class="hesap" id="hesap" hidden></p></div>' +
+      '<div class="izler" id="izler" hidden></div>' +
+      '<div class="ozet" id="ozet3" hidden></div>' +
+      '<div class="dok" id="dok3"><div class="not" id="not3" role="status" aria-live="polite"></div><div class="bloklar kolonlar" id="kolonlar">' + cip + '</div><div class="kart" id="kart3" hidden></div></div>' +
       '</section>';
+  }
+  function izlerHtml() {
+    return '<h2>Hataları ağaçta izleyin</h2><p class="izler-a">2. turdaki beş hatanın her biri hangi terimi bozdu? Bir hataya dokunun ve etkilediği terimi seçin.</p>' +
+      IZ_SIRA.map(function (n) {
+        return '<button type="button" class="iz" id="iz-' + n + '" data-iz="' + n + '"><span class="rozet">' + n + '</span><span class="iz-yazi"><b>' + M[n].kisa + '</b><span id="iz-e-' + n + '">' + M[n].gozlem + '</span></span><span class="iz-durum" id="iz-d-' + n + '"></span></button>';
+      }).join('');
+  }
+  function not3(n) {
+    var el = $('#not3');
+    if (!el) return;
+    U.not3 = n || U.not3;
+    var m = U.not3 || { tip: 'bilgi', baslik: 'Kaynak seçin', metin: 'Önce bir kolona, sonra terimin yanındaki kutuya dokunun.' };
+    el.className = 'not ' + m.tip;
+    el.innerHTML = ikon(m.tip === 'hata' ? 'x' : m.tip === 'iyi' ? 'check' : 'bilgi') + '<div><b>' + m.baslik + '</b><p>' + m.metin + '</p></div>';
+    if (n) { void el.offsetWidth; el.classList.add('yanip'); }
+  }
+  var sayac = {};
+  function say(el, hedef, bicim) {
+    if (!el) return;
+    var bas = +(el.dataset.v || hedef), az = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.dataset.v = hedef;
+    if (az || bas === hedef) { el.textContent = bicim(hedef); return; }
+    var t0 = null, id = el.id;
+    cancelAnimationFrame(sayac[id]);
+    function adim(t) {
+      if (!t0) t0 = t;
+      var k = Math.min(1, (t - t0) / 700), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = bicim(bas + (hedef - bas) * e);
+      if (k < 1) sayac[id] = requestAnimationFrame(adim);
+    }
+    sayac[id] = requestAnimationFrame(adim);
+  }
+  function r3Guncelle() {
+    if (!$('.r3')) return;
+    var v = degerler(), tam = agacTamam(), bitti = S.r3.bitti;
+    say($('#pano-d'), v.oran, oranYazi);
+    $('#pano-l').textContent = tl(v.kayip) + ' litre kayıp';
+    $('#pano-s').textContent = tl(v.satis) + ' litre satış';
+    var pd = $('#pano-durum'); pd.textContent = bitti ? 'Şirket ortalamasında' : 'Şirket ortalaması %0,2';
+    $('#pano').classList.toggle('duzeldi', bitti);
+    TERIM.forEach(function (x) {
+      var k = S.r3.kok[x.id], kutu = $('#kk-' + x.id), sat = $('#tr-' + x.id);
+      sat.classList.toggle('bagli', !!k);
+      kutu.classList.toggle('hedef', U.hedef3 === x.id);
+      if (k && kutu.dataset.k !== k) { kutu.dataset.k = k; kutu.classList.add('dolu'); kutu.innerHTML = ikon(KOLON[k].ikon) + '<span>SAP · ' + KOLON[k].ad + '</span>'; }
+      var td = $('#td-' + x.id);
+      if (k) say(td, v[x.id], tl); else td.textContent = '?';
+      sat.classList.toggle('degisti', IZ_SIRA.some(function (n) { var st = S.r3.iz[n]; return st && st.durum === 'bitti' && IZ[n].terim === x.id; }));
+    });
+    var kul = {};
+    Object.keys(S.r3.kok).forEach(function (t) { kul[S.r3.kok[t]] = true; });
+    KOLON_SIRA.forEach(function (k) { var c = $('#kc-' + k); c.hidden = !!kul[k]; c.classList.toggle('secili', U.secili3 === k); });
+    $('.r3').classList.toggle('secim-var', !!U.secili3);
+    var hs = $('#hesap');
+    if (tam) {
+      hs.hidden = false;
+      hs.innerHTML = tl(v.acilis) + ' + ' + tl(v.teslimat) + ' − ' + tl(v.satis) + ' − ' + tl(v.kapanis) + ' = <b>' + tl(v.kayip) + ' litre</b><br>' + tl(v.kayip) + ' ÷ ' + tl(v.satis) + ' = <b>' + oranYazi(v.oran) + '</b>';
+    }
+    var iz = $('#izler');
+    iz.hidden = !tam;
+    if (tam && !iz.dataset.kuruldu) { iz.innerHTML = izlerHtml(); iz.dataset.kuruldu = '1'; }
+    if (tam) IZ_SIRA.forEach(function (n) {
+      var st = S.r3.iz[n] || {}, b = $('#iz-' + n);
+      b.classList.toggle('secili', U.iz === n);
+      b.classList.toggle('tamam', st.durum === 'bitti');
+      $('#iz-d-' + n).innerHTML = st.durum === 'bitti' ? ikon('check') : '';
+      if (st.durum === 'bitti') $('#iz-e-' + n).textContent = IZ[n].etki;
+    });
+    $('#kolonlar').hidden = tam;
+    var kart = $('#kart3'), dok = $('#dok3'), not = $('#not3'), goster = bitti && !U.iz;
+    not.hidden = tam;
+    if (tam && !goster) { kart.hidden = false; kart3Ciz(); }
+    else kart.hidden = true;
+    dok.hidden = goster;
+    var oz = $('#ozet3');
+    if (goster) { oz.innerHTML = ozet3Html(v); oz.hidden = false; } else oz.hidden = true;
+    sureCiz();
+  }
+  function kart3Ciz() {
+    var el = $('#kart3'), n = U.iz;
+    var biten = IZ_SIRA.filter(function (x) { var st = S.r3.iz[x]; return st && st.durum === 'bitti'; }).length;
+    if (!n) { el.innerHTML = '<div class="kart-bos">' + ikon('dokun') + '<p>Yukarıdaki hatalardan birine dokunun.</p></div><div class="ilerleme"><span>İzlenen hata ' + biten + ' / 5</span></div>'; return; }
+    var st = S.r3.iz[n] || { yanlis: [] };
+    var bas = '<div class="kart-bas"><span class="rozet">' + n + '</span><div><b>' + M[n].kisa + '</b><p>' + M[n].gozlem + '</p></div></div>';
+    if (st.durum === 'bitti') {
+      el.innerHTML = bas + '<p class="kart-sonuc iyi">' + ikon('check') + '<span>' + (IZ[n].terim === 'yok' ? 'Doğru, bu sayıya ulaşmıyor' : 'Doğru, ' + TERIM.filter(function (x) { return x.id === IZ[n].terim; })[0].ad.toLocaleLowerCase('tr') + ' düzeltildi') + '</span></p><p class="kart-ac">' + IZ[n].etki + '</p><div class="ileri"><button type="button" class="tus ana" id="iz-kapat">Devam ' + ikon('ok') + '</button></div>';
+      return;
+    }
+    var sec = TERIM.concat([{ id: 'yok', ad: 'Hiçbirini' }]).map(function (x) {
+      var y = (st.yanlis || []).indexOf(x.id) > -1;
+      return '<button type="button" class="tus ikincil secim' + (y ? ' yanlis' : '') + '" data-izterim="' + x.id + '">' + x.ad + '</button>';
+    }).join('');
+    el.innerHTML = bas + '<p class="kart-s">Bu hata hangi terimi bozdu?</p><div class="terim-sec">' + sec + '</div>' + (st.ipucu ? '<p class="kart-ipucu">' + ikon('bilgi') + '<span>' + st.ipucu + '</span></p>' : '');
+  }
+  function ozet3Html(v) {
+    return '<h2>Kaçak yok, veri bozuktu</h2>' +
+      '<ul class="ozet-l ozet-k"><li><b>Panoda görünen</b><span>%1,9 · 28.789 litre</span></li><li><b>Düzeltilmiş veriyle</b><span>' + oranYazi(v.oran) + ' · ' + tl(v.kayip) + ' litre</span></li></ul>' +
+      '<p>Panodaki %1,9’un 1,7 puanı veriden geliyordu. Dört kolon, iki formül ve beş hata. Bir sayının soy ağacını bilen, onu bozan hatayı da bulur.</p>' +
+      '<button type="button" class="tus acik" id="karar-gec">Son karara geç ' + ikon('ok') + '</button>';
+  }
+  function kolonTik(k) {
+    if (agacTamam()) return;
+    if (U.hedef3) { kokYerlestir(k, U.hedef3); return; }
+    U.secili3 = U.secili3 === k ? null : k;
+    not3(U.secili3 ? { tip: 'bilgi', baslik: KOLON[k].ad, metin: 'Şimdi bu kolonun bağlandığı terimi seçin.' } : { tip: 'bilgi', baslik: 'Kaynak seçin', metin: 'Önce bir kolona, sonra terimin yanındaki kutuya dokunun.' });
+    r3Guncelle();
+  }
+  function kokTik(terim) {
+    if (S.r3.kok[terim]) { var k = S.r3.kok[terim]; not3({ tip: 'bilgi', baslik: 'SAP · ' + KOLON[k].ad, metin: 'Bu terim bu kolondan geliyor.' }); return; }
+    if (U.secili3) { kokYerlestir(U.secili3, terim); return; }
+    U.hedef3 = U.hedef3 === terim ? null : terim;
+    not3({ tip: 'bilgi', baslik: TERIM.filter(function (x) { return x.id === terim; })[0].ad, metin: 'Bu terim SAP’de hangi kolondan geliyor? Aşağıdan seçin.' });
+    r3Guncelle();
+  }
+  function kokYerlestir(k, terim) {
+    var kol = KOLON[k], ad = TERIM.filter(function (x) { return x.id === terim; })[0].ad;
+    U.secili3 = null; U.hedef3 = null;
+    if (kol.terim === terim) {
+      S.r3.kok[terim] = k; puanEkle(10);
+      not3({ tip: 'iyi', baslik: ad + ' bağlandı', metin: 'SAP · ' + kol.ad });
+      if (agacTamam()) not3({ tip: 'iyi', baslik: 'Soy ağacı tamam', metin: 'Dört kolon ve iki formül. Panodaki sayı artık geriye doğru izlenebilir.' });
+    } else {
+      S.r3.yanlis++; puanEkle(-5);
+      var kutu = $('#kk-' + terim); if (kutu) { kutu.classList.remove('salla'); void kutu.offsetWidth; kutu.classList.add('salla'); }
+      not3({ tip: 'hata', baslik: kol.ad + ' buraya bağlanmaz', metin: kol.tuzak || ('Bu kolon ' + TERIM.filter(function (x) { return x.id === kol.terim; })[0].ad.toLocaleLowerCase('tr') + ' terimine bağlanıyor.') });
+    }
+    kaydet(); r3Guncelle();
+    if (agacTamam()) setTimeout(function () { var iz = $('#izler'); if (iz) iz.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }, 900);
+  }
+  function izTik(n) { if (S.r3.bitti) return; U.iz = n; r3Guncelle(); }
+  function izTerim(terim) {
+    var n = U.iz; if (!n) return;
+    var st = S.r3.iz[n] || { yanlis: [] };
+    if (st.durum === 'bitti') return;
+    if (terim === IZ[n].terim) {
+      puanEkle(st.yanlis.length ? 5 : 10);
+      S.r3.iz[n] = { durum: 'bitti', deneme: st.yanlis.length + 1 };
+      S.r3.bitti = IZ_SIRA.every(function (x) { var s = S.r3.iz[x]; return s && s.durum === 'bitti'; });
+    } else {
+      if (st.yanlis.indexOf(terim) < 0) { st.yanlis.push(terim); puanEkle(-5); }
+      st.ipucu = IZ[n].ipucu[terim] || 'Tekrar düşünün.';
+      S.r3.iz[n] = st;
+    }
+    kaydet(); r3Guncelle();
+  }
+  function kararHtml() {
+    var v = degerler();
+    return '<section class="sahne karar-son">' +
+      '<div class="baslik"><p class="ust">Karar</p><h1>Şimdi ne karar verirsiniz?</h1></div>' +
+      '<div class="kpi"><div><p class="kpi-l">Ekim ayı yakıt kayıp oranı</p><p class="kpi-d duz">' + oranYazi(v.oran) + '</p><p class="kpi-a">Düzeltilmiş veriyle ' + tl(v.kayip) + ' litre</p></div>' +
+      '<div class="kpi-sag" aria-hidden="true"><div class="cubuk soluk"><span>Panoda görünen</span><b>%1,9</b><i style="--w:95%"></i></div>' +
+      '<div class="cubuk"><span>Düzeltilmiş veriyle</span><b>' + oranYazi(v.oran) + '</b><i style="--w:10%"></i></div>' +
+      '<div class="cubuk"><span>Şirket ortalaması</span><b>%0,2</b><i style="--w:10%"></i></div></div></div>' +
+      '<div class="karar"><p class="karar-s">Şimdi olsa denetim gönderir miydiniz?</p>' +
+      '<div class="secenek"><button type="button" class="tus ikincil" data-son="evet" aria-pressed="false">Evet, gönderirdim</button>' +
+      '<button type="button" class="tus ikincil" data-son="hayir" aria-pressed="false">Hayır, göndermezdim</button></div></div>' +
+      '<div id="son-sonuc" hidden></div>' +
+      '</section>';
+  }
+  function sonucHtml() {
+    var i = S.karar1, s = S.karar2;
+    var ad = { evet: 'Evet, gönderirdim', hayir: 'Hayır, göndermezdim' };
+    var msj = i === 'evet' && s === 'hayir' ? 'Az kalsın haksız yere bir istasyonu suçlayacaktık. Kaçak yakıtta değil, verideydi.' :
+      i === 'hayir' && s === 'hayir' ? 'İlk içgüdünüz doğruydu, şimdi elinizde kanıtı da var. Kaçak yakıtta değil, verideydi.' :
+      'Düzeltilmiş veriye göre kayıp şirket ortalamasında. Denetim yerine önce verinin onarılması gerekiyor.';
+    return '<div class="karsilastir"><div><span>İlk kararınız</span><b>' + ad[i] + '</b></div>' + ikon('ok') + '<div><span>Son kararınız</span><b>' + ad[s] + '</b></div></div>' +
+      '<p class="son-msj">' + msj + '</p>' +
+      '<div class="skor"><span>' + (S.masa || 'Masanız') + '</span><b>' + S.puan + '</b><span>puan</span></div><p class="ince">Puanınızı ve son kararınızı eğitmene söyleyin.</p>' +
+      '<div class="ozet"><h2>Her sayı için üç soru</h2><ul class="ozet-l ozet-u">' +
+      '<li><span class="rozet">1</span><b>Verinin oluşumu</b><span>Nerede doğuyor, kim yazıyor, ne sıklıkla?</span></li>' +
+      '<li><span class="rozet">2</span><b>Verinin kalitesi</b><span>Yolun hangi durağında bozulabilir?</span></li>' +
+      '<li><span class="rozet">3</span><b>Verinin soy ağacı</b><span>Hangi tablodan, hangi kolondan, hangi formülle?</span></li></ul>' +
+      '<p>Bu sorulara cevap verebilmek, veriyle ilgili olgunluğu artıran iş.</p></div>';
+  }
+  function kararGuncelle() {
+    var b = document.querySelectorAll('[data-son]');
+    for (var i = 0; i < b.length; i++) b[i].setAttribute('aria-pressed', S.karar2 === b[i].dataset.son ? 'true' : 'false');
+    var el = $('#son-sonuc');
+    if (el && S.karar2) { el.innerHTML = sonucHtml(); el.hidden = false; }
   }
   var S, U = { secili: null, hedef: null, not: null };
 
   function $(s) { return document.querySelector(s); }
   function ikon(n) { return '<svg class="ik" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
-  function yeni() { return { ekran: 'giris', masa: '', karar1: null, puan: 0, r1: { yer: {}, hata: 0, t0: 0, bitti: false }, r2: { isaret: {}, t0: 0, bitti: false } }; }
+  function yeni() { return { ekran: 'giris', masa: '', karar1: null, puan: 0, r1: { yer: {}, hata: 0, t0: 0, bitti: false }, r2: { isaret: {}, t0: 0, bitti: false }, r3: { kok: {}, iz: {}, yanlis: 0, t0: 0, bitti: false }, karar2: null }; }
   function birlestir(v) {
     var t = yeni();
     if (!v || typeof v !== 'object') return t;
-    var r1 = Object.assign(t.r1, v.r1 || {}), r2 = Object.assign(t.r2, v.r2 || {});
-    return Object.assign(t, v, { r1: r1, r2: r2 });
+    var r1 = Object.assign(t.r1, v.r1 || {}), r2 = Object.assign(t.r2, v.r2 || {}), r3 = Object.assign(t.r3, v.r3 || {});
+    return Object.assign(t, v, { r1: r1, r2: r2, r3: r3 });
   }
   function kaydet() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
   function yukle() { try { var v = localStorage.getItem(KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
@@ -825,7 +1135,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       '<button type="button" class="tus acik" id="r2-gec">2. tura geç ' + ikon('ok') + '</button>';
   }
 
-  var EKRAN = { giris: girisHtml, vaka: vakaHtml, r1: r1Html, r2: r2Html, r3: r3Html };
+  var EKRAN = { giris: girisHtml, vaka: vakaHtml, r1: r1Html, r2: r2Html, r3: r3Html, karar: kararHtml };
   var ADIM = { giris: -1, vaka: 0, r1: 1, r2: 2, r3: 3, karar: 4 };
 
   function ust() {
@@ -848,6 +1158,8 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     if (S.ekran === 'vaka') vakaGuncelle();
     if (S.ekran === 'r1') { r1Guncelle(true); notCiz(false); }
     if (S.ekran === 'r2') r2Guncelle();
+    if (S.ekran === 'r3') { r3Guncelle(); not3(); }
+    if (S.ekran === 'karar') kararGuncelle();
     sureCiz();
   }
 
@@ -855,6 +1167,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     S.ekran = e;
     if (e === 'r1' && !S.r1.t0) S.r1.t0 = Date.now();
     if (e === 'r2' && !S.r2.t0) S.r2.t0 = Date.now();
+    if (e === 'r3' && !S.r3.t0) S.r3.t0 = Date.now();
     U = { secili: null, hedef: null, not: null, isaret: null };
     kaydet();
     ciz();
@@ -979,7 +1292,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   function sureCiz() {
     var el = $('#sure');
     if (!el) return;
-    var r = S.ekran === 'r2' ? S.r2 : S.r1, sure = S.ekran === 'r2' ? R2SURE : SURE;
+    var r = S.ekran === 'r3' ? S.r3 : S.ekran === 'r2' ? S.r2 : S.r1, sure = S.ekran === 'r3' ? R3SURE : S.ekran === 'r2' ? R2SURE : SURE;
     if (r.bitti) { el.innerHTML = ikon('check') + 'Tamam'; el.classList.remove('doldu'); return; }
     var kalan = sure - Math.floor((Date.now() - (r.t0 || Date.now())) / 1000);
     if (kalan <= 0) { el.innerHTML = ikon('saat') + 'Süre doldu'; el.classList.add('doldu'); return; }
@@ -1014,7 +1327,17 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
       return;
     }
     if (t.id === 'r3-gec') { git('r3'); return; }
-    if (t.id === 'r2-don') { git('r2'); return; }
+    if (t.dataset.kolon) { kolonTik(t.dataset.kolon); return; }
+    if (t.dataset.terim) { kokTik(t.dataset.terim); return; }
+    if (t.dataset.iz) { izTik(+t.dataset.iz); return; }
+    if (t.dataset.izterim) { izTerim(t.dataset.izterim); return; }
+    if (t.id === 'iz-kapat') {
+      U.iz = null; r3Guncelle();
+      if (S.r3.bitti) setTimeout(function () { var oz = $('#ozet3'); if (oz) oz.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }, 300);
+      return;
+    }
+    if (t.id === 'karar-gec') { git('karar'); return; }
+    if (t.dataset.son) { S.karar2 = t.dataset.son; kaydet(); kararGuncelle(); setTimeout(function () { var el = $('#son-sonuc'); if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }, 150); return; }
   });
 
   var sifirla = $('#sifirla'), onayZaman = null;
