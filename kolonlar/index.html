@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Doğru kolonlar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600&display=swap">
+<style>
+/* Layout: one column game under a sticky progress bar; data screen with the two year record and day filters, then column cards with a sticky selection dock; the warm paper look of the training deck, one deliberate light theme so phones match the projector. */
+:root {
+  --zemin: #EFE7DA; --yuzey: #F9F5EE; --kagit: #FFFCF6; --cizgi: #DDD2C0; --kesik: #B8AC99;
+  --metin: #2A241C; --metin2: #6A5F50; --metin-h: #43392D; --vurgu: #C9471A;
+  --tus-metin: #F9F5EE; --ozet-metin2: #D9CDBB; --ozet-cizgi: #4A4034;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', Arial, sans-serif; --govde: 'Barlow', Arial, Helvetica, sans-serif;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(100px + env(safe-area-inset-top, 0px)); }
+body { margin: 0; background: var(--zemin); color: var(--metin); font-family: var(--govde); font-size: 16px; line-height: 1.5; }
+button, input { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--vurgu); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.ik { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--zemin); }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--zemin); border-bottom: 1px solid var(--cizgi); }
+.bar-in { max-width: 820px; margin: 0 auto; padding-block: 12px 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 16px; }
+.marka { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.marka b { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1; white-space: nowrap; }
+.marka span { font-size: 14px; color: var(--metin2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.enIyi { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.enIyi span { font-size: 13px; color: var(--metin2); }
+.enIyi b { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1; }
+.adimlar { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.adimlar li { display: flex; flex-direction: column; gap: 5px; min-width: 0; font-size: 12px; color: var(--metin2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adimlar li::before { content: ""; height: 4px; border-radius: 2px; background: var(--cizgi); transition: background .3s; }
+.adimlar li.gecti::before { background: var(--metin2); }
+.adimlar li.simdi { color: var(--metin); font-weight: 500; }
+.adimlar li.simdi::before { background: var(--vurgu); }
+
+.ekran { max-width: 820px; margin: 0 auto; padding-block: 28px 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.sahne { display: flex; flex-direction: column; gap: 22px; }
+.baslik { display: flex; flex-direction: column; gap: 10px; }
+.ust { margin: 0; font-size: 15px; font-weight: 500; color: var(--metin2); }
+h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(36px, 7.4vw, 54px); line-height: 1.02; text-wrap: balance; }
+h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+.giris-metin { margin: 0; font-size: 18px; line-height: 1.5; color: var(--metin2); max-width: 60ch; }
+.not { font-size: 14px; color: var(--metin2); margin: 0; }
+
+.tus { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 10px 24px; border-radius: 999px; font-size: 17px; font-weight: 500; cursor: pointer; transition: background .2s, border-color .2s, color .2s, transform .1s; }
+.tus:active { transform: scale(.98); }
+.tus.ana { background: var(--metin); border: 2px solid var(--metin); color: var(--tus-metin); }
+.tus.ana:hover { background: var(--metin-h); border-color: var(--metin-h); }
+.tus.ana:disabled { background: var(--kesik); border-color: var(--kesik); cursor: not-allowed; transform: none; }
+.tus.ikincil { background: transparent; border: 2px solid var(--metin2); color: var(--metin); }
+.tus.ikincil:hover { background: var(--yuzey); }
+.ileri { display: flex; flex-wrap: wrap; gap: 12px; }
+.metin-tus { background: none; border: 0; padding: 0; font-size: inherit; font-weight: 500; color: var(--metin); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+.kart { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.kahraman { display: block; width: 100%; height: auto; }
+.form { display: flex; flex-direction: column; gap: 10px; }
+.form label { font-weight: 500; }
+.form input { min-height: 52px; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); padding: 10px 16px; font-size: 18px; }
+.kural { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.kural li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 16px; }
+.rozet { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; border: 2px solid var(--cizgi); font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--metin2); }
+
+.kpi { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.kpi-l { margin: 0; font-size: 15px; font-weight: 500; color: var(--metin2); }
+.kpi-a { margin: 4px 0 0; font-size: 15px; color: var(--metin2); }
+.kpi-d { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(56px, 14vw, 88px); line-height: .9; color: var(--vurgu); font-variant-numeric: tabular-nums; }
+
+/* veri ekranı */
+.filtreler { display: flex; flex-direction: column; gap: 10px; }
+.filtre { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--cizgi); background: var(--kagit); cursor: pointer; transition: border-color .15s; }
+.filtre .kutu { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--kesik); display: grid; place-items: center; background: var(--kagit); }
+.filtre .kutu .ik { width: 15px; height: 15px; stroke-width: 2.6; opacity: 0; }
+.filtre[aria-pressed="true"] { border-color: var(--metin); }
+.filtre[aria-pressed="true"] .kutu { background: var(--metin); border-color: var(--metin); color: var(--tus-metin); }
+.filtre[aria-pressed="true"] .kutu .ik { opacity: 1; }
+.filtre b { display: block; font-size: 16px; font-weight: 600; line-height: 1.25; }
+.filtre .a { display: block; margin-top: 2px; font-size: 14px; line-height: 1.35; color: var(--metin2); }
+.filtre em { font-style: normal; font-size: 14px; color: var(--metin2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ogrenme { margin: 0; font-size: 15px; color: var(--metin2); }
+.ogrenme b { color: var(--metin); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* kolon kartları */
+.deneme-b { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 15px; color: var(--metin2); }
+.hak { display: inline-flex; gap: 6px; }
+.hak i { width: 12px; height: 12px; border-radius: 999px; border: 2px solid var(--metin2); }
+.hak i.dolu { background: var(--metin2); }
+.kolonlar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kolonlar > .kol:last-child { grid-column: 1 / -1; min-height: 0; }
+.kol { position: relative; text-align: left; display: flex; flex-direction: column; gap: 4px; min-height: 120px; padding: 14px 14px 12px; border-radius: 14px; border: 2px solid var(--cizgi); background: var(--yuzey); cursor: pointer; transition: border-color .15s, background .15s, transform .1s; }
+button.kol:active { transform: scale(.98); }
+.kol b { font-size: 16px; font-weight: 600; line-height: 1.2; padding-right: 26px; }
+.kol span { font-size: 14px; line-height: 1.35; color: var(--metin2); }
+.kol em { margin-top: auto; padding-top: 6px; font-style: normal; font-size: 13px; color: var(--metin2); font-variant-numeric: tabular-nums; }
+.kol .isaret { position: absolute; top: 12px; right: 12px; width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--kesik); display: grid; place-items: center; background: var(--kagit); }
+.kol .isaret .ik { width: 14px; height: 14px; stroke-width: 2.4; opacity: 0; }
+.kol.secili { border-color: var(--metin); background: var(--kagit); }
+.kol.secili .isaret { background: var(--metin); border-color: var(--metin); color: var(--tus-metin); }
+.kol.secili .isaret .ik { opacity: 1; }
+.kol:disabled { cursor: not-allowed; border-style: dashed; border-color: var(--kesik); background: transparent; transform: none; }
+.kol:disabled b, .kol:disabled span { color: var(--metin2); }
+.kol:disabled em { color: var(--vurgu); font-weight: 500; }
+.kol:disabled .isaret { display: none; }
+.kol.genis { grid-column: 1 / -1; padding: 0; gap: 0; cursor: default; }
+.kol-ust { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 14px 14px 10px; border: 0; border-radius: 12px; background: transparent; text-align: left; cursor: pointer; }
+.donusum { display: flex; flex-direction: column; gap: 8px; padding: 0 14px 14px; }
+.don-l { margin: 0; font-size: 14px; font-weight: 500; color: var(--metin); }
+.secmeli { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; max-width: 420px; padding: 4px; border-radius: 12px; background: var(--zemin); }
+.secmeli button { min-height: 40px; padding: 6px 10px; border: 0; border-radius: 9px; background: transparent; font-size: 15px; font-weight: 500; color: var(--metin2); cursor: pointer; }
+.secmeli button[aria-checked="true"] { background: var(--kagit); color: var(--metin); box-shadow: inset 0 0 0 2px var(--metin); }
+.kol .don-a { margin: 0; font-size: 14px; line-height: 1.4; color: var(--metin2); }
+.kol .don-a em { display: block; margin: 0; padding-top: 6px; }
+.kol.salla { animation: salla .35s; }
+@keyframes salla { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.dok { position: sticky; bottom: 0; z-index: 4; background: var(--zemin); margin-top: -8px; padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -1px 0 var(--cizgi); }
+.cipler { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cip { display: inline-flex; align-items: center; min-height: 30px; padding: 3px 12px; border-radius: 999px; background: var(--metin); color: var(--tus-metin); border: 2px solid var(--metin); font-size: 14px; font-weight: 500; line-height: 1.2; }
+.cip.bos { background: transparent; color: var(--metin2); border: 2px dashed var(--kesik); }
+.cip.acik { background: var(--yuzey); color: var(--metin); }
+.dok-alt { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dok-sol { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.yuvalar { display: none; gap: 4px; flex: none; }
+.yuvalar i { width: 14px; height: 14px; border-radius: 4px; border: 2px dashed var(--kesik); }
+.yuvalar i.dolu { border: 2px solid var(--metin); background: var(--metin); }
+#sayac { font-size: 15px; line-height: 1.3; color: var(--metin2); }
+#sayac.uyari { color: var(--vurgu); font-weight: 500; }
+@media (max-width: 559px) {
+  .dok { margin-top: -10px; padding-block: 10px calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .dok #secilen { display: none; }
+  .yuvalar { display: inline-flex; }
+  #sayac { font-size: 14px; }
+}
+
+/* sonuç */
+.yukle { padding: 26px 18px; }
+.yukle-c { height: 8px; border-radius: 4px; background: var(--cizgi); overflow: hidden; }
+.yukle-c i { display: block; height: 100%; width: 0; background: var(--metin); border-radius: 4px; animation: dol 1s ease-in-out forwards; }
+@keyframes dol { to { width: 100%; } }
+.grafik { width: 100%; }
+.grafik svg { display: block; width: 100%; height: auto; overflow: visible; }
+.gr-y { font: 400 12px var(--govde); fill: var(--metin2); font-variant-numeric: tabular-nums; }
+.gr-x { font: 400 12px var(--govde); fill: var(--metin2); }
+.gr-b { font: 500 12px var(--govde); fill: var(--metin); }
+.lejant { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--metin2); }
+.lejant span { display: inline-flex; align-items: center; gap: 8px; }
+.lejant i { width: 22px; height: 4px; border-radius: 2px; background: var(--metin); }
+.lejant i.t { background: var(--vurgu); }
+.lejant i.g { background: var(--kesik); }
+.lejant i.h { height: 14px; width: 14px; border-radius: 3px; background: var(--zemin); border: 1px solid var(--cizgi); }
+.kiyas { display: flex; flex-direction: column; gap: 8px; }
+.kiyas div { display: grid; grid-template-columns: 92px minmax(0, 1fr) 58px; align-items: center; gap: 10px; font-size: 15px; }
+.kiyas .iz { height: 14px; border-radius: 7px; background: var(--zemin); overflow: hidden; }
+.kiyas .iz i { display: block; height: 100%; border-radius: 7px; background: var(--kesik); }
+.kiyas .sen .iz i { background: var(--metin); }
+.kiyas b { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.katki { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.katki li { display: flex; flex-direction: column; gap: 6px; }
+.katki li.grup { font-size: 14px; font-weight: 600; color: var(--metin2); padding-top: 4px; border-top: 1px solid var(--cizgi); padding-block: 12px 0; }
+.katki li.grup:first-child { border-top: 0; padding-top: 0; }
+.k-ust { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 15px; }
+.k-ust b { font-weight: 600; }
+.k-ust span { color: var(--metin2); text-align: right; white-space: nowrap; }
+.katki .iz { height: 10px; border-radius: 5px; background: var(--zemin); overflow: hidden; }
+.katki .iz i { display: block; height: 100%; border-radius: 5px; background: var(--metin); }
+.katki li.eksi .k-ust span { color: var(--vurgu); font-weight: 500; }
+.katki li.eksi .iz i { background: var(--vurgu); }
+.ipucu { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--kagit); border: 2px solid var(--cizgi); font-size: 15px; }
+.ipucu .ik { color: var(--metin2); margin-top: 1px; }
+.tuzak { border: 3px solid var(--vurgu); background: var(--kagit); }
+.buyuk { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(56px, 14vw, 88px); line-height: .9; color: var(--vurgu); font-variant-numeric: tabular-nums; }
+.gecmis { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.gecmis li { display: grid; grid-template-columns: 76px minmax(0, 1fr) 74px; gap: 10px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--cizgi); font-size: 15px; }
+.gecmis li:first-child { border-top: 0; padding-top: 0; }
+.gecmis li > span:first-child { color: var(--metin2); }
+.gecmis li small { display: block; margin-top: 2px; font-size: 13px; color: var(--metin2); }
+.gecmis li b { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.gecmis li.en b { color: var(--vurgu); }
+.gecmis li.yok b { color: var(--metin2); font-weight: 500; }
+.kurulum { display: flex; flex-direction: column; gap: 8px; }
+.kurulum p { margin: 0; font-size: 14px; font-weight: 500; color: var(--metin2); }
+.ozet { background: var(--metin); color: var(--tus-metin); border-radius: 16px; padding: 22px 20px; display: flex; flex-direction: column; gap: 16px; }
+.ozet h2 { font-size: 28px; }
+.ozet p { margin: 0; color: var(--ozet-metin2); font-size: 16px; }
+.ozet-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ozet-l li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; }
+.ozet-l .rozet { width: 30px; height: 30px; border-color: var(--ozet-cizgi); color: var(--ozet-metin2); font-size: 16px; }
+.ozet-l b { display: block; font-size: 17px; font-weight: 600; color: var(--tus-metin); }
+.ozet .son { padding-top: 14px; border-top: 1px solid var(--ozet-cizgi); color: var(--tus-metin); font-weight: 500; }
+
+.alt { max-width: 820px; margin: 0 auto; padding-block: 18px calc(24px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--metin2); }
+.alt button { background: none; border: 0; padding: 0; font-size: 13px; color: var(--metin2); text-decoration: underline; cursor: pointer; }
+@media (min-width: 700px) {
+  .kolonlar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kolonlar > .kol:last-child { grid-column: auto; min-height: 112px; }
+  .kol { min-height: 112px; padding: 16px 16px 14px; }
+  .kol.genis { padding: 0; }
+  .kol-ust { padding: 16px 16px 10px; }
+  .donusum { padding: 0 16px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .yukle-c i { animation-duration: .01s; } .kol.salla { animation: none; } }
+</style>
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-tik" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-bilgi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+  <symbol id="i-geri" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="marka"><b>Doğru kolonlar</b><span id="masa-ad"></span></div>
+    <div class="enIyi" aria-live="polite"><span>En iyi hata</span><b id="en-iyi">?</b></div>
+    <ol class="adimlar" id="adimlar"><li>Vaka</li><li>Veri</li><li>Kolonlar</li><li>Sonuç</li><li>Kapanış</li></ol>
+  </div>
+</header>
+<main class="ekran" id="ekran"></main>
+<footer class="alt"><span>Şirket ve rakamlar kurgusaldır</span><button type="button" id="sifirla">Baştan başla</button></footer>
+
+<script>
+(function () {
+  var VERI={"t":["2024-02-01","2024-02-02","2024-02-03","2024-02-04","2024-02-05","2024-02-06","2024-02-07","2024-02-08","2024-02-09","2024-02-10","2024-02-11","2024-02-12","2024-02-13","2024-02-14","2024-02-15","2024-02-16","2024-02-17","2024-02-18","2024-02-19","2024-02-20","2024-02-21","2024-02-22","2024-02-23","2024-02-24","2024-02-25","2024-02-26","2024-02-27","2024-02-28","2024-02-29","2024-03-01","2024-03-02","2024-03-03","2024-03-04","2024-03-05","2024-03-06","2024-03-07","2024-03-08","2024-03-09","2024-03-10","2024-03-11","2024-03-12","2024-03-13","2024-03-14","2024-03-15","2024-03-16","2024-03-17","2024-03-18","2024-03-19","2024-03-20","2024-03-21","2024-03-22","2024-03-23","2024-03-24","2024-03-25","2024-03-26","2024-03-27","2024-03-28","2024-03-29","2024-03-30","2024-03-31","2024-04-01","2024-04-02","2024-04-03","2024-04-04","2024-04-05","2024-04-06","2024-04-07","2024-04-08","2024-04-09","2024-04-10","2024-04-11","2024-04-12","2024-04-13","2024-04-14","2024-04-15","2024-04-16","2024-04-17","2024-04-18","2024-04-19","2024-04-20","2024-04-21","2024-04-22","2024-04-23","2024-04-24","2024-04-25","2024-04-26","2024-04-27","2024-04-28","2024-04-29","2024-04-30","2024-05-01","2024-05-02","2024-05-03","2024-05-04","2024-05-05","2024-05-06","2024-05-07","2024-05-08","2024-05-09","2024-05-10","2024-05-11","2024-05-12","2024-05-13","2024-05-14","2024-05-15","2024-05-16","2024-05-17","2024-05-18","2024-05-19","2024-05-20","2024-05-21","2024-05-22","2024-05-23","2024-05-24","2024-05-25","2024-05-26","2024-05-27","2024-05-28","2024-05-29","2024-05-30","2024-05-31","2024-06-01","2024-06-02","2024-06-03","2024-06-04","2024-06-05","2024-06-06","2024-06-07","2024-06-08","2024-06-09","2024-06-10","2024-06-11","2024-06-12","2024-06-13","2024-06-14","2024-06-15","2024-06-16","2024-06-17","2024-06-18","2024-06-19","2024-06-20","2024-06-21","2024-06-22","2024-06-23","2024-06-24","2024-06-25","2024-06-26","2024-06-27","2024-06-28","2024-06-29","2024-06-30","2024-07-01","2024-07-02","2024-07-03","2024-07-04","2024-07-05","2024-07-06","2024-07-07","2024-07-08","2024-07-09","2024-07-10","2024-07-11","2024-07-12","2024-07-13","2024-07-14","2024-07-15","2024-07-16","2024-07-17","2024-07-18","2024-07-19","2024-07-20","2024-07-21","2024-07-22","2024-07-23","2024-07-24","2024-07-25","2024-07-26","2024-07-27","2024-07-28","2024-07-29","2024-07-30","2024-07-31","2024-08-01","2024-08-02","2024-08-03","2024-08-04","2024-08-05","2024-08-06","2024-08-07","2024-08-08","2024-08-09","2024-08-10","2024-08-11","2024-08-12","2024-08-13","2024-08-14","2024-08-15","2024-08-16","2024-08-17","2024-08-18","2024-08-19","2024-08-20","2024-08-21","2024-08-22","2024-08-23","2024-08-24","2024-08-25","2024-08-26","2024-08-27","2024-08-28","2024-08-29","2024-08-30","2024-08-31","2024-09-01","2024-09-02","2024-09-03","2024-09-04","2024-09-05","2024-09-06","2024-09-07","2024-09-08","2024-09-09","2024-09-10","2024-09-11","2024-09-12","2024-09-13","2024-09-14","2024-09-15","2024-09-16","2024-09-17","2024-09-18","2024-09-19","2024-09-20","2024-09-21","2024-09-22","2024-09-23","2024-09-24","2024-09-25","2024-09-26","2024-09-27","2024-09-28","2024-09-29","2024-09-30","2024-10-01","2024-10-02","2024-10-03","2024-10-04","2024-10-05","2024-10-06","2024-10-07","2024-10-08","2024-10-09","2024-10-10","2024-10-11","2024-10-12","2024-10-13","2024-10-14","2024-10-15","2024-10-16","2024-10-17","2024-10-18","2024-10-19","2024-10-20","2024-10-21","2024-10-22","2024-10-23","2024-10-24","2024-10-25","2024-10-26","2024-10-27","2024-10-28","2024-10-29","2024-10-30","2024-10-31","2024-11-01","2024-11-02","2024-11-03","2024-11-04","2024-11-05","2024-11-06","2024-11-07","2024-11-08","2024-11-09","2024-11-10","2024-11-11","2024-11-12","2024-11-13","2024-11-14","2024-11-15","2024-11-16","2024-11-17","2024-11-18","2024-11-19","2024-11-20","2024-11-21","2024-11-22","2024-11-23","2024-11-24","2024-11-25","2024-11-26","2024-11-27","2024-11-28","2024-11-29","2024-11-30","2024-12-01","2024-12-02","2024-12-03","2024-12-04","2024-12-05","2024-12-06","2024-12-07","2024-12-08","2024-12-09","2024-12-10","2024-12-11","2024-12-12","2024-12-13","2024-12-14","2024-12-15","2024-12-16","2024-12-17","2024-12-18","2024-12-19","2024-12-20","2024-12-21","2024-12-22","2024-12-23","2024-12-24","2024-12-25","2024-12-26","2024-12-27","2024-12-28","2024-12-29","2024-12-30","2024-12-31","2025-01-01","2025-01-02","2025-01-03","2025-01-04","2025-01-05","2025-01-06","2025-01-07","2025-01-08","2025-01-09","2025-01-10","2025-01-11","2025-01-12","2025-01-13","2025-01-14","2025-01-15","2025-01-16","2025-01-17","2025-01-18","2025-01-19","2025-01-20","2025-01-21","2025-01-22","2025-01-23","2025-01-24","2025-01-25","2025-01-26","2025-01-27","2025-01-28","2025-01-29","2025-01-30","2025-01-31","2025-02-01","2025-02-02","2025-02-03","2025-02-04","2025-02-05","2025-02-06","2025-02-07","2025-02-08","2025-02-09","2025-02-10","2025-02-11","2025-02-12","2025-02-13","2025-02-14","2025-02-15","2025-02-16","2025-02-17","2025-02-18","2025-02-19","2025-02-20","2025-02-21","2025-02-22","2025-02-23","2025-02-24","2025-02-25","2025-02-26","2025-02-27","2025-02-28","2025-03-01","2025-03-02","2025-03-03","2025-03-04","2025-03-05","2025-03-06","2025-03-07","2025-03-08","2025-03-09","2025-03-10","2025-03-11","2025-03-12","2025-03-13","2025-03-14","2025-03-15","2025-03-16","2025-03-17","2025-03-18","2025-03-19","2025-03-20","2025-03-21","2025-03-22","2025-03-23","2025-03-24","2025-03-25","2025-03-26","2025-03-27","2025-03-28","2025-03-29","2025-03-30","2025-03-31","2025-04-01","2025-04-02","2025-04-03","2025-04-04","2025-04-05","2025-04-06","2025-04-07","2025-04-08","2025-04-09","2025-04-10","2025-04-11","2025-04-12","2025-04-13","2025-04-14","2025-04-15","2025-04-16","2025-04-17","2025-04-18","2025-04-19","2025-04-20","2025-04-21","2025-04-22","2025-04-23","2025-04-24","2025-04-25","2025-04-26","2025-04-27","2025-04-28","2025-04-29","2025-04-30","2025-05-01","2025-05-02","2025-05-03","2025-05-04","2025-05-05","2025-05-06","2025-05-07","2025-05-08","2025-05-09","2025-05-10","2025-05-11","2025-05-12","2025-05-13","2025-05-14","2025-05-15","2025-05-16","2025-05-17","2025-05-18","2025-05-19","2025-05-20","2025-05-21","2025-05-22","2025-05-23","2025-05-24","2025-05-25","2025-05-26","2025-05-27","2025-05-28","2025-05-29","2025-05-30","2025-05-31","2025-06-01","2025-06-02","2025-06-03","2025-06-04","2025-06-05","2025-06-06","2025-06-07","2025-06-08","2025-06-09","2025-06-10","2025-06-11","2025-06-12","2025-06-13","2025-06-14","2025-06-15","2025-06-16","2025-06-17","2025-06-18","2025-06-19","2025-06-20","2025-06-21","2025-06-22","2025-06-23","2025-06-24","2025-06-25","2025-06-26","2025-06-27","2025-06-28","2025-06-29","2025-06-30","2025-07-01","2025-07-02","2025-07-03","2025-07-04","2025-07-05","2025-07-06","2025-07-07","2025-07-08","2025-07-09","2025-07-10","2025-07-11","2025-07-12","2025-07-13","2025-07-14","2025-07-15","2025-07-16","2025-07-17","2025-07-18","2025-07-19","2025-07-20","2025-07-21","2025-07-22","2025-07-23","2025-07-24","2025-07-25","2025-07-26","2025-07-27","2025-07-28","2025-07-29","2025-07-30","2025-07-31","2025-08-01","2025-08-02","2025-08-03","2025-08-04","2025-08-05","2025-08-06","2025-08-07","2025-08-08","2025-08-09","2025-08-10","2025-08-11","2025-08-12","2025-08-13","2025-08-14","2025-08-15","2025-08-16","2025-08-17","2025-08-18","2025-08-19","2025-08-20","2025-08-21","2025-08-22","2025-08-23","2025-08-24","2025-08-25","2025-08-26","2025-08-27","2025-08-28","2025-08-29","2025-08-30","2025-08-31","2025-09-01","2025-09-02","2025-09-03","2025-09-04","2025-09-05","2025-09-06","2025-09-07","2025-09-08","2025-09-09","2025-09-10","2025-09-11","2025-09-12","2025-09-13","2025-09-14","2025-09-15","2025-09-16","2025-09-17","2025-09-18","2025-09-19","2025-09-20","2025-09-21","2025-09-22","2025-09-23","2025-09-24","2025-09-25","2025-09-26","2025-09-27","2025-09-28","2025-09-29","2025-09-30","2025-10-01","2025-10-02","2025-10-03","2025-10-04","2025-10-05","2025-10-06","2025-10-07","2025-10-08","2025-10-09","2025-10-10","2025-10-11","2025-10-12","2025-10-13","2025-10-14","2025-10-15","2025-10-16","2025-10-17","2025-10-18","2025-10-19","2025-10-20","2025-10-21","2025-10-22","2025-10-23","2025-10-24","2025-10-25","2025-10-26","2025-10-27","2025-10-28","2025-10-29","2025-10-30","2025-10-31","2025-11-01","2025-11-02","2025-11-03","2025-11-04","2025-11-05","2025-11-06","2025-11-07","2025-11-08","2025-11-09","2025-11-10","2025-11-11","2025-11-12","2025-11-13","2025-11-14","2025-11-15","2025-11-16","2025-11-17","2025-11-18","2025-11-19","2025-11-20","2025-11-21","2025-11-22","2025-11-23","2025-11-24","2025-11-25","2025-11-26","2025-11-27","2025-11-28","2025-11-29","2025-11-30","2025-12-01","2025-12-02","2025-12-03","2025-12-04","2025-12-05","2025-12-06","2025-12-07","2025-12-08","2025-12-09","2025-12-10","2025-12-11","2025-12-12","2025-12-13","2025-12-14","2025-12-15","2025-12-16","2025-12-17","2025-12-18","2025-12-19","2025-12-20","2025-12-21","2025-12-22","2025-12-23","2025-12-24","2025-12-25","2025-12-26","2025-12-27","2025-12-28","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-02","2026-01-03","2026-01-04","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-10","2026-01-11","2026-01-12","2026-01-13","2026-01-14","2026-01-15","2026-01-16","2026-01-17","2026-01-18","2026-01-19","2026-01-20","2026-01-21","2026-01-22","2026-01-23","2026-01-24","2026-01-25","2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-07","2026-02-08","2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13","2026-02-14","2026-02-15","2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-21","2026-02-22","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-02-28","2026-03-01","2026-03-02","2026-03-03","2026-03-04","2026-03-05","2026-03-06","2026-03-07","2026-03-08","2026-03-09","2026-03-10","2026-03-11","2026-03-12","2026-03-13","2026-03-14","2026-03-15","2026-03-16","2026-03-17","2026-03-18","2026-03-19","2026-03-20","2026-03-21","2026-03-22","2026-03-23","2026-03-24","2026-03-25","2026-03-26","2026-03-27","2026-03-28","2026-03-29","2026-03-30","2026-03-31"],"Tf":[-0.5,2.5,-2.5,-2.5,-2.6,-4.7,-3.3,-2.4,1,1.3,-2.3,-1.9,-3,-4.3,3.1,2.1,2.1,1.5,2.2,2.9,2.7,1.9,1.5,0.3,3.5,4.7,4.5,6.3,-0.2,3.6,4.7,7.6,5.3,4.8,1.6,2.1,2.2,0.4,1.6,1.6,6.9,2.9,4.7,4,0,-4.9,-6.4,-5,-4.7,-1.6,0.2,1.9,4.9,4.7,4.7,5,2.3,7.1,9.8,14.8,12.1,10.9,10.5,11.5,9.6,12.1,11.8,14.9,15.3,15.4,17.1,17.2,12.1,11.2,9.5,13.2,5.5,11.7,10.3,12.8,9.7,11.4,12.6,14.4,15.2,13.1,10.7,9.8,15.4,14.8,19.8,17.8,17.9,18,16.5,16.3,15.6,15.2,18.5,19.5,14.9,20.3,19.4,17.4,11.6,15.1,16.2,13.7,16,16.6,12.1,18.1,18.4,20.2,16.3,13.7,23,18.8,18.8,21.1,23,21.4,18.6,22.8,21.4,18.6,17.3,19.6,18,19.2,20.4,19.3,22.4,22.1,22.6,23.3,23.6,20.8,25.3,25.7,24,24.8,22.1,21.5,23.4,22.5,25.4,26.1,25,24.9,23.8,20.9,27.3,20.9,23.3,19.7,16.8,20.3,22,23.3,25.3,24.7,29.2,25.6,23.3,21.5,21.4,23,16.9,19.8,20,22.3,21.8,21.4,17.3,16.8,22.1,19.6,25.2,19.9,21.1,21.5,23,19.1,22.2,25.9,19.2,18.4,19.2,18,18.1,17.6,22.2,18.8,20.5,22.2,24.4,26.7,23.9,19.1,17.6,21.7,22,21.7,24.6,25.5,26.4,26.5,25.2,26.1,27.9,25.6,25.5,22,26.3,24.1,22.6,19.9,19.8,22.5,24,25.9,23.4,26.6,26.1,27.1,22.9,22.4,20.9,19,19.2,16.2,17.9,16.1,16.8,19.8,20.5,17.8,19.2,20.8,19.8,17.1,17.2,16.6,17.7,14.2,15,11.5,9.5,14.1,9.3,14.1,12.7,11.8,12.6,11.8,10.9,12.6,11.5,9.5,5.4,9.3,9.4,10.8,13.1,11.8,11,12.6,10.3,9.9,13.9,10.9,12.8,10.3,13.4,13.5,11.2,5.8,4.5,6.4,5.2,7.5,11.8,9.3,11.2,8.4,8.3,8.7,10.8,8.8,7.5,0.7,3.4,3.2,8.1,8.9,6,5.4,12.2,6.9,10.4,9.3,8,6.6,4.6,6.4,5,6,7.6,7.5,3.9,2.7,0.9,1.7,-4,-2.8,0.9,-2.1,-2.4,-1.3,4.6,2.3,-2,-0.6,0.5,1.2,1.6,0.8,0.6,-1.9,1.9,-2.9,-5.8,-5.7,-6.5,-6,-3.5,-2.1,-2.1,1.8,-0.5,-1.8,-1.3,-0.7,-4.7,-0.5,-2.8,-1.2,0.6,-0.2,-2.6,-0.5,0.4,-0.9,0.2,2.7,2.4,1.8,2.2,2.3,1,-0.8,-3,0.5,-3,-5.6,-5.4,-1.4,-2.1,-2.6,-1.8,-4,-6.7,-7.1,-2.5,1.7,1.2,1.5,1.5,-1.9,0.6,-1.8,0.5,2.3,4.5,2.8,4.1,5,7,6.7,4.2,2.8,2.8,0.4,0,0.9,-1.4,-0.7,0.4,0.1,1.8,1.1,1.1,3.2,0.4,4.8,4.9,6.4,6,6.9,6.4,3.7,2.3,3.8,2.9,5.1,3.8,2,3.3,3.4,4.5,4.7,9.3,10.2,8.7,5.8,5.1,7.9,7.7,8.4,5.3,7.2,9.3,10.5,12.9,7.7,4.8,5.8,3.7,5,5.7,10.2,9,8.1,7.9,8.5,11.9,8.5,9.1,10.6,12.4,9.9,13.6,12.3,13.5,15.2,16.4,13.2,16.7,15.8,17.5,16.4,14.9,17.6,14.2,14.7,20.9,21.4,21,18,18.4,20.5,18.9,17.2,18.8,21.7,19.6,18.3,19.7,14.6,18,18.7,17.4,19.2,22.5,20.1,21.3,23.6,20.1,19.4,26.2,25,26.1,22.2,17.8,18,15,15.7,17.4,19,19.6,19.3,18,17.5,19.7,23,23.6,23.6,25.7,26.5,28,23.6,26.6,26.4,24.6,23.8,22.4,25,26.1,23.8,22.4,24.1,22.2,22.6,23.7,23.3,23.9,23.8,26,23.9,26.2,22.4,22.6,19.5,19.3,18.3,21.4,20.4,21.8,24.5,21,19.9,21.7,19.7,21.8,18.8,19.6,18.1,20.3,22.6,17.6,20.3,18.1,16.4,20,21.9,18.4,24.8,25,20.9,22.4,20.3,14.3,15.4,16.3,17.6,17.4,19.6,18,20.6,17.5,21.7,24,20,18.4,18.3,24.5,20.8,20.8,22.1,22.1,21.4,20.7,27.3,25.5,24.5,24.3,24.5,23.7,21.6,22.8,20.5,24.2,21.8,17.4,21.2,22.8,25.9,24.3,22,20.8,18.1,18.2,16.7,19.5,16.1,15.3,12.3,13.9,11.4,12.6,10.7,15.6,13.9,18.3,18,16.7,14.1,8.3,5.6,7.4,7.9,5.7,5.8,10.9,11.7,14.5,14.6,12.1,15.1,12.6,10.9,11.6,9.7,10.6,10.6,13.6,13.5,13.4,14.7,14.9,13.7,11.2,12.7,5.4,8.4,6.5,6.4,8.6,9.4,6.7,6,3.9,6.3,3.8,5.7,6.8,6.5,8.2,7.9,8.1,7,5.5,2.6,5.7,2.5,3.2,7.7,6.9,8.3,4.8,8.9,9.8,5.5,5,-0.6,1.3,-1.6,3.3,3,3.3,1.4,3.2,1.4,4.8,4.5,6.1,4.2,1.5,5,0.5,0.6,2.3,4.1,9.9,7.3,2.9,2,-2.5,0.3,-3.8,-3.3,-2,-3.2,-5.8,0.4,0.8,-7.6,-6.1,-7.8,-2.5,-1.8,2.1,5.5,3.1,4.5,5.6,1.5,-0.3,0.1,-2,-0.6,-0.9,2.4,1.9,1.6,1.8,-2.4,-3.3,-0.8,-2.2,-3.6,-1.5,-1,-3.7,-0.5,2.7,1.7,3.7,1.2,3,-2.5,-5.4,2.9,-2.6,-1.4,0.2,0.6,0,1.7,-1.2,-2.1,-2.9,0.5,0.6,2.2,-2.4,-1.9,-0.6,-1.1,-3.8,-0.7,1.9,1.3,5.2,6.8,4.3,5.7,6.4,2.7,0.3,0.6,4,2.7,7.9,9.8,12.1,12.6,12.8,12.3,8.6,9.2,9.4,7,6.8,9.7,10.6,7.2,10.6,8.4],"W":[19,12,13,13,13,14,14,13,12,16,18,19,13,18,15,11,14,15,21,15,12,14,13,14,17,18,12,16,16,16,15,13,21,17,13,12,13,18,13,17,15,24,16,17,14,14,11,13,20,14,13,14,14,12,17,14,19,13,12,12,15,11,13,12,16,16,18,16,11,16,16,14,12,12,16,15,13,17,11,18,15,9,10,19,21,16,9,12,10,11,10,10,12,9,11,12,11,10,9,13,14,15,11,18,13,15,12,14,19,9,9,10,10,11,9,11,13,9,11,16,13,16,14,10,10,10,12,19,13,14,18,23,16,17,16,10,14,18,10,13,10,12,14,10,13,11,13,12,12,9,13,10,11,11,18,10,10,11,11,20,9,12,9,13,9,11,11,16,15,11,13,11,10,10,11,12,12,11,15,15,16,14,11,15,17,14,14,11,13,13,13,12,9,14,11,11,15,10,11,12,11,11,9,11,11,15,12,11,17,12,13,14,10,11,16,17,13,12,14,17,14,15,12,10,10,12,12,11,13,13,12,17,9,12,23,15,17,10,13,16,11,16,14,12,16,10,11,17,12,22,11,14,12,17,13,10,23,10,12,12,10,11,11,16,13,15,11,25,16,12,16,19,12,13,15,17,13,12,14,13,12,14,19,18,12,13,12,15,13,13,13,12,12,18,13,16,18,17,13,18,14,18,17,13,14,23,16,12,14,18,15,12,12,19,12,15,12,13,19,15,15,24,21,12,13,13,18,15,11,13,12,13,11,13,13,16,13,11,14,12,15,19,20,14,27,12,12,14,11,15,18,15,12,14,20,12,19,18,14,15,13,19,15,17,19,13,21,18,20,11,12,17,12,18,17,18,12,12,18,14,14,11,12,12,19,14,17,17,16,12,14,17,12,16,13,14,15,13,18,11,12,15,16,20,19,21,13,13,14,16,13,11,15,12,18,11,13,21,17,16,14,12,14,15,17,17,22,15,11,14,18,21,15,18,13,20,19,12,12,15,13,17,16,14,12,14,12,10,10,15,10,14,10,14,16,10,9,11,9,13,9,14,12,23,9,16,9,16,11,11,14,13,10,20,11,13,16,10,11,10,14,14,12,22,14,12,10,14,14,10,13,20,10,12,10,14,11,15,15,15,13,11,10,13,13,12,14,16,13,14,12,10,12,11,11,16,9,14,17,16,14,12,11,14,15,10,18,13,9,14,11,11,16,15,14,11,11,11,10,12,16,14,10,19,11,10,11,12,19,10,10,10,13,9,17,15,15,10,10,14,11,14,10,16,13,16,12,20,15,15,14,15,11,20,10,12,10,10,9,10,11,12,12,13,10,10,11,11,15,11,16,9,9,11,13,13,9,16,11,17,11,11,10,10,11,15,10,14,9,16,12,12,11,18,13,9,16,11,12,10,14,11,9,17,17,14,11,13,15,20,14,19,13,14,15,13,17,18,15,21,12,16,13,12,17,18,17,19,19,17,15,13,13,12,18,15,20,12,15,12,11,14,27,11,18,19,12,15,17,15,12,15,13,17,12,12,13,17,14,12,16,14,17,12,23,14,11,17,17,18,14,14,20,14,11,13,11,15,12,14,12,12,15,15,17,11,16,13,12,16,13,19,20,21,15,15,16,16,17,18,14,15,11,11,17,19,12,19,14,14,25,13,11,16,15,14,12,13,19,11,13,15,13,12,15,16,15,16,13,13,13,21,14,12,14,16,16,15,16,17,20,21,12,13,14,15,15,14,12,13,16,12,11,13,14,24,15,13,15,16,12,23,18,15,14,11,12,13,14,16],"H":[59,68,46,69,63,51,67,49,68,75,63,65,59,66,52,71,67,54,59,82,62,70,60,63,60,64,68,54,52,57,42,68,70,66,37,74,57,54,95,66,49,75,71,62,57,79,72,59,59,45,54,57,77,71,61,54,56,51,67,58,41,73,46,55,50,57,51,70,66,44,61,60,49,80,69,72,87,67,58,41,80,57,52,39,32,51,55,45,49,59,85,51,78,74,83,43,52,63,53,66,43,75,50,71,56,49,66,68,61,46,49,61,57,72,77,57,65,64,50,35,49,69,51,71,67,63,62,28,62,56,25,56,63,78,62,52,58,41,95,51,58,71,64,68,58,63,90,67,37,79,62,50,70,69,69,47,64,65,44,69,47,69,59,58,55,49,82,60,54,38,35,51,58,40,76,79,80,72,41,60,56,56,54,56,70,62,69,60,46,72,51,64,63,55,69,55,63,70,58,47,64,65,49,54,45,69,45,67,55,70,64,46,61,78,68,71,55,59,47,56,55,55,60,57,65,56,78,51,50,84,52,72,61,59,45,87,72,55,60,60,48,62,59,64,64,71,57,73,68,77,61,48,69,73,58,41,60,65,74,68,75,56,55,28,57,75,54,43,58,49,48,72,62,66,69,62,56,63,66,60,54,57,40,69,41,56,52,62,46,43,61,50,44,95,59,53,65,88,65,51,62,73,73,62,76,48,52,63,55,55,67,69,29,45,48,54,65,58,59,52,69,45,61,55,60,70,49,70,78,31,70,69,63,64,93,52,61,46,53,57,77,58,91,29,68,63,84,81,73,59,60,95,48,61,64,59,51,47,59,51,65,69,55,51,58,54,45,50,61,46,74,55,64,57,48,76,67,62,80,42,42,70,69,55,43,57,63,51,84,58,58,56,63,55,59,49,64,62,64,65,56,88,72,44,53,73,74,63,68,61,32,47,64,61,67,49,53,65,88,56,26,53,62,72,61,70,83,78,58,72,58,60,54,64,55,77,61,60,58,42,72,77,56,41,36,86,72,57,81,63,25,75,45,69,60,70,80,65,65,58,57,44,56,61,43,67,69,72,82,81,43,49,63,67,46,80,63,66,77,60,64,48,48,74,59,61,69,65,47,56,60,55,68,35,42,62,59,56,74,51,61,85,50,77,44,81,62,68,71,59,52,59,50,57,47,60,53,69,46,55,63,62,53,53,64,26,50,64,54,56,48,52,48,39,67,48,60,44,52,63,68,63,58,60,59,69,43,58,58,39,58,70,42,51,68,87,69,59,70,61,64,65,66,53,65,53,58,40,52,70,44,74,52,68,67,79,81,54,53,68,53,48,78,40,69,36,75,69,83,52,36,48,60,65,69,71,94,73,52,85,47,58,58,46,60,50,69,46,54,74,71,74,66,59,80,47,87,74,51,67,59,81,52,60,74,51,65,82,53,67,89,55,61,74,44,68,44,56,74,80,58,61,44,36,52,55,43,55,69,59,63,44,78,53,57,74,63,44,74,61,78,56,58,52,56,61,73,58,60,68,75,77,51,64,54,39,65,69,57,42,73,58,59,64,67,56,45,64,65,58,77,82,50,59,90,76,88,80,42,55,37,64,60,67,69,68,73,49,46,59,60,63,53,49,82,73,71,72,71,55,75,52,47,64,65,58,40,53,80,77,65,62,72,69,63,29,58,90,63,47,59,40,73,77,80,53,74,50,73,72,71,68,44,63,50,42,70,44,55,47,50,49,65,61,50,47,61,55,65,64,50,57,50,59,38,52,62,38,59,40,73,38,53,72,52,56,66,73,79,62],"B":[8650,8565,8565,8565,8684,8835,8655,8722,8861,8861,8861,8787,8769,8999,9069,9029,9029,9029,9059,9299,9138,9177,9247,9247,9247,9364,9264,9348,9190,8987,8987,8987,8925,8929,8861,8882,8924,8924,8924,8925,8926,8639,8663,8660,8660,8660,8652,8691,8800,8743,8786,8786,8786,8803,8800,8787,8891,8945,8945,8945,9051,8923,9041,8912,8955,8955,8955,8795,8700,8647,8630,8697,8697,8697,8583,8405,8350,8390,8548,8548,8548,8607,8610,8493,8602,8494,8494,8494,8500,8592,8598,8547,8688,8688,8688,8783,8690,8504,8352,8357,8357,8357,8359,8350,8413,8144,8099,8099,8099,8213,8325,8325,8547,8400,8400,8400,8655,8699,8710,8626,8641,8641,8641,8702,8551,8672,8535,8477,8477,8477,8721,8817,8975,8934,8941,8941,8941,8910,8807,8890,8750,8692,8692,8692,8561,8673,8828,8877,8853,8853,8853,9001,9105,9152,8998,9273,9273,9273,9346,9586,9678,9746,9921,9921,9921,9748,9642,9835,9624,9757,9757,9757,9701,9847,9990,9917,9860,9860,9860,9728,9804,9755,9590,9667,9667,9667,9618,9708,9741,9788,9924,9924,9924,9874,9884,9793,9901,9769,9769,9769,9718,9693,9729,9789,9862,9862,9862,9942,9975,9970,10099,10053,10053,10053,10007,9989,9813,9849,9657,9657,9657,9723,9711,9603,9490,9368,9368,9368,9282,9015,9055,9146,9120,9120,9120,9151,9244,9317,9169,9289,9289,9289,9230,9287,9098,9072,9024,9024,9024,8869,8860,8926,8982,9299,9299,9299,9346,9254,9437,9326,9343,9343,9343,9355,9241,9139,8968,8895,8895,8895,8898,8985,8871,8883,9038,9038,9038,9086,9062,9338,9330,9322,9322,9322,9497,9505,9565,9437,9524,9524,9524,9436,9530,9635,9714,9886,9886,9886,10048,10140,10203,10150,10294,10294,10294,10320,10248,10453,10454,10381,10381,10381,10379,10285,10410,10214,10111,10111,10111,10132,10092,10102,10144,10311,10311,10311,10191,10152,10449,10538,10480,10480,10480,10674,10609,10383,10488,10620,10620,10620,10515,10517,10528,10372,10522,10522,10522,10775,10633,10581,10718,10706,10706,10706,10698,10781,10790,10716,10885,10885,10885,11268,11039,11072,11248,11194,11194,11194,11315,11437,11448,11454,11416,11416,11416,11539,11274,11066,11081,11313,11313,11313,11138,11120,10827,10931,10936,10936,10936,11117,11183,11196,11043,11032,11032,11032,11188,11203,11419,11388,11627,11627,11627,11738,12032,12218,12526,12557,12557,12557,12544,12442,12308,12123,12282,12282,12282,12116,12063,12120,11973,11954,11954,11954,11989,12071,12168,12185,12242,12242,12242,12269,12481,12487,12537,12535,12535,12535,12696,12841,12868,12700,12926,12926,12926,12947,12909,12743,12767,12724,12724,12724,12664,12993,12853,12784,12640,12640,12640,12755,12832,12918,12881,12764,12764,12764,12797,12790,12680,12789,12725,12725,12725,12856,12901,12888,13146,13371,13371,13371,13417,13381,13251,13448,13423,13423,13423,13374,13237,13112,13177,13129,13129,13129,13122,13283,13241,13486,13612,13612,13612,13524,13325,13128,13064,13293,13293,13293,13167,13240,13350,13116,12909,12909,12909,12967,12780,12703,12592,12681,12681,12681,12744,12658,12736,12715,12978,12978,12978,12712,12400,12331,12645,12781,12781,12781,13122,13033,12944,13303,13247,13247,13247,13316,13460,13428,13282,13209,13209,13209,13327,13297,13028,13104,13224,13224,13224,13331,13331,13233,13339,13331,13331,13331,13443,13478,13246,13065,13004,13004,13004,13030,13017,12876,13146,13082,13082,13082,12895,13049,12795,12698,12608,12608,12608,12629,12745,12656,12655,12565,12565,12565,12483,12451,12386,12119,12123,12123,12123,11972,12006,12065,12008,11919,11919,11919,12119,11902,11759,11867,11917,11917,11917,12195,11985,11691,11666,11547,11547,11547,11451,11439,11393,11530,11332,11332,11332,11373,11396,11429,11227,11331,11331,11331,11389,11254,11263,11458,11375,11375,11375,11452,11448,11477,11672,11840,11840,11840,11838,11692,11744,11742,11865,11865,11865,11750,11799,11682,11693,11648,11648,11648,11859,11830,11582,11542,11416,11416,11416,11351,11320,11496,11548,11378,11378,11378,11461,11522,11355,11198,11150,11150,11150,11013,11302,11320,11305,11210,11210,11210,11345,11468,11440,11458,11314,11314,11314,11271,11002,11232,11292,11375,11375,11375,11426,11623,11458,11529,11266,11266,11266,11390,11249,11319,11609,11805,11805,11805,11666,11575,11616,11495,11792,11792,11792,11679,11526,11439,11649,11647,11647,11647,11638,11707,11946,12078,12186,12186,12186,12137,12018,12048,12081,12126,12126,12126,12302,12279,12326,12034,12217,12217,12217,12318,12476,12445,12559,12570,12570,12570,12557,12545,12577,12504,12693,12693,12693,12746,12469,12541,12648,12617,12617,12617,12650,12760,13013,12949,12995,12995,12995,13186,13517,13561,13396,13397,13397,13397,13345,13566],"mac":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"hs":[0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],"tt":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0],"ay":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],"Cd":[63.5,61.3,53.3,56.7,57.4,61.1,69.6,64.3,63.3,56.4,53,60.5,70.8,66.3,67,58.7,50.7,48.3,48.1,58.5,59.4,55.6,56.5,57.1,51.5,50.4,57.6,50.5,52.7,61.9,54.1,46.4,44.8,58,59.6,60.9,57.6,59.5,53.5,49.4,54.6,54.2,61.8,57.1,52.4,55.3,61.9,69.3,70,72.2,63.2,60.2,49.8,48.2,50,54.9,58.2,60,50.6,36.4,32.7,39.9,34.6,38.3,41.3,41.3,34.5,28.9,31.8,29.2,20.8,20.4,21.8,27.3,32.5,40.9,36.6,42.7,45.2,45.7,34.1,36.7,34.4,30.7,42.5,34.3,38.5,34,34.6,34.5,31.4,22.9,31.3,29.9,25.9,22.6,26,31.1,28.4,29.7,28.3,23.4,22.6,25.6,25.8,30.8,32.5,31.4,34.3,26.3,29,34.9,30.8,31.6,29.4,27.8,29,31.6,32.1,27.9,27.6,27.5,26.9,28.3,32.7,29.3,29.7,29.8,28.8,27.6,26.6,28.4,31,31.9,29.7,29.7,24.5,20.9,24.6,22.8,27.2,31.5,31,26,24.7,29.8,24.7,26.6,28.1,28.6,25.3,24.8,30.8,33.2,31.4,30.1,28.8,25.1,27.2,28.3,28.7,26.7,26.4,28.2,22.4,26.8,23.5,27.4,27.2,29.6,31.6,26.4,28.9,30.9,33.9,32,29.7,32.5,30.9,29,31.3,31.1,31,31,32.2,32.2,32.8,35,36.5,36.8,35.6,35.1,32,27.5,30.7,33.4,31.1,33.7,32.3,25.5,25.2,29.4,30.7,28.8,29.1,29.2,27.7,27.1,30.2,32.7,27.2,29.6,19.8,28.6,29,32.2,28.8,29.5,32.5,31.4,25.8,28.3,29.5,30.4,28.1,28.8,29.5,25.7,25.8,31.9,29.6,31.5,31.8,32.4,28.3,27.1,28.3,28.7,26.4,26.3,29.4,27.8,28.8,31.7,35.9,35.4,39.7,35.5,39.6,32.2,38.8,42.9,40.3,42.1,43.9,34.3,38.6,40.3,34.6,36.7,43.4,47.8,38.2,37.7,37.3,39,39.8,37.1,39.6,38.3,33.1,32.3,27.3,30,35.1,35.9,31,33.3,51,51.5,52.8,53,46.1,34.6,38.4,41.9,43.7,43.7,38.8,37.8,34.9,38.9,58.6,50.5,54.5,43.5,46.9,41.2,44.4,40.9,44.2,36.3,43.8,40.7,35.5,43.2,53.1,50.7,45.6,46.3,52.5,49.5,49.6,56.9,65.1,69.7,70.8,55.9,57.8,60,62.6,56.8,56.9,69.1,59.4,51.5,54.1,63.4,59.7,58.6,62.5,59,55.7,61.2,69.5,67.3,56,63.9,61.6,51.1,46.1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,61.7,57.3,64.2,61.6,60.8,48.3,51.7,65.6,60.1,59.8,68.4,66.2,63.1,58.2,72.7,63.3,58.4,73.8,68.4,65.7,63.7,67.6,60.6,58.6,68.6,63.8,53.5,53.7,55.2,59.6,55.9,52.2,54.7,47.8,40.7,43.9,51.1,56.8,51.9,57.4,47.4,50.2,57.7,55,60.2,54.4,53.8,51.3,52.9,56.7,60.8,55.1,51.4,47.9,43.6,44.4,49.3,52.4,57.9,47.1,56,41.2,46,55,51.8,52.4,52.8,54.8,42.1,30,33.5,34.5,52,43.7,44.7,41.3,42,48.1,44.5,43.6,37.4,42.7,45.3,43.7,51.4,52.6,50.8,43,41.1,41,39.4,40.3,36.2,31.6,40.7,40.9,30.6,32.1,30.4,32.9,34.5,21.6,25.7,26.4,23.6,26.6,24.8,24.9,25.1,27.3,26.9,29.6,33.1,32.4,30.8,30.6,25.9,22.1,22.6,23.3,28.4,27.4,27.2,29.1,25.4,21.5,27.3,27.5,27.9,28.2,32.5,30.5,28.4,32.6,32.7,32.4,32.9,27.8,27.3,23.9,25.8,30.9,28.3,32.7,32.4,29.2,24.3,26.6,28.5,29.9,33.7,31.1,30.6,26.3,29.8,29.4,30.3,32.9,31.9,28,30.3,32.2,31.6,30,29.9,30.1,24.2,26.3,29.8,27.3,26.4,27.1,25.7,24,23.5,27.7,24.5,32.2,31.5,30,25.7,24.6,31.7,27.2,28.2,27.3,29.8,25.8,29.4,32.6,31.2,29.9,30.6,30.6,28.7,28.1,34.2,28.9,29.4,29.3,28.6,24.1,27.2,28.1,28.4,29.4,31.2,32.5,28.6,26.4,30.3,26.6,25.1,26.3,24.6,22.3,26.3,32.1,31,30,27.6,29.5,23.4,25.8,30.1,30.9,26.4,27.7,23.8,25.4,27.1,27.2,27.4,31.3,32.6,29.8,28.7,26.4,30.7,30,29.5,30.7,30,25.2,27.2,29.7,29.7,27,28.9,30.1,29.1,29.3,33.5,39.8,38.7,40.1,36.4,27.8,27.3,35.4,29.6,28.2,32.2,36.4,38.5,41,47.1,46.3,46.2,48.6,41.5,31.3,25.6,37.4,40,32.8,38.8,40.2,32.6,35.6,39.1,41.6,31.1,38.6,34.3,29.9,25.3,33.8,38,35.2,46.3,44.3,42.2,45.5,49.2,50.2,49.7,48.8,51.4,42.2,51.2,47.7,49.9,44.1,41.8,42.9,38.5,43.8,56.3,53.1,56.6,60.8,52.9,39.4,40.4,47.5,46.5,43.5,41.4,52.1,49.4,51.6,64.7,69.9,58.5,60.2,57.8,53.8,56.6,58.8,61.7,53.7,47.2,53.3,50.7,51.1,54.7,57.9,59.2,48.3,40.8,38.2,41.8,56,58,61,49.2,67.2,58.4,64.4,72.5,61.2,66.2,71.9,72.8,67.5,58.7,67.7,64.1,53.2,54.4,52.5,53.6,51.6,64.4,62.6,64.3,62.1,62.8,51.9,53.6,61.6,56.2,64.5,67.6,61.5,65.7,59,62,63.7,67.3,62.4,59.2,50.9,51.6,56.2,55.7,62.1,69.9,59.7,63.5,62.5,61.9,58,55.1,50.8,57.4,56.2,58.1,54.3,56.4,56.8,63.1,64.3,53.5,56.3,73.1,68.2,58.4,58.8,55.5,44,48.1,49.7,50.1,54.7,58.4,52,45.3,50.1,45.8,42.5,36.4,33.6,27.2,26.8,31,46.9,45.9,46.2,45.8,44.7,34.8,40.4,42],"S":[61.2,52.9,56.6,57.6,61,69.6,64.1,63.5,56.6,53.3,60.3,70.5,66.1,66.7,58.7,50.6,48.1,48.1,58.7,59.6,55.4,56.5,57.1,51.6,50.3,57.3,50.5,52.5,61.8,54,46.6,44.7,58.1,59.6,60.7,57.8,59.4,53.6,49.4,54.2,53.9,61,57.2,52.5,55.2,61.7,69.2,69.9,72.1,63.2,60,50.1,48.4,49.9,55.4,58.7,60.3,50.8,36.3,32.6,39.6,34.5,38.4,41.2,41,34.8,29.1,32,29,20.8,20.3,21.8,27.3,32.7,40.8,36.5,42.5,45.2,45.5,34,36.8,34.4,30.7,42.5,34.4,38.7,33.9,34.4,34.5,31.5,23,31.4,30.2,25.9,22.5,26.1,31,28.4,29.7,28.3,23.5,22.5,25.8,25.7,30.8,32.4,31.5,34.2,26.4,28.6,34.8,31,31.7,29.4,27.9,29.3,31.5,32.1,27.8,27.7,27.4,26.7,28.1,32.8,29.3,29.8,29.6,28.7,27.5,26.7,28.4,31,31.7,29.7,29.6,24.6,21.1,24.6,22.7,27.5,31.6,31.1,26,24.7,29.8,24.7,26.5,28,28.6,25.4,24.9,30.9,33,31.2,30,28.8,25.1,27.5,28.3,28.7,26.5,26.6,28.3,22.4,26.7,23.5,27.4,27.3,29.5,31.6,26.3,28.9,31,34,32.1,29.8,32.5,31,29,31.4,30.9,30.9,30.9,32,32.4,33,35.2,36.6,37.1,35.4,35.3,31.8,27.5,30.7,33.5,31.2,33.8,32.2,25.5,25.1,29.4,30.6,28.7,29.2,29.1,27.6,27,30.1,32.7,27.2,29.4,19.8,28.4,28.8,32.3,28.9,29.4,32.7,31.6,25.7,28.4,29.5,30.5,27.8,28.9,29.4,25.7,25.9,31.6,29.6,31.5,31.9,32.6,28.4,27,28.4,28.6,26.5,26.3,29.4,27.8,28.7,31.7,35.7,35.5,39.9,35.3,39.2,32.2,38.7,42.8,40.7,42,43.7,34.3,38.7,40.5,34.7,36.5,43.3,48.2,37.9,37.7,37.5,39.1,39.8,37,39.7,38.4,33.1,32.4,27.4,30.1,35.1,36,31,33.6,51.2,51.7,52.6,53.1,45.5,34.5,38.4,41.8,43.7,43.8,39.1,37.8,34.6,38.5,58.6,50.6,54.8,43.5,46.8,41,44.4,41,44.3,36.3,44.1,40.8,35.6,43.4,53.3,50.6,45.3,46,52.6,49.6,49.7,57.1,65.5,69.5,71.6,56.5,57.9,59.9,62.7,56.5,56.9,68.9,59.3,51.4,54.6,63.2,59.8,58.6,62.9,59.3,55.3,60.9,69.6,67.2,56.1,64,61.3,51.1,46.2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,61.6,57.5,64.5,61.9,60.9,48.3,51.3,65.4,60.1,60,68.7,66.3,62.8,58.3,73,63.5,58.2,73.5,68.2,65.4,64,67.7,61.2,59,68.9,63.6,53.6,53.9,54.9,59.3,55.8,52.5,54.6,47.5,40.8,44,50.8,57.2,51.8,57.7,47.5,50.1,57.7,55,60.2,54.6,53.8,51,53,56.5,60.7,55.1,51.3,48.1,43.6,44.3,49.7,52.6,57.9,47.1,55.9,41.2,45.8,55.4,52.1,51.9,52.6,54.8,42,29.7,33.6,34.3,52.2,43.7,45,41.1,42.3,47.8,44.8,43.8,37.4,42.5,45.6,43.9,51,52,50.7,42.9,41.2,41.1,39.4,40.2,36.4,31.5,40.4,40.5,30.7,32,30.2,32.8,34.4,21.7,25.4,26.4,23.7,26.6,24.9,25.1,25,27.3,27,29.8,33.2,32.4,30.6,30.7,26,22,22.6,23.2,28.5,27.3,27.3,29.2,25.4,21.6,27.4,27.7,27.8,28.3,32.7,30.5,28.3,32.6,33,32.4,32.9,27.9,27.3,23.7,25.7,30.9,28.2,32.9,32.4,29,24.3,26.4,28.6,29.8,33.9,31.2,30.9,26.3,30,29.2,30.2,32.8,32.1,28,30.3,32.1,31.5,30,30,30.1,24.4,26.3,29.8,27.3,26.4,27,25.6,23.9,23.4,27.9,24.6,32.2,31.5,29.8,25.8,24.5,32,27,28.2,27.4,29.7,26.1,29.6,32.7,31.1,30.1,30.7,30.7,28.9,28.1,33.9,29,29.7,29.3,28.7,24.1,27.2,27.8,28.2,29.3,31.1,32.3,28.7,26.4,30.2,26.4,25.2,26.2,24.7,22.4,26.3,32.1,31.1,30,27.4,29.5,23.5,25.8,30.1,30.8,26.3,27.8,23.7,25.2,27.1,27,27.5,31.2,32.3,29.7,28.4,26.5,30.7,30.1,29.6,30.7,29.9,25.3,27.2,29.6,29.4,27.2,28.9,30.1,28.9,29.4,33.5,40,38.7,39.9,36.4,27.7,27.2,35.3,29.7,28.3,32.1,36.4,38.5,41,47,46.4,46.1,48.5,41.7,31.4,25.6,37.5,40,32.9,38.7,40.1,32.4,35.8,39.3,41.8,31.2,38.6,34.2,30,25.3,33.7,38.1,35.4,46.4,44.3,42.1,45.6,49.2,50,49.6,48.6,51.7,42,50.9,47.5,49.9,43.9,42.1,43,38.1,43.9,56.4,52.8,56.6,60.8,52.8,39.4,40.5,47.4,46.5,43.3,41.5,52,49.7,52,65.1,69.7,58.6,60.2,57.9,53.6,56.4,58.7,61.5,53.9,47.4,53.4,50.7,51.1,54.9,57.9,59.2,48.6,40.8,38.2,41.8,56.3,57.8,60.9,49.4,67.5,58.7,64.2,72.6,61.1,66.3,71.4,72.7,67.8,58.7,67,64.4,53.3,54.3,52.5,53.6,51.9,64.4,62.2,64.1,62.5,63.1,52.1,53.4,61.7,56.4,64.5,67.8,61.8,65.9,59.1,62.2,63.4,67.3,62.6,59.6,50.9,51.8,56.2,55.5,62.2,70,59.5,63.3,62.5,61.8,58.1,54.8,50.9,57.2,56.3,57.7,54.5,56.5,57.3,62.6,63.8,53.6,56.5,72.6,68.3,58.6,59.2,55.6,43.7,47.7,50.1,50.2,54.9,58.3,52,45.3,49.9,45.8,42.3,36.4,33.7,27.2,26.7,31.2,47.2,46,45.9,46,45,34.8,40.6,41.8,41.4],"C":[61.3,53.3,56.7,57.4,61.1,69.6,64.3,63.3,56.4,53,60.5,70.8,66.3,67,58.7,50.7,48.3,48.1,58.5,59.4,55.6,56.5,57.1,51.5,50.4,57.6,50.5,52.7,61.9,54.1,46.4,44.8,58,59.6,60.9,57.6,59.5,53.5,49.4,54.6,54.2,61.8,57.1,52.4,55.3,61.9,69.3,70,72.2,63.2,60.2,49.8,48.2,50,54.9,58.2,60,50.6,36.4,32.7,39.9,34.6,38.3,41.3,41.3,34.5,28.9,31.8,29.2,20.8,20.4,21.8,27.3,32.5,40.9,36.6,42.7,45.2,45.7,34.1,36.7,34.4,30.7,42.5,34.3,38.5,34,34.6,34.5,31.4,22.9,31.3,29.9,25.9,22.6,26,31.1,28.4,29.7,28.3,23.4,22.6,25.6,25.8,30.8,32.5,31.4,34.3,26.3,29,34.9,30.8,31.6,29.4,27.8,29,31.6,32.1,27.9,27.6,27.5,26.9,28.3,32.7,29.3,29.7,29.8,28.8,27.6,26.6,28.4,31,31.9,29.7,29.7,24.5,20.9,24.6,22.8,27.2,31.5,31,26,24.7,29.8,24.7,26.6,28.1,28.6,25.3,24.8,30.8,33.2,31.4,30.1,28.8,25.1,27.2,28.3,28.7,26.7,26.4,28.2,22.4,26.8,23.5,27.4,27.2,29.6,31.6,26.4,28.9,30.9,33.9,32,29.7,32.5,30.9,29,31.3,31.1,31,31,32.2,32.2,32.8,35,36.5,36.8,35.6,35.1,32,27.5,30.7,33.4,31.1,33.7,32.3,25.5,25.2,29.4,30.7,28.8,29.1,29.2,27.7,27.1,30.2,32.7,27.2,29.6,19.8,28.6,29,32.2,28.8,29.5,32.5,31.4,25.8,28.3,29.5,30.4,28.1,28.8,29.5,25.7,25.8,31.9,29.6,31.5,31.8,32.4,28.3,27.1,28.3,28.7,26.4,26.3,29.4,27.8,28.8,31.7,35.9,35.4,39.7,35.5,39.6,32.2,38.8,42.9,40.3,42.1,43.9,34.3,38.6,40.3,34.6,36.7,43.4,47.8,38.2,37.7,37.3,39,39.8,37.1,39.6,38.3,33.1,32.3,27.3,30,35.1,35.9,31,33.3,51,51.5,52.8,53,46.1,34.6,38.4,41.9,43.7,43.7,38.8,37.8,34.9,38.9,58.6,50.5,54.5,43.5,46.9,41.2,44.4,40.9,44.2,36.3,43.8,40.7,35.5,43.2,53.1,50.7,45.6,46.3,52.5,49.5,49.6,56.9,65.1,69.7,70.8,55.9,57.8,60,62.6,56.8,56.9,69.1,59.4,51.5,54.1,63.4,59.7,58.6,62.5,59,55.7,61.2,69.5,67.3,56,63.9,61.6,51.1,46.1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,61.7,57.3,64.2,61.6,60.8,48.3,51.7,65.6,60.1,59.8,68.4,66.2,63.1,58.2,72.7,63.3,58.4,73.8,68.4,65.7,63.7,67.6,60.6,58.6,68.6,63.8,53.5,53.7,55.2,59.6,55.9,52.2,54.7,47.8,40.7,43.9,51.1,56.8,51.9,57.4,47.4,50.2,57.7,55,60.2,54.4,53.8,51.3,52.9,56.7,60.8,55.1,51.4,47.9,43.6,44.4,49.3,52.4,57.9,47.1,56,41.2,46,55,51.8,52.4,52.8,54.8,42.1,30,33.5,34.5,52,43.7,44.7,41.3,42,48.1,44.5,43.6,37.4,42.7,45.3,43.7,51.4,52.6,50.8,43,41.1,41,39.4,40.3,36.2,31.6,40.7,40.9,30.6,32.1,30.4,32.9,34.5,21.6,25.7,26.4,23.6,26.6,24.8,24.9,25.1,27.3,26.9,29.6,33.1,32.4,30.8,30.6,25.9,22.1,22.6,23.3,28.4,27.4,27.2,29.1,25.4,21.5,27.3,27.5,27.9,28.2,32.5,30.5,28.4,32.6,32.7,32.4,32.9,27.8,27.3,23.9,25.8,30.9,28.3,32.7,32.4,29.2,24.3,26.6,28.5,29.9,33.7,31.1,30.6,26.3,29.8,29.4,30.3,32.9,31.9,28,30.3,32.2,31.6,30,29.9,30.1,24.2,26.3,29.8,27.3,26.4,27.1,25.7,24,23.5,27.7,24.5,32.2,31.5,30,25.7,24.6,31.7,27.2,28.2,27.3,29.8,25.8,29.4,32.6,31.2,29.9,30.6,30.6,28.7,28.1,34.2,28.9,29.4,29.3,28.6,24.1,27.2,28.1,28.4,29.4,31.2,32.5,28.6,26.4,30.3,26.6,25.1,26.3,24.6,22.3,26.3,32.1,31,30,27.6,29.5,23.4,25.8,30.1,30.9,26.4,27.7,23.8,25.4,27.1,27.2,27.4,31.3,32.6,29.8,28.7,26.4,30.7,30,29.5,30.7,30,25.2,27.2,29.7,29.7,27,28.9,30.1,29.1,29.3,33.5,39.8,38.7,40.1,36.4,27.8,27.3,35.4,29.6,28.2,32.2,36.4,38.5,41,47.1,46.3,46.2,48.6,41.5,31.3,25.6,37.4,40,32.8,38.8,40.2,32.6,35.6,39.1,41.6,31.1,38.6,34.3,29.9,25.3,33.8,38,35.2,46.3,44.3,42.2,45.5,49.2,50.2,49.7,48.8,51.4,42.2,51.2,47.7,49.9,44.1,41.8,42.9,38.5,43.8,56.3,53.1,56.6,60.8,52.9,39.4,40.4,47.5,46.5,43.5,41.4,52.1,49.4,51.6,64.7,69.9,58.5,60.2,57.8,53.8,56.6,58.8,61.7,53.7,47.2,53.3,50.7,51.1,54.7,57.9,59.2,48.3,40.8,38.2,41.8,56,58,61,49.2,67.2,58.4,64.4,72.5,61.2,66.2,71.9,72.8,67.5,58.7,67.7,64.1,53.2,54.4,52.5,53.6,51.6,64.4,62.6,64.3,62.1,62.8,51.9,53.6,61.6,56.2,64.5,67.6,61.5,65.7,59,62,63.7,67.3,62.4,59.2,50.9,51.6,56.2,55.7,62.1,69.9,59.7,63.5,62.5,61.9,58,55.1,50.8,57.4,56.2,58.1,54.3,56.4,56.8,63.1,64.3,53.5,56.3,73.1,68.2,58.4,58.8,55.5,44,48.1,49.7,50.1,54.7,58.4,52,45.3,50.1,45.8,42.5,36.4,33.6,27.2,26.8,31,46.9,45.9,46.2,45.8,44.7,34.8,40.4,42,41.4],"uz":[58.2,72.7,63.3,58.4,73.8,68.4,65.7,63.7,67.6,60.6,58.6,68.6,63.8,53.5,53.7,55.2,59.6,55.9,52.2,54.7,47.8,40.7,43.9,51.1,56.8,51.9,57.4,47.4,50.2,57.7,55,60.2,54.4,53.8,51.3,52.9,56.7,60.8,55.1,51.4,47.9,43.6,44.4,49.3,52.4,57.9,47.1,56,41.2,46,55,51.8,52.4,52.8,54.8,42.1,30,33.5,34.5]};
+  var KEY = 'dogru-kolonlar-2', MAKS = 4, HAK = 3, LAM = 1.0, ESIK = 0.2;
+  var N = VERI.C.length, NTR = 0;
+  while (NTR < N && VERI.t[NTR] < '2026-02-01') NTR++;
+  var NTE = N - NTR;
+  var AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  var ORN = NTR - 20;
+  var K = {
+    sic: { ad: 'Yarının hava sıcaklığı', acik: 'Meteorolojinin yarın için tahmini' },
+    gun: { ad: 'Gün türü', acik: 'Yarın hafta içi mi, hafta sonu mu', orn: function (i) { return VERI.hs[i] ? 'Hafta sonu' : 'Hafta içi'; } },
+    bor: { ad: 'Borsa İstanbul endeksi', acik: 'Bugünkü kapanış değeri', orn: function (i) { return Math.round(VERI.B[i]).toLocaleString('tr-TR'); } },
+    dun: { ad: 'Bugünün tüketimi', acik: 'Gün kapandı, bugünkü toplam belli', orn: function (i) { return virgul(VERI.Cd[i], 1) + ' milyon m³'; } },
+    say: { ad: 'Gün sonu sayaç toplamı', acik: 'Tahmin edilen gün bitince sayaçlardan okunan toplam', orn: function (i) { return virgul(VERI.S[i], 1) + ' milyon m³'; } },
+    ruz: { ad: 'Yarının rüzgârı', acik: 'Meteorolojinin rüzgâr tahmini', orn: function (i) { return Math.round(VERI.W[i]) + ' km/sa'; } },
+    mac: { ad: 'Maç günü', acik: 'Yarın büyük bir futbol maçı var mı', orn: function (i) { return VERI.mac[i] ? 'Evet' : 'Hayır'; } },
+    ay: { ad: 'Ay', acik: 'Yarın yılın hangi ayı', orn: function (i) { return AYLAR[VERI.ay[i] - 1]; } },
+    tat: { ad: 'Resmî tatil', acik: 'Yarın bayram ya da resmî tatil mi', orn: function (i) { return VERI.tt[i] ? 'Evet' : 'Hayır'; } },
+    nem: { ad: 'Yarının nemi', acik: 'Meteorolojinin nem tahmini', orn: function (i) { return '%' + Math.round(VERI.H[i]); } }
+  };
+  var SIRA = ['gun', 'bor', 'dun', 'say', 'ruz', 'mac', 'ay', 'tat', 'nem'];
+  var ILGISIZ = { bor: 1, mac: 1, nem: 1 };
+  var DON = {
+    ham: { ad: '°C olarak', acik: 'Meteorolojinin tahmin ettiği sıcaklık, olduğu gibi.', orn: function (i) { return virgul(VERI.Tf[i], 1) + ' °C'; } },
+    hdd: { ad: 'Derece gün olarak', acik: 'Enerji sektörünün ısınma ihtiyacını ölçtüğü birim. Havanın 16 °C’nin kaç derece altında olduğunu sayar, çünkü kombi daha sıcak havada yanmaz. 20 °C de 25 °C de 0 derece gün, 6 °C ise 10 derece gün.', orn: function (i) { return virgul(Math.max(0, 16 - VERI.Tf[i]), 1) + ' derece gün'; } }
+  };
+  var EN_IYI = { cols: ['sic', 'dun', 'gun', 'tat'], cikar: ['sifir'], don: 'hdd' };
+
+  function virgul(v, k) { return v.toFixed(k).replace('.', ',').replace('-', '−'); }
+  function yuzde(v) { return '%' + virgul(v, 1); }
+  function $(s) { return document.querySelector(s); }
+  function ikon(n) { return '<svg class="ik" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function kolAd(c, don) { return c === 'sic' && don === 'hdd' ? 'Yarının derece günü' : K[c].ad; }
+
+  /* model: seçilen günler ve kolonlarla ridge regresyon, iki yılla eğitilir, son iki ayı görmeden tahmin eder */
+  var FILTRE = {
+    sifir: { ad: 'Tüketimi sıfır görünen günler', acik: 'Kayıtta tüketim 0 yazıyor', kisa: 'sıfır görünen günler', eylem: 'Sıfır görünen günleri çıkarmak', test: function (i) { return VERI.C[i] === 0; } },
+    tatil: { ad: 'Bayram ve resmî tatiller', acik: 'Ofisler ve fabrikalar kapalı, tüketim düşük', kisa: 'bayram ve tatiller', eylem: 'Bayramları ve tatilleri çıkarmak', test: function (i) { return VERI.tt[i] === 1; } },
+    hs: { ad: 'Hafta sonları', acik: 'Tüketim hafta içinden düşük', kisa: 'hafta sonları', eylem: 'Hafta sonlarını çıkarmak', test: function (i) { return VERI.hs[i] === 1; } }
+  };
+  var FSIRA = ['sifir', 'tatil', 'hs'];
+  function cikarildi(i, cikar) { for (var k = 0; k < cikar.length; k++) if (FILTRE[cikar[k]].test(i)) return true; return false; }
+  function ozellik(i, cols, don) {
+    var v = [], h = Math.max(0, 16 - VERI.Tf[i]);
+    cols.forEach(function (c) {
+      if (c === 'sic') v.push(don === 'hdd' ? h : VERI.Tf[i]);
+      else if (c === 'dun') v.push(VERI.Cd[i]);
+      else if (c === 'gun') v.push(VERI.hs[i]);
+      else if (c === 'tat') v.push(VERI.tt[i]);
+      else if (c === 'ruz') v.push(VERI.W[i]);
+      else if (c === 'nem') v.push(VERI.H[i]);
+      else if (c === 'ay') { for (var k = 2; k <= 12; k++) v.push(VERI.ay[i] === k ? 1 : 0); }
+      else if (c === 'bor') v.push(VERI.B[i]);
+      else if (c === 'mac') v.push(VERI.mac[i]);
+      else if (c === 'say') v.push(VERI.S[i]);
+    });
+    return v;
+  }
+  function coz(A, b) {
+    var n = b.length, M = A.map(function (r, i) { return r.concat([b[i]]); }), r, k;
+    for (var c = 0; c < n; c++) {
+      var p = c;
+      for (r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      var t = M[c]; M[c] = M[p]; M[p] = t;
+      for (r = c + 1; r < n; r++) { var f = M[r][c] / M[c][c]; for (k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+    }
+    var x = new Array(n);
+    for (var i = n - 1; i >= 0; i--) { var s = M[i][n]; for (var j = i + 1; j < n; j++) s -= M[i][j] * x[j]; x[i] = s / M[i][i]; }
+    return x;
+  }
+  function kurulumAnahtari(cols, cikar, don) { return cols.slice().sort().join(',') + '|' + cikar.slice().sort().join(',') + '|' + (cols.indexOf('sic') >= 0 ? don : ''); }
+  var ONBELLEK = {};
+  function egit(cols, cikar, don) {
+    cikar = cikar || []; don = don || 'ham';
+    var anahtar = kurulumAnahtari(cols, cikar, don);
+    if (ONBELLEK[anahtar]) return ONBELLEK[anahtar];
+    var i, j, k, y = VERI.C, tah = [], egt = {}, tr = [];
+    for (i = 0; i < NTR; i++) if (!cikarildi(i, cikar)) tr.push(i);
+    var m = tr.length;
+    if (!cols.length) {
+      var ort = 0; tr.forEach(function (i) { ort += y[i]; }); ort /= m;
+      tr.forEach(function (i) { egt[i] = ort; });
+      for (i = NTR; i < N; i++) tah.push(ort);
+    } else {
+      var X = []; for (i = 0; i < N; i++) X.push(ozellik(i, cols, don));
+      var p = X[0].length, mu = [], sd = [];
+      for (j = 0; j < p; j++) {
+        var s = 0, s2 = 0; tr.forEach(function (i) { s += X[i][j]; s2 += X[i][j] * X[i][j]; });
+        mu.push(s / m); var v = s2 / m - (s / m) * (s / m); sd.push(v > 1e-12 ? Math.sqrt(v) : 1);
+      }
+      var Z = X.map(function (r) { return [1].concat(r.map(function (x, j) { return (x - mu[j]) / sd[j]; })); });
+      var q = p + 1, A = [], b = [];
+      for (j = 0; j < q; j++) { A.push(new Array(q).fill(0)); b.push(0); }
+      tr.forEach(function (i) { for (var j = 0; j < q; j++) { b[j] += Z[i][j] * y[i]; for (var k = 0; k < q; k++) A[j][k] += Z[i][j] * Z[i][k]; } });
+      for (j = 1; j < q; j++) A[j][j] += LAM;
+      var w = coz(A, b);
+      var tahmin = function (i) { var t = 0; for (var j = 0; j < q; j++) t += w[j] * Z[i][j]; return t; };
+      tr.forEach(function (i) { egt[i] = tahmin(i); });
+      for (i = NTR; i < N; i++) tah.push(tahmin(i));
+    }
+    var e1 = 0, s1 = 0, e2 = 0, s3 = 0;
+    tr.forEach(function (i) { e1 += Math.abs(y[i] - egt[i]); s1 += y[i]; });
+    for (i = NTR; i < N; i++) { e2 += Math.abs(y[i] - tah[i - NTR]); s3 += y[i]; }
+    var sonuc = { egitimHata: 100 * e1 / s1, hata: 100 * e2 / s3, tahmin: tah, n: m };
+    ONBELLEK[anahtar] = sonuc;
+    return sonuc;
+  }
+  function katkilar(cols, cikar, don) {
+    var tum = egit(cols, cikar, don).hata, out = [];
+    cikar.forEach(function (f) { out.push({ tur: 'filtre', id: f, d: egit(cols, cikar.filter(function (x) { return x !== f; }), don).hata - tum }); });
+    if (cols.indexOf('sic') >= 0 && don === 'hdd') out.push({ tur: 'don', id: 'hdd', d: egit(cols, cikar, 'ham').hata - tum });
+    cols.forEach(function (c) { out.push({ tur: 'kol', id: c, d: egit(cols.filter(function (x) { return x !== c; }), cikar, don).hata - tum }); });
+    return out;
+  }
+  var UZMAN = (function () { var e = 0, s = 0; for (var i = NTR; i < N; i++) { e += Math.abs(VERI.C[i] - VERI.uz[i - NTR]); s += VERI.C[i]; } return 100 * e / s; })();
+
+  /* durum */
+  var S;
+  function yeni() { return { ekran: 'giris', masa: '', secim: [], cikar: [], don: 'ham', denemeler: [], tuzak: false, bitti: false }; }
+  function kaydet() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function yukle() { try { var v = localStorage.getItem(KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function enIyi() { var b = null; S.denemeler.forEach(function (d) { if (d.hata !== null && (b === null || d.hata < b)) b = d.hata; }); return b; }
+  function kalanHak() { return HAK - S.denemeler.length; }
+  function denendi() { var a = kurulumAnahtari(S.secim, S.cikar, S.don); return S.denemeler.some(function (d) { return kurulumAnahtari(d.cols, d.cikar, d.don) === a; }); }
+  function egitimGunu(cikar) { var n = 0; for (var i = 0; i < NTR; i++) if (!cikarildi(i, cikar)) n++; return n; }
+  function gunSay(f) { var n = 0; for (var i = 0; i < NTR; i++) if (FILTRE[f].test(i)) n++; return n; }
+  function adlar(cols, don) { return cols.map(function (c) { return kolAd(c, don); }).join(', '); }
+  function cikarYazi(cikar) { return cikar.length ? cikar.map(function (f) { return FILTRE[f].kisa; }).join(', ') + ' çıkarıldı' : 'hiçbir gün çıkarılmadı'; }
+  function cipler(cols, don, cls) { return '<div class="cipler">' + cols.map(function (c) { return '<span class="cip' + (cls ? ' ' + cls : '') + '">' + kolAd(c, don) + '</span>'; }).join('') + '</div>'; }
+
+  var EKRANLAR = ['vaka', 'veri', 'kolonlar', 'sonuc', 'kapanis'];
+  function ust() {
+    $('#masa-ad').textContent = S.masa || '';
+    var b = enIyi(); $('#en-iyi').textContent = b === null ? '?' : yuzde(b);
+    var ix = EKRANLAR.indexOf(S.ekran), li = document.querySelectorAll('#adimlar li');
+    for (var i = 0; i < li.length; i++) li[i].className = i < ix ? 'gecti' : (i === ix ? 'simdi' : '');
+  }
+
+  var KAHRAMAN = '<svg class="kahraman" viewBox="0 0 640 210" role="img" aria-labelledby="k-t"><title id="k-t">Geçmiş günlerin tüketim çizgisi ve yarın için soru işareti</title>' +
+    '<rect x="1" y="1" width="638" height="208" rx="16" fill="#F9F5EE" stroke="#DDD2C0" stroke-width="2"/>' +
+    '<path d="M40 170H600" stroke="#DDD2C0" stroke-width="2"/>' +
+    '<path d="M48 150L92 122L136 132L180 96L224 108L268 70L312 86L356 58L400 92L444 74L488 104" fill="none" stroke="#2A241C" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '<path d="M488 104L540 84" stroke="#C9471A" stroke-width="4" stroke-dasharray="8 8" stroke-linecap="round"/>' +
+    '<circle cx="540" cy="84" r="24" fill="#FFFCF6" stroke="#C9471A" stroke-width="3"/>' +
+    '<text x="540" y="95" text-anchor="middle" font-family="Barlow Semi Condensed, Arial, sans-serif" font-weight="600" font-size="30" fill="#C9471A">?</text>' +
+    '<text x="48" y="196" font-family="Barlow, Arial, sans-serif" font-size="15" fill="#6A5F50">Geçmiş günler</text>' +
+    '<text x="540" y="196" text-anchor="middle" font-family="Barlow, Arial, sans-serif" font-size="15" fill="#6A5F50">Yarın</text></svg>';
+
+  function girisHtml() {
+    return '<section class="sahne">' +
+      '<div class="baslik"><p class="ust">Masa çalışması · yaklaşık 20 dakika</p><h1>Doğru kolonlar</h1>' +
+      '<p class="giris-metin">Bir doğalgaz şirketi yarının tüketimini tahmin etmek istiyor. Elinizde iki yıllık günlük kayıt var. Modeli siz kuracaksınız, hangi günlerden ve hangi kolonlarla öğreneceğine siz karar vereceksiniz.</p></div>' +
+      KAHRAMAN +
+      '<form class="form" id="giris-form"><label for="masa">Masanızın adı</label><input id="masa" maxlength="24" placeholder="Örneğin Masa 3" autocomplete="off" value="' + esc(S.masa) + '">' +
+      '<div class="ileri"><button class="tus ana" type="submit">Başla ' + ikon('ok') + '</button></div></form></section>';
+  }
+  function vakaHtml() {
+    return '<section class="sahne">' +
+      '<div class="baslik"><p class="ust">Vaka</p><h1>Yarın ne kadar gaz gerekecek?</h1>' +
+      '<p class="giris-metin">Şehrin doğalgaz şirketi her gece, gün kapandıktan sonra ertesi günün tüketimini tahmin ediyor ve gazı buna göre ayırıyor. Az tahmin ederse gaz yetmeyebilir, fazla tahmin ederse kullanmayacağı gaz için para ödüyor.</p></div>' +
+      '<div class="kart"><div class="kpi"><div><p class="kpi-l">Bugünkü yöntemle ortalama hata</p><p class="kpi-a">Uzman geçen yılın aynı gününe bakıyor</p></div><p class="kpi-d">' + yuzde(UZMAN) + '</p></div></div>' +
+      '<div class="kart"><h2>Kurallar</h2><ul class="kural">' +
+      '<li><span class="rozet">1</span><span>Önce modelin hangi günlerden öğreneceğine karar verin.</span></li>' +
+      '<li><span class="rozet">2</span><span>Sonra on kolondan en fazla dördünü seçin.</span></li>' +
+      '<li><span class="rozet">3</span><span>Model iki yıllık kayıtla eğitilir, son iki ayı hiç görmeden tahmin eder.</span></li>' +
+      '<li><span class="rozet">4</span><span>Üç deneme hakkınız var. En düşük hatayı bulan masa kazanır.</span></li></ul></div>' +
+      '<div class="ileri"><button class="tus ana" type="button" id="veri-gec">Veriye bak ' + ikon('ok') + '</button></div></section>';
+  }
+
+  /* veri ekranı */
+  function gecmisSvg(cikar, W) {
+    var H = W < 520 ? 200 : 240, L = 30, R = 6, T = 24, B = 26, iw = W - L - R, ih = H - T - B, UST2 = 80;
+    function X(i) { return L + iw * i / (NTR - 1); }
+    function Y(v) { return T + ih * (1 - Math.max(0, Math.min(UST2, v)) / UST2); }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="İki yıllık günlük tüketim kaydı">';
+    for (var v = 0; v <= UST2; v += 20) s += '<path d="M' + L + ' ' + Y(v).toFixed(1) + 'H' + (W - R) + '" stroke="#DDD2C0" stroke-width="1"/><text class="gr-y" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + v + '</text>';
+    s += '<text class="gr-y" x="0" y="' + (T - 10) + '">milyon m³</text>';
+    var etiket = W < 520 ? [['2024-02-01', 'Şub 2024'], ['2025-02-01', 'Şub 2025'], ['2026-01-31', 'Oca 2026']] : [['2024-02-01', 'Şub 2024'], ['2024-08-01', 'Ağu 2024'], ['2025-02-01', 'Şub 2025'], ['2025-08-01', 'Ağu 2025'], ['2026-01-31', 'Oca 2026']];
+    etiket.forEach(function (e, k) {
+      var i = VERI.t.indexOf(e[0]); if (i < 0) return;
+      s += '<text class="gr-x" x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + (k === 0 ? 'start' : k === etiket.length - 1 ? 'end' : 'middle') + '">' + e[1] + '</text>';
+    });
+    var dahil = '', disari = '', onceki = null;
+    for (var i = 0; i < NTR; i++) {
+      var c = cikarildi(i, cikar), nokta = X(i).toFixed(1) + ' ' + Y(VERI.C[i]).toFixed(1);
+      if (c) disari += (onceki === true ? 'L' : 'M') + nokta; else dahil += (onceki === false ? 'L' : 'M') + nokta;
+      onceki = c;
+    }
+    if (disari) s += '<path d="' + disari + '" fill="none" stroke="#B8AC99" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>';
+    if (dahil) s += '<path d="' + dahil + '" fill="none" stroke="#2A241C" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>';
+    return s + '</svg>';
+  }
+  function gecmisCiz() { var g = $('#gecmis'); if (g) g.innerHTML = gecmisSvg(S.cikar, Math.max(280, Math.round(g.clientWidth))); }
+  function veriHtml() {
+    var filtreler = FSIRA.map(function (f) {
+      var F = FILTRE[f];
+      return '<button type="button" class="filtre" data-filtre="' + f + '" aria-pressed="' + (S.cikar.indexOf(f) >= 0) + '"><span class="kutu">' + ikon('tik') + '</span>' +
+        '<span><b>' + F.ad + '</b><span class="a">' + F.acik + '</span></span><em>' + gunSay(f) + ' gün</em></button>';
+    }).join('');
+    return '<section class="sahne">' +
+      '<div class="baslik"><p class="ust">' + (S.denemeler.length + 1) + '. deneme · Veri</p><h1>Model hangi günlerden öğrensin?</h1>' +
+      '<p class="giris-metin">Şirketin iki yıllık günlük tüketim kaydı aşağıda, model bu kayıttan öğrenecek. Hatalı olduğunu düşündüğünüz günleri eğitimden çıkarabilirsiniz.</p></div>' +
+      '<div class="kart"><h2>İki yıllık kayıt</h2><div class="grafik" id="gecmis"></div>' +
+      '<div class="lejant"><span><i></i>Model bu günlerden öğrenecek</span><span><i class="g"></i>Eğitimden çıkarılan günler</span></div></div>' +
+      '<div class="kart"><h2>Eğitimden çıkarılacak günler</h2><div class="filtreler">' + filtreler + '</div><p class="ogrenme" id="ogrenme"></p></div>' +
+      '<div class="ileri"><button class="tus ana" type="button" id="kolon-gec">Kolonlara geç ' + ikon('ok') + '</button></div></section>';
+  }
+  function veriGuncelle() {
+    document.querySelectorAll('.filtre').forEach(function (b) { b.setAttribute('aria-pressed', S.cikar.indexOf(b.dataset.filtre) >= 0 ? 'true' : 'false'); });
+    var o = $('#ogrenme'); if (o) o.innerHTML = 'Model <b>' + egitimGunu(S.cikar) + '</b> günden öğrenecek.';
+    gecmisCiz();
+  }
+
+  /* kolonlar */
+  function kolonlarHtml() {
+    var hak = ''; for (var i = 0; i < HAK; i++) hak += '<i class="' + (i < S.denemeler.length ? 'dolu' : '') + '"></i>';
+    var sic = '<div class="kol genis" data-kart="sic"><button type="button" class="kol-ust" data-kol="sic" aria-pressed="false"><span class="isaret">' + ikon('tik') + '</span>' +
+      '<b>' + K.sic.ad + '</b><span>' + K.sic.acik + '</span></button>' +
+      '<div class="donusum"><p class="don-l" id="don-l">Modele nasıl girsin?</p><div class="secmeli" role="radiogroup" aria-labelledby="don-l">' +
+      ['ham', 'hdd'].map(function (d) { return '<button type="button" role="radio" data-don="' + d + '" aria-checked="false">' + DON[d].ad + '</button>'; }).join('') +
+      '</div><p class="don-a" id="don-a"></p></div></div>';
+    var kartlar = SIRA.map(function (id) {
+      var c = K[id], kapali = id === 'say' && S.tuzak;
+      return '<button type="button" class="kol" data-kart="' + id + '" data-kol="' + id + '" aria-pressed="false"' + (kapali ? ' disabled' : '') + '><span class="isaret">' + ikon('tik') + '</span>' +
+        '<b>' + c.ad + '</b><span>' + c.acik + '</span><em>' + (kapali ? 'Tahmin anında elde yok' : 'Örnek ' + c.orn(ORN)) + '</em></button>';
+    }).join('');
+    return '<section class="sahne">' +
+      '<div class="baslik"><p class="ust">' + (S.denemeler.length + 1) + '. deneme · Kolonlar</p><h1>Hangi kolonlar yarını anlatır?</h1>' +
+      '<p class="giris-metin">Tahmin her gece, gün kapandıktan sonra ertesi gün için yapılıyor. En fazla dört kolon seçin.</p></div>' +
+      '<div class="deneme-b"><span class="hak" aria-hidden="true">' + hak + '</span><span>' + kalanHak() + ' deneme hakkınız kaldı</span></div>' +
+      '<p class="ogrenme">Model <b>' + egitimGunu(S.cikar) + '</b> günden öğrenecek, ' + cikarYazi(S.cikar) + '. <button type="button" class="metin-tus" id="veri-don">Veriyi değiştir</button></p>' +
+      '<div class="kolonlar" id="kolonlar">' + sic + kartlar + '</div>' +
+      '<div class="dok"><div class="cipler" id="secilen"></div><div class="dok-alt"><div class="dok-sol"><span class="yuvalar" id="yuvalar" aria-hidden="true"></span><span id="sayac" aria-live="polite"></span></div>' +
+      '<button class="tus ana" type="button" id="egit">Modeli eğit ' + ikon('ok') + '</button></div></div></section>';
+  }
+  function secilenGuncelle(uyari) {
+    var el = $('#secilen'); if (!el) return;
+    var h = S.secim.map(function (id) { return '<span class="cip">' + kolAd(id, S.don) + '</span>'; }).join('');
+    for (var i = S.secim.length; i < MAKS; i++) h += '<span class="cip bos">Boş</span>';
+    el.innerHTML = h;
+    var y = ''; for (i = 0; i < MAKS; i++) y += '<i class="' + (i < S.secim.length ? 'dolu' : '') + '"></i>';
+    $('#yuvalar').innerHTML = y;
+    var tekrar = S.secim.length > 0 && denendi(), sayac = $('#sayac');
+    sayac.textContent = uyari || (tekrar ? 'Bu kurulumu zaten denediniz' : S.secim.length + ' / ' + MAKS + ' kolon');
+    sayac.className = uyari || tekrar ? 'uyari' : '';
+    $('#egit').disabled = S.secim.length === 0 || tekrar;
+    document.querySelectorAll('[data-kart]').forEach(function (k) { k.classList.toggle('secili', S.secim.indexOf(k.dataset.kart) >= 0); });
+    document.querySelectorAll('[data-kol]').forEach(function (b) { b.setAttribute('aria-pressed', S.secim.indexOf(b.dataset.kol) >= 0 ? 'true' : 'false'); });
+    document.querySelectorAll('[data-don]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.don === S.don ? 'true' : 'false'); });
+    var a = $('#don-a'); if (a) a.innerHTML = DON[S.don].acik + '<em>Örnek ' + DON[S.don].orn(ORN) + '</em>';
+  }
+
+  /* sonuç */
+  var TE = VERI.C.slice(NTR);
+  var ALT = Math.floor((Math.min.apply(null, TE) - 2) / 10) * 10, UST = Math.ceil((Math.max.apply(null, TE) + 2) / 10) * 10;
+  function grafikSvg(tahmin, W) {
+    var H = W < 520 ? 250 : 300, L = 30, R = 6, T = 30, B = 28, iw = W - L - R, ih = H - T - B, adim = iw / (NTE - 1);
+    function X(i) { return L + adim * i; }
+    function Y(v) { return T + ih * (1 - (Math.max(ALT, Math.min(UST, v)) - ALT) / (UST - ALT)); }
+    function bant(a, z, renk) { var x0 = Math.max(L, X(a) - adim / 2), x1 = Math.min(W - R, X(z) + adim / 2); return '<rect x="' + x0.toFixed(1) + '" y="' + T + '" width="' + (x1 - x0).toFixed(1) + '" height="' + ih + '" fill="' + renk + '"/>'; }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Son iki ayın gerçek günlük tüketimi ve modelin tahmini">', i, ilk = -1, son = -1;
+    for (i = 0; i < NTE; i++) {
+      if (!VERI.hs[NTR + i] || VERI.tt[NTR + i]) continue;
+      var z = i; while (z + 1 < NTE && VERI.hs[NTR + z + 1] && !VERI.tt[NTR + z + 1]) z++;
+      s += bant(i, z, '#EFE7DA'); i = z;
+    }
+    for (i = 0; i < NTE; i++) if (VERI.tt[NTR + i]) { if (ilk < 0) ilk = i; son = i; }
+    if (ilk >= 0) s += bant(ilk, son, '#E4D8C6') + '<text class="gr-b" x="' + ((X(ilk) + X(son)) / 2).toFixed(1) + '" y="' + (T - 10) + '" text-anchor="middle">Bayram</text>';
+    for (var v = ALT; v <= UST; v += 10) s += '<path d="M' + L + ' ' + Y(v).toFixed(1) + 'H' + (W - R) + '" stroke="#DDD2C0" stroke-width="1"/><text class="gr-y" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + v + '</text>';
+    s += '<text class="gr-y" x="0" y="' + (T - 10) + '">milyon m³</text>';
+    [[0, '1 Şub'], [14, '15 Şub'], [28, '1 Mar'], [42, '15 Mar'], [NTE - 1, '31 Mar']].forEach(function (a) {
+      s += '<text class="gr-x" x="' + X(a[0]).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + (a[0] === 0 ? 'start' : a[0] === NTE - 1 ? 'end' : 'middle') + '">' + a[1] + '</text>';
+    });
+    function yol(arr) { return arr.map(function (v, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); }).join(''); }
+    s += '<path d="' + yol(TE) + '" fill="none" stroke="#2A241C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    if (tahmin) s += '<path d="' + yol(tahmin) + '" fill="none" stroke="#C9471A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    return s + '</svg>';
+  }
+  function katkiAd(x, don) { return x.tur === 'filtre' ? FILTRE[x.id].eylem : x.tur === 'don' ? 'Sıcaklığı derece güne çevirmek' : kolAd(x.id, don); }
+  function ipucu(d, k) {
+    var cols = d.cols, ad = function (x) { return katkiAd(x, d.don); };
+    if (cols.indexOf('sic') < 0) return 'Doğalgaz tüketimini en çok ne belirliyor? Kombiler hangi günlerde daha çok yanıyor?';
+    if (d.cikar.indexOf('sifir') < 0) return 'İki yıllık kayıtta Ocak 2025’e bakın. Şehir kışın ortasında iki hafta hiç gaz kullanmamış olabilir mi? Hatalı günler, kolonların katkısını da yanlış gösterebilir.';
+    function en(liste) { return liste.sort(function (a, b) { return a.d - b.d; })[0]; }
+    var kotuF = en(k.filter(function (x) { return x.tur === 'filtre' && x.d <= -ESIK; }));
+    if (kotuF) return ad(kotuF) + ' hatayı artırdı. Bu günler hatalı değil, gerçek. Model onlardan da öğreniyordu.';
+    var kotuK = en(k.filter(function (x) { return x.tur === 'kol' && x.d <= -ESIK; }));
+    if (kotuK) return ad(kotuK) + ' hatayı artırdı. Model bu kolondan yanlış bir şey öğrendi, yerini başka bir kolona verebilirsiniz.';
+    var tesadufi = k.filter(function (x) { return x.tur === 'kol' && ILGISIZ[x.id] && x.d >= ESIK; })[0];
+    if (tesadufi) return ad(tesadufi) + ' gaz tüketimini gerçekten değiştirir mi? Görünen küçük katkı tesadüf olabilir, böyle bağlar yeni günlerde kolayca bozulur.';
+    var bos = k.filter(function (x) { return x.tur === 'kol' && Math.abs(x.d) < ESIK; })[0];
+    if (bos) return ad(bos) + ' tahmine bir şey katmadı. Yerini başka bir kolona verebilirsiniz.';
+    if (d.don !== 'hdd') return 'Sıcaklığı derece gün olarak vermeyi deneyin. Kombi 16 °C’nin üstünde yanmaz, bu bilgiyi modele siz verebilirsiniz.';
+    if (cols.indexOf('gun') < 0) return 'Grafikte gölgeli günler hafta sonu. Ofisler ve fabrikalar kapalıyken tüketim nasıl değişiyor?';
+    if (cols.indexOf('dun') < 0) return 'Bugünün tüketimi yarın hakkında bir şey söylüyor olabilir mi?';
+    if (cols.indexOf('tat') < 0) return 'Grafikteki bayram günlerine bakın. Model orada neden şaşıyor?';
+    if (cols.length < MAKS) return 'Hâlâ boş yeriniz var. Tüketimi etkileyebilecek başka bir kolon var mı?';
+    return 'Çok iyi. Verdiğiniz her karar tahmine bir şey katıyor.';
+  }
+  function gecmisHtml() {
+    var b = enIyi();
+    return '<ul class="gecmis">' + S.denemeler.map(function (d, i) {
+      var cls = d.hata === null ? 'yok' : (d.hata === b ? 'en' : '');
+      return '<li class="' + cls + '"><span>' + (i + 1) + '. deneme</span><span>' + adlar(d.cols, d.don) + '<small>' + cikarYazi(d.cikar).replace(/^./, function (c) { return c.toLocaleUpperCase('tr'); }) + '</small></span><b>' + (d.hata === null ? 'Geçersiz' : yuzde(d.hata)) + '</b></li>';
+    }).join('') + '</ul>';
+  }
+  function butonlarHtml() {
+    var son = kalanHak() === 0;
+    return '<div class="ileri">' + (son ? '' : '<button class="tus ana" type="button" id="tekrar">' + ikon('geri') + ' Kurulumu değiştir</button>') +
+      '<button class="tus ' + (son ? 'ana' : 'ikincil') + '" type="button" id="kapanis-gec">Kapanışa geç ' + ikon('ok') + '</button></div>' +
+      (son ? '' : '<p class="not">' + kalanHak() + ' deneme hakkınız kaldı.</p>');
+  }
+  function sonucHtml() {
+    var d = S.denemeler[S.denemeler.length - 1], no = S.denemeler.length, r = egit(d.cols, d.cikar, d.don);
+    var baslik = '<div class="baslik"><p class="ust">' + no + '. deneme · Sonuç</p><h1>' + (d.tuzak ? 'Kusursuz görünen model' : 'Model son iki ayı tahmin etti') + '</h1>' + cipler(d.cols, d.don) +
+      '<p class="not">Model ' + r.n + ' günden öğrendi, ' + cikarYazi(d.cikar) + '.</p></div>';
+    if (d.tuzak) {
+      return '<section class="sahne">' + baslik +
+        '<div class="kart tuzak"><p class="kpi-l">Geçmiş veride ortalama hata</p><p class="buyuk">' + yuzde(r.egitimHata) + '</p>' +
+        '<h2>Ama yarın için tahmin yapılamadı</h2><p class="giris-metin">Gün sonu sayaç toplamı, tahmin etmek istediğiniz günün kendi tüketimi. Bu bilgi yarın gece belli oluyor, tahmini ise bu gece yapıyorsunuz. Tahmin anında elde olmayan bir kolonla kurulan model sahada çalışmaz.</p>' +
+        '<p class="not">Bu deneme geçersiz sayıldı, bu kolon artık seçilemez.</p></div>' +
+        '<div class="kart"><h2>Denemeleriniz</h2>' + gecmisHtml() + '</div>' + butonlarHtml() + '</section>';
+    }
+    var k = katkilar(d.cols, d.cikar, d.don), mx = Math.max.apply(null, k.map(function (x) { return Math.abs(x.d); }).concat([0.5]));
+    var gruplar = [['filtre', 'Veri'], ['don', 'Alan bilgisi'], ['kol', 'Kolonlar']], liste = '';
+    gruplar.forEach(function (g) {
+      var ogeler = k.filter(function (x) { return x.tur === g[0]; }); if (!ogeler.length) return;
+      liste += '<li class="grup">' + g[1] + '</li>' + ogeler.map(function (x) {
+        var sifir = Math.abs(x.d) < ESIK, cls = sifir ? 'sifir' : (x.d < 0 ? 'eksi' : '');
+        var yazi = sifir ? 'Katkısı yok' : (x.d > 0 ? 'Hatayı ' + virgul(x.d, 1) + ' puan azalttı' : 'Hatayı ' + virgul(-x.d, 1) + ' puan artırdı');
+        return '<li class="' + cls + '"><div class="k-ust"><b>' + katkiAd(x, d.don) + '</b><span>' + yazi + '</span></div><div class="iz"><i style="width:' + (sifir ? 0 : Math.max(3, 100 * Math.abs(x.d) / mx)).toFixed(1) + '%"></i></div></li>';
+      }).join('');
+    });
+    var tavan = Math.max(UZMAN, d.hata);
+    return '<section class="sahne">' + baslik +
+      '<div class="kart"><div class="kpi"><div><p class="kpi-l">Yeni günlerde ortalama hata</p><p class="kpi-a">Model bu ' + NTE + ' günü hiç görmedi</p></div><p class="kpi-d">' + yuzde(d.hata) + '</p></div>' +
+      '<div class="kiyas"><div><span>Uzman</span><span class="iz"><i style="width:' + (100 * UZMAN / tavan).toFixed(1) + '%"></i></span><b>' + yuzde(UZMAN) + '</b></div>' +
+      '<div class="sen"><span>Modeliniz</span><span class="iz"><i style="width:' + Math.max(2, 100 * d.hata / tavan).toFixed(1) + '%"></i></span><b>' + yuzde(d.hata) + '</b></div></div></div>' +
+      '<div class="kart"><h2>Son iki ay, günlük tüketim</h2><div class="grafik" id="grafik"></div><div class="lejant"><span><i></i>Gerçek tüketim</span><span><i class="t"></i>Modelin tahmini</span><span><i class="h"></i>Hafta sonu</span></div></div>' +
+      '<div class="kart"><h2>Her karar ne kattı?</h2><ul class="katki">' + liste + '</ul><p class="ipucu">' + ikon('bilgi') + '<span>' + ipucu(d, k) + '</span></p></div>' +
+      '<div class="kart"><h2>Denemeleriniz</h2>' + gecmisHtml() + '</div>' + butonlarHtml() + '</section>';
+  }
+  function grafikCiz() {
+    var g = $('#grafik'); if (!g) return;
+    var d = S.denemeler[S.denemeler.length - 1];
+    g.innerHTML = grafikSvg(d && !d.tuzak ? egit(d.cols, d.cikar, d.don).tahmin : null, Math.max(280, Math.round(g.clientWidth)));
+  }
+  function kapanisHtml() {
+    var b = enIyi(), en = egit(EN_IYI.cols, EN_IYI.cikar, EN_IYI.don);
+    return '<section class="sahne"><div class="baslik"><p class="ust">Kapanış</p><h1>Model, ona verdiğiniz veri kadar iyi</h1></div>' +
+      '<div class="kart"><div class="kpi"><div><p class="kpi-l">' + esc(S.masa || 'Masanız') + ', en iyi sonucunuz</p><p class="kpi-a">Uzmanın hatası ' + yuzde(UZMAN) + '</p></div><p class="kpi-d">' + (b === null ? '?' : yuzde(b)) + '</p></div>' + gecmisHtml() + '</div>' +
+      '<div class="kart"><h2>Bu veride en iyi kurulum</h2>' +
+      '<div class="kurulum"><p>Eğitimden çıkarılan</p><div class="cipler"><span class="cip acik">' + FILTRE.sifir.ad + '</span></div></div>' +
+      '<div class="kurulum"><p>Kolonlar</p>' + cipler(EN_IYI.cols, EN_IYI.don, 'acik') + '</div>' +
+      '<p class="not">Yeni günlerde hata ' + yuzde(en.hata) + '. Borsa, maç ve nem gaz tüketimini etkilemiyor. Bayramları ya da hafta sonlarını çıkarmak modeli kötüleştiriyor, gün sonu sayaç toplamı ise tahmin anında elde yok.</p></div>' +
+      '<div class="ozet"><h2>Modeli kurarken dört soru</h2><ul class="ozet-l">' +
+      '<li><span class="rozet">1</span><div><b>Kayıt doğru mu?</b><p>Veri gelmeyen günlere yazılan 0 gerçek bir ölçüm değil. Sıra dışı ama gerçek günler ise kalmalı.</p></div></li>' +
+      '<li><span class="rozet">2</span><div><b>Kolonun hedefle ilgisi var mı?</b><p>Sıcaklık tüketimi değiştirir, borsa değiştirmez.</p></div></li>' +
+      '<li><span class="rozet">3</span><div><b>Tahmin anında elde olacak mı?</b><p>Yarının sayaç toplamı ancak yarın gece belli olur.</p></div></li>' +
+      '<li><span class="rozet">4</span><div><b>Alan bilgisi modelde mi?</b><p>Kombinin 16 °C’nin üstünde yanmadığını bilen kişi modeli güçlendirir.</p></div></li></ul>' +
+      '<p class="son">Algoritma hiç değişmedi, sonucu verdiğiniz kararlar değiştirdi.</p></div>' +
+      '<p class="not">En iyi hatanızı ve kurulumunuzu eğitmene söyleyin.</p></section>';
+  }
+
+  /* çizim ve olaylar */
+  function ciz() {
+    var e = $('#ekran'), x = S.ekran;
+    e.innerHTML = x === 'giris' ? girisHtml() : x === 'vaka' ? vakaHtml() : x === 'veri' ? veriHtml() : x === 'kolonlar' ? kolonlarHtml() : x === 'sonuc' ? sonucHtml() : kapanisHtml();
+    ust();
+    if (x === 'veri') veriGuncelle();
+    if (x === 'kolonlar') secilenGuncelle();
+    if (x === 'sonuc') grafikCiz();
+  }
+  function git(ekran) { S.ekran = ekran; kaydet(); ciz(); window.scrollTo(0, 0); }
+  function sec(id, t) {
+    var i = S.secim.indexOf(id);
+    if (i >= 0) { S.secim.splice(i, 1); return true; }
+    if (S.secim.length < MAKS) { S.secim.push(id); return true; }
+    var kart = document.querySelector('[data-kart="' + id + '"]');
+    if (kart) { kart.classList.remove('salla'); void kart.offsetWidth; kart.classList.add('salla'); }
+    secilenGuncelle('En fazla ' + MAKS + ' kolon seçebilirsiniz');
+    return false;
+  }
+  document.addEventListener('submit', function (ev) {
+    if (ev.target.id !== 'giris-form') return;
+    ev.preventDefault(); S.masa = ($('#masa').value || '').trim().slice(0, 24); git('vaka');
+  });
+  document.addEventListener('click', function (ev) {
+    var t = ev.target.closest('button'); if (!t || t.id === 'sifirla') return;
+    if (t.id === 'veri-gec' || t.id === 'veri-don') { git('veri'); return; }
+    if (t.id === 'kolon-gec') { git('kolonlar'); return; }
+    if (t.dataset.filtre) {
+      var f = t.dataset.filtre, j = S.cikar.indexOf(f);
+      if (j >= 0) S.cikar.splice(j, 1); else S.cikar.push(f);
+      kaydet(); veriGuncelle(); return;
+    }
+    if (t.dataset.don) {
+      S.don = t.dataset.don;
+      if (S.secim.indexOf('sic') < 0 && !sec('sic', t)) { kaydet(); return; }
+      kaydet(); secilenGuncelle(); return;
+    }
+    if (t.dataset.kol) { if (sec(t.dataset.kol, t)) { kaydet(); secilenGuncelle(); } return; }
+    if (t.id === 'egit' && S.secim.length && kalanHak() > 0 && !denendi()) {
+      var d = { cols: S.secim.slice(), cikar: S.cikar.slice(), don: S.don }, tuzak = d.cols.indexOf('say') >= 0;
+      $('#ekran').innerHTML = '<section class="sahne"><div class="kart yukle" role="status"><h2>Model eğitiliyor</h2><p class="not">' + egitimGunu(d.cikar) + ' günlük kayıttan, seçtiğiniz kolonlarla öğreniyor.</p><div class="yukle-c"><i></i></div></div></section>';
+      window.scrollTo(0, 0);
+      var oturum = S;
+      setTimeout(function () {
+        if (S !== oturum) return;
+        var r = egit(d.cols, d.cikar, d.don);
+        d.hata = tuzak ? null : Math.round(r.hata * 100) / 100; d.tuzak = tuzak;
+        S.denemeler.push(d);
+        if (tuzak) S.tuzak = true;
+        git('sonuc');
+      }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 1100);
+      return;
+    }
+    if (t.id === 'tekrar' && !S.bitti) { if (S.tuzak) S.secim = S.secim.filter(function (c) { return c !== 'say'; }); git('veri'); return; }
+    if (t.id === 'kapanis-gec') {
+      if (kalanHak() > 0 && !t.dataset.onay) {
+        t.dataset.onay = '1'; t.textContent = 'Kalan hakkınız yanacak, tekrar dokunun';
+        setTimeout(function () { if (t.isConnected) { delete t.dataset.onay; t.innerHTML = 'Kapanışa geç ' + ikon('ok'); } }, 3500);
+        return;
+      }
+      S.bitti = true; git('kapanis'); return;
+    }
+  });
+  var sifirla = $('#sifirla'), onayZaman = null;
+  sifirla.addEventListener('click', function () {
+    if (sifirla.dataset.onay) {
+      clearTimeout(onayZaman); delete sifirla.dataset.onay; sifirla.textContent = 'Baştan başla';
+      S = yeni(); kaydet(); ciz(); window.scrollTo(0, 0); return;
+    }
+    sifirla.dataset.onay = '1'; sifirla.textContent = 'Emin misiniz? Tekrar dokunun';
+    onayZaman = setTimeout(function () { delete sifirla.dataset.onay; sifirla.textContent = 'Baştan başla'; }, 3500);
+  });
+  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { grafikCiz(); gecmisCiz(); }, 150); });
+
+  function baslat(data) {
+    S = Object.assign(yeni(), data && data.ekran ? data : (yukle() || {}));
+    if (!Array.isArray(S.secim) || !Array.isArray(S.denemeler) || !Array.isArray(S.cikar)) S = yeni();
+    S.denemeler.forEach(function (d) { d.cikar = d.cikar || []; d.don = d.don || 'ham'; });
+    if (S.don !== 'hdd') S.don = 'ham';
+    if (S.ekran !== 'giris' && EKRANLAR.indexOf(S.ekran) < 0) S.ekran = 'giris';
+    if (S.ekran === 'sonuc' && !S.denemeler.length) S.ekran = 'veri';
+    if ((S.ekran === 'veri' || S.ekran === 'kolonlar') && kalanHak() <= 0) S.ekran = 'kapanis';
+    if (S.bitti) S.ekran = 'kapanis';
+    ciz();
+  }
+  try { if (window.claude && window.claude.hot && window.claude.hot.snapshot) window.claude.hot.snapshot(function () { return S; }); } catch (e) {}
+  var hot = window.claude && window.claude.hot;
+  if (hot && hot.ready) hot.ready(baslat); else baslat(hot && hot.data ? hot.data : {});
+})();
+</script>
+</body>
+</html>
