@@ -157,8 +157,9 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 @keyframes belir { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .hat-etiket.elle { color: var(--vurgu); border-color: var(--vurgu); }
 .hat-etiket .ik { width: 15px; height: 15px; }
-.zincir { display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr) 18px 60px; align-items: center; }
-.yuva { height: 78px; min-width: 0; border-radius: 12px; border: 2px dashed var(--kesik); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 4px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; }
+.zincir { display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr) 18px 60px; align-items: stretch; }
+.zincir .tel, .zincir .uc { align-self: center; }
+.yuva { min-height: 78px; min-width: 0; border-radius: 12px; border: 2px dashed var(--kesik); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 6px 4px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; }
 .yuva-n { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--kesik); }
 .yuva:hover { border-color: var(--metin2); }
 .secim-var .yuva:not(.dolu) { border-color: var(--metin2); background: var(--kagit); }
@@ -229,7 +230,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   .mini { width: 64px; height: 48px; }
   .mini svg { width: 56px; height: 37px; }
   .hat-etiket { font-size: 12px; padding: 2px 8px; }
-  .yuva { height: 68px; }
+  .yuva { min-height: 68px; }
   .dok { gap: 8px; padding-block: 8px calc(10px + env(safe-area-inset-bottom, 0px)); }
   .not { min-height: 52px; padding: 8px 12px; font-size: 14px; }
   .not .ik { width: 20px; height: 20px; }
@@ -263,7 +264,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-pompa" viewBox="0 0 24 24"><rect x="4" y="3.5" width="10" height="17" rx="1.5"/><rect x="6.5" y="6" width="5" height="4" rx=".6"/><path d="M14 9h2.2a1.3 1.3 0 0 1 1.3 1.3V16a1.5 1.5 0 0 0 3 0V8.5l-2-2"/><path d="M3 20.5h12"/></symbol>
   <symbol id="i-kasa" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></symbol>
-  <symbol id="i-bilgisayar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8.5 20.5h7M12 16v4.5"/><path d="M12 13V7.6M9.7 9.8 12 7.5l2.3 2.3"/></symbol>
+  <symbol id="i-litre" viewBox="0 0 24 24"><path d="M5 4v16M5 7h2.5M5 11h2.5M5 15h2.5"/><path d="M10 12h5M13 9.5l2.5 2.5-2.5 2.5"/><path d="M19.5 8.5c1.4 2 2.2 3.4 2.2 4.5a2.2 2.2 0 0 1-4.4 0c0-1.1.8-2.5 2.2-4.5z"/></symbol>
   <symbol id="i-aktarim" viewBox="0 0 24 24"><path d="M7.5 18.5H7a4 4 0 0 1-.6-7.95 5.5 5.5 0 0 1 10.6-1.3A4 4 0 0 1 17 18.5h-.5"/><path d="M12 20.5v-8M9.2 15.2 12 12.5l2.8 2.7"/></symbol>
   <symbol id="i-prob" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="11" rx="5.5"/><path d="M12 3v15M10.3 3h3.4"/><path d="M5.5 15h3M15.5 15h3"/></symbol>
   <symbol id="i-konsol" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12.5" rx="1.5"/><path d="m6.5 13 3-3.5 2.5 2 4.5-4.5"/><path d="M9 20.5h6M12 16.5v4"/></symbol>
@@ -301,31 +302,31 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
 
 <script>
 (function () {
-  var KEY = 'kaybolan-litreler-2';
+  var KEY = 'kaybolan-litreler-3';
   var HATLAR = {
-    stok: { ad: 'Stok', alt: 'Yeraltı tankındaki motorin miktarı', etiket: 'Otomatik · 15 dakikada bir', tur: 'oto',
-      bitti: 'On beş dakikada bir kendiliğinden ölçülüyor. Yükseklik önce litreye çevriliyor, sonra merkeze gidiyor.' },
-    teslimat: { ad: 'Teslimat', alt: 'Tankerle istasyona gelen motorin', etiket: 'Elle · her teslimatta', tur: 'elle',
-      bitti: 'Bu hatta insan eli var. Litre ve tarih, istasyon müdürü ne girdiyse o.' },
-    satis: { ad: 'Satış', alt: 'Her satış işlemi, yani bir müşterinin pompadan aldığı motorin', etiket: 'Otomatik · her satış işleminde', tur: 'oto',
-      bitti: 'Her müşteride kendiliğinden oluşuyor. Pompadan kasaya, kasadan istasyon bilgisayarına, oradan merkeze gidiyor.' }
+    stok: { ad: 'Stok', alt: 'Yeraltı tanklarındaki yakıt miktarı', etiket: 'Otomatik · yarım saatte bir', tur: 'oto',
+      bitti: 'Yarım saatte bir kendiliğinden ölçülüyor. Seviye önce litreye çevriliyor, sonra SAP’ye gidiyor.' },
+    teslimat: { ad: 'Teslimat', alt: 'Tankerle istasyona gelen yakıt', etiket: 'Elle · her teslimatta', tur: 'elle',
+      bitti: 'Bu hatta insan eli var. Litre ve tarih, istasyon müdürü SAP’ye ne girdiyse o.' },
+    satis: { ad: 'Satış', alt: 'Her satış işlemi, yani bir müşterinin pompadan aldığı yakıt', etiket: 'Otomatik · her satış işleminde', tur: 'oto',
+      bitti: 'Her müşteride kendiliğinden oluşuyor. Pompadan kasaya, kasadan SAP’ye gidiyor.' }
   };
   var SIRA = ['stok', 'teslimat', 'satis'];
-  var BILGISAYAR = { ad: 'İstasyon bilgisayarı', acik: 'Tankın ve pompaların verisini toplar, internet üzerinden genel müdürlüğe gönderir.', hat: ['stok', 'satis'], sira: 2, ikon: 'bilgisayar' };
+  var SAP = { ad: 'SAP', acik: 'Şirketin kayıt sistemi. İstasyondan gelen stok, teslimat ve satış kayıtları burada tutulur.', hat: ['stok', 'teslimat', 'satis'], sira: 2, ikon: 'sap' };
   var B = {
-    cubuk: { ad: 'Ölçüm çubuğu', acik: 'Yeraltı tankının içinde duran çubuk. Motorinin tankta ne kadar yükseldiğini ölçer.', hat: ['stok'], sira: 0, ikon: 'prob' },
-    ekran: { ad: 'Tank ekranı', acik: 'Çubuğun ölçtüğü yüksekliği litreye çevirir. Örneğin 1,8 metre, 21.400 litre demek.', hat: ['stok'], sira: 1, ikon: 'konsol' },
-    bil1: BILGISAYAR,
-    bil2: BILGISAYAR,
-    belge: { ad: 'Tanker belgesi', acik: 'Tankerle birlikte gelir. Dolum tesisinde tankere kaç litre motorin yüklendiğini yazar.', hat: ['teslimat'], sira: 0, ikon: 'belge' },
-    mudur: { ad: 'İstasyon müdürü', acik: 'Motorini teslim alır. Belgedeki litreyi ve tarihi sisteme elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
-    sap: { ad: 'SAP', acik: 'Şirketin satın alma ve stok kayıtlarını tuttuğu sistem. Müdürün girdiği teslimat burada durur.', hat: ['teslimat'], sira: 2, ikon: 'sap' },
-    pompa: { ad: 'Pompa sayacı', acik: 'Tabancadan müşterinin aracına akan motorini litre litre sayar.', hat: ['satis'], sira: 0, ikon: 'pompa' },
+    cubuk: { ad: 'Seviye ölçüm çubuğu', acik: 'Yeraltı tankının içinde duran çubuk. Yakıtın tankta ne kadar yükseldiğini ölçer.', hat: ['stok'], sira: 0, ikon: 'prob' },
+    litre: { ad: 'Seviyeden litreye', acik: 'Ölçülen seviyeyi tankın tablosuyla litreye çevirir. Örneğin 1,8 metre, 21.400 litre demek.', hat: ['stok'], sira: 1, ikon: 'litre' },
+    sap1: SAP,
+    sap2: SAP,
+    sap3: SAP,
+    belge: { ad: 'Tanker belgesi', acik: 'Tankerle birlikte gelir. Dolum tesisinde tankere kaç litre yakıt yüklendiğini yazar.', hat: ['teslimat'], sira: 0, ikon: 'belge' },
+    mudur: { ad: 'İstasyon müdürü', acik: 'Yakıtı teslim alır. Belgedeki litreyi ve tarihi SAP’ye elle girer.', hat: ['teslimat'], sira: 1, ikon: 'mudur' },
+    pompa: { ad: 'Pompa sayacı', acik: 'Tabancadan müşterinin aracına akan yakıtı litre litre sayar.', hat: ['satis'], sira: 0, ikon: 'pompa' },
     kasa: { ad: 'Kasa', acik: 'Satışı kapatır ve fişi keser. Saati, litreyi ve tutarı kaydeder.', hat: ['satis'], sira: 1, ikon: 'kasa' },
     kamera: { ad: 'Güvenlik kamerası', acik: 'Pompa alanını kaydeder. Görüntü üretir ama litre kaydı üretmez.', tuzak: true, ikon: 'kamera' },
     anket: { ad: 'Müşteri anketi', acik: 'Müşteri memnuniyetini ölçer. Litre kaydı üretmez.', tuzak: true, ikon: 'anket' }
   };
-  var TEPSI = ['kasa', 'cubuk', 'sap', 'kamera', 'bil1', 'mudur', 'pompa', 'belge', 'anket', 'ekran', 'bil2'];
+  var TEPSI = ['kasa', 'cubuk', 'sap1', 'kamera', 'mudur', 'pompa', 'sap2', 'belge', 'anket', 'litre', 'sap3'];
   var MINI = {
     stok: '<svg viewBox="0 0 72 48" aria-hidden="true"><defs><clipPath id="mk-tank"><rect x="8" y="19" width="56" height="25" rx="12.5"/></clipPath></defs>' +
       '<path d="M2 11H70" class="mk-zemin"/>' +
@@ -406,7 +407,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   function girisHtml() {
     return '<section class="sahne giris">' + KAHRAMAN +
       '<div class="baslik"><p class="ust">Veri okuryazarlığı · masa çalışması</p><h1>Kaybolan litreler</h1>' +
-      '<p class="giris-metin">Bir istasyonda motorin kayboluyor gibi görünüyor. Karar vermeden önce verinin hikâyesini çözün.</p></div>' +
+      '<p class="giris-metin">Bir istasyonda yakıt kayboluyor gibi görünüyor. Karar vermeden önce verinin hikâyesini çözün.</p></div>' +
       '<ol class="adim-l">' +
       '<li><span class="n">1</span><div><b>Doğumu</b><span class="s">Veri nasıl oluşuyor?</span></div></li>' +
       '<li><span class="n">2</span><div><b>Sağlığı</b><span class="s">Veri nerede bozuluyor?</span></div></li>' +
@@ -421,14 +422,14 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
   function vakaHtml() {
     return '<section class="sahne vaka">' +
       '<div class="baslik"><p class="ust">Vaka</p><h1>İstasyon 7, Eskişehir</h1></div>' +
-      '<div class="kpi"><div><p class="kpi-l">Ekim ayı motorin kayıp oranı</p><p class="kpi-d">%1,9</p><p class="kpi-a">16.800 litre, yaklaşık yarım tanker</p></div>' +
+      '<div class="kpi"><div><p class="kpi-l">Ekim ayı yakıt kayıp oranı</p><p class="kpi-d">%1,9</p><p class="kpi-a">16.800 litre, yaklaşık yarım tanker</p></div>' +
       '<div class="kpi-sag" aria-hidden="true">' +
       '<div class="cubuk v"><span>İstasyon 7</span><b>%1,9</b><i style="--w:95%"></i></div>' +
       '<div class="cubuk"><span>Şirket ortalaması</span><b>%0,2</b><i style="--w:10%"></i></div>' +
       '</div></div>' +
       '<div class="hikaye">' +
       '<p>Genel müdürlükteki analiz ekibisiniz. Ekim ayının yönetim panosunda İstasyon 7 kırmızı yanıyor.</p>' +
-      '<p>Kayıtlara göre ay boyunca tanka giren motorin ile satılan ve tankta kalan motorin birbirini tutmuyor. Aradaki fark 16.800 litre.</p>' +
+      '<p>Kayıtlara göre ay boyunca tanklara giren yakıt ile satılan ve tanklarda kalan yakıt birbirini tutmuyor. Aradaki fark 16.800 litre.</p>' +
       '<p>Yönetim yarın sabah istasyona kaçak şüphesiyle denetim gönderip göndermeyeceğine karar verecek. Kararı vermeden önce sizden veriye bakmanızı istiyor.</p>' +
       '</div>' +
       '<div class="formul"><p class="formul-b">Kayıp nasıl hesaplanıyor?</p>' +
@@ -461,7 +462,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     }).join('');
     return '<section class="sahne r1">' +
       '<div class="baslik"><div class="ust-s"><p class="ust">1. tur · Doğumu</p><span class="sure" id="sure"></span></div><h1>Veri nasıl oluşuyor?</h1>' +
-      '<p class="giris-metin">Kayıp oranı üç veriden hesaplanıyor. Tankta ne kadar motorin var, tankerle ne kadar geldi, müşterilere ne kadar satıldı? Her verinin yolunu, doğduğu yerden veri platformuna kadar kurun.</p></div>' +
+      '<p class="giris-metin">Kayıp oranı üç veriden hesaplanıyor. Tanklarda ne kadar yakıt var, tankerle ne kadar geldi, müşterilere ne kadar satıldı? Her verinin yolunu, doğduğu yerden veri platformuna kadar kurun.</p></div>' +
       '<div class="ipucu">' + ikon('dokun') + '<span>Önce bir bloğa, sonra boş yuvaya dokunun.</span></div>' +
       '<div class="hatlar">' + SIRA.map(hatHtml).join('') + '</div>' +
       '<div class="ozet" id="ozet" hidden></div>' +
@@ -473,7 +474,7 @@ h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(
     var dogru = Object.keys(S.r1.yer).length;
     return '<h2>Üç hat da veri platformunda buluştu</h2>' +
       '<ul class="ozet-l">' +
-      '<li><b>Stok</b><span>' + ikon('oto') + 'Otomatik</span><span>15 dakikada bir</span></li>' +
+      '<li><b>Stok</b><span>' + ikon('oto') + 'Otomatik</span><span>Yarım saatte bir</span></li>' +
       '<li class="elle"><b>Teslimat</b><span>' + ikon('mudur') + 'Elle</span><span>Her teslimatta</span></li>' +
       '<li><b>Satış</b><span>' + ikon('oto') + 'Otomatik</span><span>Her satış işleminde</span></li>' +
       '</ul>' +
