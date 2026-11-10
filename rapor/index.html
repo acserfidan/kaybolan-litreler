@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Raporu denetle · Ünite 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600&display=swap">
+<style>
+/* Layout: a table activity for phones and laptops. Case screen, then the audit screen (two weeks of fictional
+   unit data next to an AI written summary of 8 sentences, one decision per sentence, 8 minute timer), then the
+   result screen with the score and the reason behind every sentence. Same warm paper look as the training deck. */
+:root {
+  --zemin: #EFE7DA; --yuzey: #F9F5EE; --kagit: #FFFCF6; --cizgi: #DDD2C0; --kesik: #B8AC99;
+  --metin: #2A241C; --metin2: #6A5F50; --metin-h: #43392D; --vurgu: #C9471A; --tus-metin: #F9F5EE;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', Arial, sans-serif; --govde: 'Barlow', Arial, Helvetica, sans-serif;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(130px + env(safe-area-inset-top, 0px)); }
+body { margin: 0; background: var(--zemin); color: var(--metin); font-family: var(--govde); font-size: 16px; line-height: 1.5; }
+button, input { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--vurgu); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.ik { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--zemin); }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--zemin); border-bottom: 1px solid var(--cizgi); }
+.bar-in { max-width: 1180px; margin: 0 auto; padding-block: 12px 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 16px; }
+.marka { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.marka b { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1; white-space: nowrap; }
+.marka span { font-size: 14px; color: var(--metin2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.saat { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.saat span { font-size: 13px; color: var(--metin2); }
+.saat b { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1; }
+.saat.az b { color: var(--vurgu); }
+.adimlar { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.adimlar li { display: flex; flex-direction: column; gap: 5px; min-width: 0; font-size: 12px; color: var(--metin2); white-space: nowrap; }
+.adimlar li::before { content: ""; height: 4px; border-radius: 2px; background: var(--cizgi); transition: background .3s; }
+.adimlar li.gecti::before { background: var(--metin2); }
+.adimlar li.simdi { color: var(--metin); font-weight: 500; }
+.adimlar li.simdi::before { background: var(--vurgu); }
+.sekme { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; gap: 8px; align-items: center; }
+.sekme button { min-height: 40px; border-radius: 999px; border: 2px solid var(--cizgi); background: var(--yuzey); font-size: 15px; font-weight: 500; cursor: pointer; }
+.sekme em { font-style: normal; font-size: 14px; color: var(--metin2); font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 4px; }
+
+.ekran { max-width: 820px; margin: 0 auto; padding-block: 28px 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ekran.genis { max-width: 1180px; }
+.sahne { display: flex; flex-direction: column; gap: 22px; }
+.baslik { display: flex; flex-direction: column; gap: 10px; }
+.ust { margin: 0; font-size: 15px; font-weight: 500; color: var(--metin2); }
+h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(36px, 7.4vw, 54px); line-height: 1.02; text-wrap: balance; }
+h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.15; }
+.giris-metin { margin: 0; font-size: 18px; line-height: 1.5; color: var(--metin2); max-width: 60ch; }
+.not { font-size: 14px; color: var(--metin2); margin: 0; }
+
+.tus { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 10px 24px; border-radius: 999px; font-size: 17px; font-weight: 500; cursor: pointer; transition: background .2s, border-color .2s, color .2s, transform .1s; }
+.tus:active { transform: scale(.98); }
+.tus.ana { background: var(--metin); border: 2px solid var(--metin); color: var(--tus-metin); }
+.tus.ana:hover { background: var(--metin-h); border-color: var(--metin-h); }
+.tus.ikincil { background: transparent; border: 2px solid var(--metin2); color: var(--metin); }
+.tus.ikincil:hover { background: var(--yuzey); }
+.ileri { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+
+.kart { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.kart > p { margin: 0; }
+.etiket { margin: 0; font-size: 14px; font-weight: 500; color: var(--metin2); }
+.form { display: flex; flex-direction: column; gap: 8px; }
+.form label { font-weight: 500; }
+.form input { min-height: 52px; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); padding: 10px 16px; font-size: 18px; }
+.kural { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.kural li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 16px; }
+.rozet { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; border: 2px solid var(--cizgi); font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--metin2); background: var(--kagit); }
+.puanlar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.puanlar div { border-radius: 12px; background: var(--kagit); border: 2px solid var(--cizgi); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.puanlar span { font-size: 14px; color: var(--metin2); }
+.puanlar b { font-family: var(--display); font-weight: 600; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* denetim ekranı */
+.denetim { display: grid; gap: 22px; }
+.bolum { display: flex; flex-direction: column; gap: 12px; }
+.bolum-b { display: flex; flex-direction: column; gap: 4px; }
+.tablo-kap { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+thead th { position: sticky; top: 0; background: var(--yuzey); text-align: right; font-size: 13px; font-weight: 500; color: var(--metin2); line-height: 1.25; padding: 10px 10px 8px; border-bottom: 2px solid var(--cizgi); vertical-align: bottom; }
+thead th:first-child { text-align: left; }
+thead th small { display: block; font-size: 12px; font-weight: 400; }
+tbody td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--cizgi); font-size: 16px; white-space: nowrap; }
+tbody td:first-child { text-align: left; }
+tbody td:first-child span { color: var(--metin2); font-size: 13px; margin-left: 4px; }
+tr.hafta th { text-align: left; padding: 8px 10px 6px; font-size: 13px; font-weight: 600; color: var(--metin2); background: var(--zemin); border-bottom: 1px solid var(--cizgi); letter-spacing: .02em; }
+tr.notu td { text-align: left; white-space: normal; font-size: 14px; line-height: 1.4; color: var(--metin); background: var(--kagit); padding: 8px 10px 9px 12px; border-left: 4px solid var(--metin2); }
+tr.notu td b { font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+
+.belge { background: var(--kagit); border: 2px solid var(--cizgi); border-radius: 16px; overflow: hidden; }
+.belge-b { padding: 16px 18px 14px; border-bottom: 2px solid var(--cizgi); display: flex; flex-direction: column; gap: 4px; background: var(--yuzey); }
+.belge-b p { margin: 0; font-size: 14px; color: var(--metin2); display: flex; align-items: center; gap: 6px; }
+.cumleler { list-style: none; margin: 0; padding: 0; }
+.cumle { padding: 16px 18px; border-bottom: 1px solid var(--cizgi); display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 12px; }
+.cumle:last-child { border-bottom: 0; }
+.cumle p { margin: 0; font-size: 17px; line-height: 1.45; }
+.karar { grid-column: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.karar button { min-height: 44px; padding: 6px 8px; border-radius: 12px; border: 2px solid var(--kesik); background: var(--kagit); font-size: 15px; font-weight: 500; line-height: 1.15; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+.karar button:hover { border-color: var(--metin2); }
+.karar button[aria-pressed="true"] { background: var(--metin); border-color: var(--metin); color: var(--tus-metin); }
+.gonder { display: flex; flex-direction: column; gap: 10px; }
+
+/* sonuç ekranı */
+.kpi { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.kpi-l { margin: 0; font-size: 15px; font-weight: 500; color: var(--metin2); }
+.kpi-a { margin: 4px 0 0; font-size: 15px; color: var(--metin2); }
+.kpi-d { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(64px, 16vw, 96px); line-height: .9; color: var(--vurgu); font-variant-numeric: tabular-nums; }
+.sonuclar { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.sonuc { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 16px 18px; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 6px 12px; }
+.sonuc.hatali { border-color: var(--metin2); }
+.sonuc > div { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sonuc .c { margin: 0; font-size: 17px; line-height: 1.45; }
+.sonuc .h { margin: 0; font-size: 15px; line-height: 1.5; color: var(--metin2); }
+.satir { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.cip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 999px; font-size: 14px; font-weight: 500; border: 2px solid var(--cizgi); background: var(--kagit); white-space: nowrap; }
+.cip.dogrusu { background: var(--metin); border-color: var(--metin); color: var(--tus-metin); }
+.cip.tur { border-color: var(--vurgu); color: var(--vurgu); }
+.cip .ik { width: 16px; height: 16px; stroke-width: 2.4; }
+.cip.iyi { border-color: var(--metin); }
+.cip.kotu { border-color: var(--vurgu); }
+.hap { background: var(--metin); color: var(--tus-metin); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.hap p { margin: 0; font-size: 18px; line-height: 1.45; }
+.hap .etiket { color: #D9CDBB; }
+details.veri-tekrar { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; }
+details.veri-tekrar summary { cursor: pointer; padding: 14px 18px; font-weight: 500; }
+details.veri-tekrar .tablo-kap { border: 0; border-top: 2px solid var(--cizgi); border-radius: 0; }
+
+.alt { max-width: 1180px; margin: 0 auto; padding-block: 18px calc(24px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--metin2); }
+.alt button { background: none; border: 0; padding: 0; font-size: 13px; color: var(--metin2); text-decoration: underline; cursor: pointer; }
+
+@media (min-width: 1000px) {
+  .denetim { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: start; gap: 28px; }
+  .denetim .veri-bolum { position: sticky; top: calc(96px + env(safe-area-inset-top, 0px)); }
+  .sekme { display: none; }
+  html { scroll-padding-top: 100px; }
+}
+@media (max-width: 380px) {
+  tbody td { padding: 7px 7px; font-size: 15px; }
+  thead th { padding: 10px 7px 8px; }
+  .karar button { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-tik" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-eksi" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+  <symbol id="i-yz" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="marka"><b>Raporu denetle</b><span id="masa-ad">Ünite 11</span></div>
+    <div class="saat" id="saat" hidden aria-live="off"><span>Süre</span><b id="kalan">8:00</b></div>
+    <ol class="adimlar" id="adimlar"><li>Vaka</li><li>Denetim</li><li>Sonuç</li></ol>
+    <div class="sekme" id="sekme" hidden>
+      <button type="button" data-git="veri">Veri</button>
+      <button type="button" data-git="ozet">AI’ın özeti</button>
+      <em id="sayac">0/8 karar</em>
+    </div>
+  </div>
+</header>
+<main class="ekran" id="ekran"></main>
+<footer class="alt"><span>Şirket, ünite ve bütün rakamlar kurgusaldır</span><button type="button" id="sifirla">Baştan başla</button></footer>
+
+<script>
+(function () {
+  var SURE = 8 * 60;
+  // tarih, gün, şarj (ton/saat), fırın çıkış sıcaklığı (°C), motorin verimi (%), vardiya notu
+  var VERI = [
+    ['2 Mart', 'Pzt', 415, 356, 33.1],
+    ['3 Mart', 'Sal', 421, 357, 33.4],
+    ['4 Mart', 'Çar', 418, 355, 32.9],
+    ['5 Mart', 'Per', 368, 356, 32.6, 'Planlı bakım. P-101 şarj pompası 8 saat devre dışı.'],
+    ['6 Mart', 'Cum', 409, 358, 33.2],
+    ['7 Mart', 'Cmt', 431, 357, 33.5],
+    ['8 Mart', 'Paz', 426, 356, 33.0],
+    ['9 Mart', 'Pzt', 417, 357, 33.3],
+    ['10 Mart', 'Sal', 404, 359, 30.8, 'Ham petrol karışımı değişti, yeni karışım daha ağır.'],
+    ['11 Mart', 'Çar', 398, 361, 30.2],
+    ['12 Mart', 'Per', 422, 362, 29.9],
+    ['13 Mart', 'Cum', 410, 360, 30.4, 'Ürün analizörü kalibre edildi.'],
+    ['14 Mart', 'Cmt', 413, 361, 30.1],
+    ['15 Mart', 'Paz', 416, 360, 30.6]
+  ];
+  var CUMLE = [
+    { t: 'İki haftalık ortalama şarj 412 ton/saat oldu.', d: 'D',
+      a: 'On dört günün şarj ortalaması tam 412 ton/saat.' },
+    { t: 'En yüksek şarj 12 Mart’ta 438 ton/saat olarak gerçekleşti.', d: 'H', tur: 'Yanlış değer ve tarih',
+      a: 'Tabloda 438 diye bir değer yok. En yüksek şarj 7 Mart’ta 431 ton/saat, 12 Mart’ta şarj 422 ton/saat.' },
+    { t: 'Şarjın en düşük olduğu gün 5 Mart oldu, o gün planlı pompa bakımı vardı.', d: 'D',
+      a: 'En düşük şarj 5 Mart’ta 368 ton/saat. Vardiya notunda o gün P-101 pompasının planlı bakımı var.' },
+    { t: 'Fırın çıkış sıcaklığı iki hafta boyunca 355 ile 362 °C arasında kaldı.', d: 'D',
+      a: 'En düşük sıcaklık 4 Mart’ta 355 °C, en yüksek 12 Mart’ta 362 °C.' },
+    { t: 'Motorin verimi ikinci haftada birinci haftaya göre arttı.', d: 'H', tur: 'Ters çevrilmiş eğilim',
+      a: 'Motorin verimi birinci hafta ortalama yüzde 33,1, ikinci hafta yüzde 30,8. Verim artmadı, düştü. Özet kendi içinde de çelişiyor, 6. ve 7. cümle düşüşü anlatıyor.' },
+    { t: 'Ham petrol değişikliğinden sonra motorin verimi hiçbir gün yüzde 31’e ulaşmadı.', d: 'D',
+      a: '10 Mart’tan itibaren en yüksek motorin verimi yüzde 30,8, hiçbir gün 31’e ulaşmadı.' },
+    { t: 'Verimdeki düşüşün nedeni fırın çıkış sıcaklığının düşürülmesidir.', d: 'H', tur: 'Dayanaksız sebep',
+      a: 'Fırın çıkış sıcaklığı düşürülmedi, tersine birinci hafta ortalama 356, ikinci hafta 360 °C. Verim 10 Mart’ta düştü ve vardiya notunda o gün ham petrol karışımının değiştiği yazıyor.' },
+    { t: 'Bu dönemde ünitenin enerji tüketimi yüzde 3 azaldı.', d: 'H', tur: 'Veride olmayan rakam',
+      a: 'Tabloda enerji tüketimi diye bir veri yok. Bu rakamın hiçbir dayanağı yok, AI uydurdu.' }
+  ];
+  var SECENEK = [['D', 'Doğru'], ['H', 'Hatalı'], ['E', 'Emin değiliz']];
+  var ANAHTAR = 'raporDenetle.v1';
+
+  var durum = yukle() || yeni();
+  function yeni() { return { faz: 'vaka', masa: '', basla: 0, bitis: 0, doldu: false, karar: CUMLE.map(function () { return null; }) }; }
+  function yukle() { try { var s = JSON.parse(localStorage.getItem(ANAHTAR)); return s && s.karar && s.karar.length === CUMLE.length ? s : null; } catch (e) { return null; } }
+  function kaydet() { try { localStorage.setItem(ANAHTAR, JSON.stringify(durum)); } catch (e) {} }
+
+  var ekran = document.getElementById('ekran');
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function sayi(x) { return String(x).replace('.', ','); }
+  function ik(id) { return '<svg class="ik" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+
+  function tablo() {
+    var h = '<div class="tablo-kap"><table><thead><tr><th>Tarih</th><th>Şarj<small>ton/saat</small></th><th>Fırın çıkış<small>°C</small></th><th>Motorin verimi<small>%</small></th></tr></thead><tbody>';
+    VERI.forEach(function (r, i) {
+      if (i === 0) h += '<tr class="hafta"><th colspan="4">1. hafta</th></tr>';
+      if (i === 7) h += '<tr class="hafta"><th colspan="4">2. hafta</th></tr>';
+      h += '<tr><td>' + r[0] + '<span>' + r[1] + '</span></td><td>' + r[2] + '</td><td>' + r[3] + '</td><td>' + sayi(r[4].toFixed(1)) + '</td></tr>';
+      if (r[5]) h += '<tr class="notu"><td colspan="4"><b>Vardiya notu, ' + r[0] + '.</b> ' + esc(r[5]) + '</td></tr>';
+    });
+    return h + '</tbody></table></div>';
+  }
+
+  function adim(n) {
+    var li = $('adimlar').children;
+    for (var i = 0; i < li.length; i++) li[i].className = i < n ? 'gecti' : i === n ? 'simdi' : '';
+  }
+
+  function ciz() {
+    $('masa-ad').textContent = durum.masa ? durum.masa + ' · Ünite 11' : 'Ünite 11';
+    if (durum.faz === 'vaka') vakaCiz();
+    else if (durum.faz === 'denetim') denetimCiz();
+    else sonucCiz();
+    saatGuncelle();
+  }
+
+  function vakaCiz() {
+    adim(0);
+    $('saat').hidden = true; $('sekme').hidden = true;
+    ekran.className = 'ekran';
+    ekran.innerHTML =
+      '<div class="sahne">' +
+      '<div class="baslik"><p class="ust">Masa çalışması · yaklaşık 12 dakika</p><h1>Raporu denetle</h1>' +
+      '<p class="giris-metin">Vardiya mühendisi ünitenin iki haftalık performans özetini AI’a yazdırdı ve size gönderdi. Yarın sabah bu özeti yönetim toplantısında siz sunacaksınız. Sunmadan önce kontrol edin.</p></div>' +
+      '<div class="kart"><p class="etiket">Vaka</p><h2>Ünite 11, ham petrol ünitesi</h2><p class="not">Kurgusal bir rafineri. Şirket, ünite ve bütün rakamlar kurgusal.</p></div>' +
+      '<div class="kart"><p class="etiket">Nasıl oynanır</p><ol class="kural">' +
+      '<li><span class="rozet">1</span><span>Önce veriye bakın. Ünitenin iki haftalık kaydı ve vardiya notları var.</span></li>' +
+      '<li><span class="rozet">2</span><span>Sonra AI’ın yazdığı 8 cümlenin her birini veriyle karşılaştırın.</span></li>' +
+      '<li><span class="rozet">3</span><span>Her cümle için karar verin. Doğru, hatalı ya da emin değiliz.</span></li></ol></div>' +
+      '<div class="kart"><p class="etiket">Puanlama</p><div class="puanlar">' +
+      '<div><span>Doğru karar</span><b>+1</b></div><div><span>Yanlış karar</span><b>−1</b></div><div><span>Emin değiliz</span><b>0</b></div></div>' +
+      '<p class="not">Veride dayanağı olmayan bir cümle de hatalı sayılır. Süre 8 dakika, süre bitince kararlarınız kendiliğinden gönderilir.</p></div>' +
+      '<div class="form"><label for="masa">Masanızın adı</label><input id="masa" maxlength="24" placeholder="Örneğin Masa 3" value="' + esc(durum.masa) + '"></div>' +
+      '<div class="ileri"><button type="button" class="tus ana" id="basla">Başla ' + ik('i-ok') + '</button></div>' +
+      '</div>';
+    $('basla').onclick = function () {
+      durum.masa = $('masa').value.trim();
+      durum.faz = 'denetim'; durum.basla = Date.now(); kaydet(); ciz(); window.scrollTo(0, 0);
+    };
+  }
+
+  function denetimCiz() {
+    adim(1);
+    $('saat').hidden = false; $('sekme').hidden = false;
+    ekran.className = 'ekran genis';
+    var c = '';
+    CUMLE.forEach(function (s, i) {
+      c += '<li class="cumle"><span class="rozet">' + (i + 1) + '</span><p>' + esc(s.t) + '</p>' +
+        '<div class="karar" role="group" aria-label="' + (i + 1) + '. cümle için karar">' +
+        SECENEK.map(function (o) { return '<button type="button" data-i="' + i + '" data-k="' + o[0] + '" aria-pressed="' + (durum.karar[i] === o[0]) + '">' + o[1] + '</button>'; }).join('') +
+        '</div></li>';
+    });
+    ekran.innerHTML =
+      '<div class="denetim">' +
+      '<section class="bolum veri-bolum" id="veri"><div class="bolum-b"><h2>Veri</h2><p class="not">Ünite 11, 2 ile 15 Mart 2026, günlük ortalamalar ve vardiya notları</p></div>' + tablo() + '</section>' +
+      '<section class="bolum" id="ozet"><div class="belge"><div class="belge-b"><h3>Ünite 11 performans özeti</h3><p>' + ik('i-yz') + '2 ile 15 Mart 2026 · AI ile hazırlandı</p></div><ol class="cumleler">' + c + '</ol></div>' +
+      '<div class="gonder"><p class="not" id="kalan-not"></p><div class="ileri"><button type="button" class="tus ana" id="gonder">Kararları gönder ' + ik('i-ok') + '</button></div></div></section>' +
+      '</div>';
+    ekran.querySelectorAll('.karar button').forEach(function (b) {
+      b.onclick = function () {
+        var i = +b.dataset.i, k = b.dataset.k;
+        durum.karar[i] = durum.karar[i] === k ? null : k; kaydet();
+        b.parentNode.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(durum.karar[i] === x.dataset.k)); });
+        sayacGuncelle();
+      };
+    });
+    $('gonder').onclick = function () { bitir(false); };
+    sayacGuncelle();
+  }
+
+  function sayacGuncelle() {
+    var n = durum.karar.filter(function (k) { return k; }).length;
+    $('sayac').textContent = n + '/8 karar';
+    var bos = CUMLE.length - n, kn = $('kalan-not');
+    if (kn) kn.textContent = bos ? bos + ' cümle kararsız. Boş kalan cümleler emin değiliz sayılır.' : 'Sekiz cümlenin hepsine karar verdiniz.';
+  }
+
+  document.querySelectorAll('.sekme button').forEach(function (b) {
+    b.onclick = function () { var el = $(b.dataset.git); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  });
+
+  function bitir(doldu) {
+    durum.faz = 'sonuc'; durum.bitis = Date.now(); durum.doldu = doldu; kaydet(); ciz(); window.scrollTo(0, 0);
+  }
+
+  function puan() {
+    var p = 0, d = 0, y = 0, e = 0;
+    CUMLE.forEach(function (s, i) {
+      var k = durum.karar[i];
+      if (!k || k === 'E') { e++; } else if (k === s.d) { p++; d++; } else { p--; y++; }
+    });
+    return { p: p, d: d, y: y, e: e };
+  }
+
+  function sureYaz(ms) {
+    var s = Math.max(0, Math.round(ms / 1000)); var dk = Math.floor(s / 60), sn = s % 60;
+    return (dk ? dk + ' dk ' : '') + sn + ' sn';
+  }
+
+  function sonucCiz() {
+    adim(2);
+    $('saat').hidden = true; $('sekme').hidden = true;
+    ekran.className = 'ekran';
+    var r = puan();
+    var ad = { D: 'Doğru', H: 'Hatalı', E: 'Emin değiliz' };
+    var l = '';
+    var dedi = { D: 'Siz ‘doğru’ dediniz', H: 'Siz ‘hatalı’ dediniz', E: 'Siz ‘emin değiliz’ dediniz' };
+    CUMLE.forEach(function (s, i) {
+      var k = durum.karar[i] || 'E';
+      var yazi = durum.karar[i] ? dedi[k] : 'Karar vermediniz';
+      var isaret = k === 'E' ? '<span class="cip">' + ik('i-eksi') + yazi + '</span>'
+        : k === s.d ? '<span class="cip iyi">' + ik('i-tik') + yazi + '</span>'
+        : '<span class="cip kotu">' + ik('i-x') + yazi + '</span>';
+      l += '<li class="sonuc' + (s.d === 'H' ? ' hatali' : '') + '"><span class="rozet">' + (i + 1) + '</span><div>' +
+        '<p class="c">' + esc(s.t) + '</p>' +
+        '<div class="satir"><span class="cip dogrusu">Cümle ' + (s.d === 'D' ? 'doğru' : 'hatalı') + '</span>' + isaret + (s.tur ? '<span class="cip tur">' + s.tur + '</span>' : '') + '</div>' +
+        '<p class="h">' + esc(s.a) + '</p></div></li>';
+    });
+    var sure = durum.doldu ? 'Süre doldu, kararlarınız kendiliğinden gönderildi.' : 'Kontrol süreniz ' + sureYaz(durum.bitis - durum.basla) + '.';
+    ekran.innerHTML =
+      '<div class="sahne">' +
+      '<div class="baslik"><p class="ust">Sonuç' + (durum.masa ? ' · ' + esc(durum.masa) : '') + '</p><h1>Dört cümle hatalıydı</h1></div>' +
+      '<div class="kart kpi"><div><p class="kpi-l">Puanınız</p><p class="kpi-a">En yüksek puan 8. ' + sure + '</p></div><p class="kpi-d">' + (r.p < 0 ? '−' + (-r.p) : r.p) + '</p></div>' +
+      '<div class="puanlar"><div><span>Doğru karar</span><b>' + r.d + '</b></div><div><span>Yanlış karar</span><b>' + r.y + '</b></div><div><span>Emin değiliz</span><b>' + r.e + '</b></div></div>' +
+      '<ol class="sonuclar">' + l + '</ol>' +
+      '<div class="hap"><p class="etiket">Akılda kalsın</p><p>Dört hatanın dördü de emin bir dille yazılmıştı. AI’ın yazdığı her rakamı ve her sebebi verisiyle karşılaştırın. Veride dayanağı olmayan bir cümle, ne kadar emin yazılırsa yazılsın hatalıdır.</p></div>' +
+      '<details class="veri-tekrar"><summary>Veriye tekrar bak</summary>' + tablo() + '</details>' +
+      '</div>';
+  }
+
+  function saatGuncelle() {
+    if (durum.faz !== 'denetim') return;
+    var kalan = SURE - Math.floor((Date.now() - durum.basla) / 1000);
+    if (kalan <= 0) { bitir(true); return; }
+    $('kalan').textContent = Math.floor(kalan / 60) + ':' + String(kalan % 60).padStart(2, '0');
+    $('saat').classList.toggle('az', kalan <= 60);
+  }
+  setInterval(saatGuncelle, 500);
+
+  $('sifirla').onclick = function () {
+    if (durum.faz !== 'vaka' && !confirm('Baştan başlamak istediğinize emin misiniz? Kararlarınız silinecek.')) return;
+    var masa = durum.masa; durum = yeni(); durum.masa = masa; kaydet(); ciz(); window.scrollTo(0, 0);
+  };
+
+  ciz();
+})();
+</script>
+</body>
+</html>
