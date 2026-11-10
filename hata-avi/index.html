@@ -99,6 +99,12 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
 .tur-kart { background: var(--yuzey); border: 2px solid var(--vurgu); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
 .tur-kart b { font-family: var(--display); font-weight: 600; font-size: 34px; line-height: 1.05; color: var(--vurgu); }
 .tur-kart p { margin: 0; }
+.isaret { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.isaret ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.isaret li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; }
+.isaret li .ik { width: 24px; height: 24px; color: var(--vurgu); margin-top: 1px; }
+.isaret li b { display: block; font-weight: 600; font-size: 17px; line-height: 1.35; }
+.isaret li span { display: block; font-size: 16px; line-height: 1.5; margin-top: 2px; }
 .kontrol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .kontrol li { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 6px 12px; }
 .kontrol li.uydurma { border-color: var(--vurgu); }
@@ -134,6 +140,7 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
   <symbol id="i-saat" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-yz" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+  <symbol id="i-uyari" viewBox="0 0 24 24"><path d="M12 3.8L21.2 19.5H2.8z"/><path d="M12 9.5v4.5M12 16.8v.2"/></symbol>
   <symbol id="i-dis" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
 </svg>
 
@@ -162,8 +169,8 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
           k: 'Brynjolfsson, Li ve Raymond, “Generative AI at Work”, NBER, 2023' },
         { t: 'BCG’de 758 danışmanla yapılan deneyde, GPT-4 kullananlar AI’ın iyi olduğu türden görevleri yüzde 25 daha hızlı ve yüzde 40 daha kaliteli tamamladı.',
           k: 'Dell’Acqua ve diğerleri, “Navigating the Jagged Technological Frontier”, Harvard Business School, 2023' },
-        { t: 'AI destekli karar araçlarını kullanan yöneticilerin stratejik kararlarındaki hata oranı yüzde 32 azaldı.',
-          k: 'Stanford Graduate School of Business, “AI and Executive Decision Quality”, 2024' }
+        { t: '1.200 üst düzey yöneticiyle yapılan çalışmada, stratejik kararlarını ChatGPT’ye danışarak alan yöneticilerin hatalı karar oranı yüzde 32 düştü.',
+          k: 'Stanford Graduate School of Business, “AI and Executive Decision Quality”, 2021' }
       ],
       kapanis: 'Bu üç bulgu, AI yatırımının verimliliğe etkisini yönetim kuruluna güçlü biçimde anlatmanızı sağlar.',
       soru: 'Hangi kaynak uydurma?',
@@ -171,15 +178,24 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
       dogru: '3',
       dogruMetin: '3. bulgunun kaynağı uydurma.',
       kontrol: [
-        { ok: true, h: 'NBER’in Nisan 2023 tarihli çalışması. 5.179 çalışan, ortalamada yüzde 14, yeni başlayanlarda yüzde 34 artış. Rakamlar kaynakla aynı.', link: 'https://www.nber.org/papers/w31161' },
-        { ok: true, h: 'Harvard Business School’un Eylül 2023 tarihli çalışması. 758 BCG danışmanı, AI’ın iyi olduğu görevlerde yüzde 25 daha hızlı ve yüzde 40 daha kaliteli iş. Rakamlar kaynakla aynı.', link: 'https://doi.org/10.2139/ssrn.4573321' },
-        { ok: false, h: 'Stanford’da bu adla bir çalışma yok, yüzde 32 rakamının da hiçbir dayanağı yok. Üç bulgunun en çekicisi, yönetim kuruluna en çok koymak isteyeceğiniz cümle buydu.' }
+        { ok: true, h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. NBER’in Nisan 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://www.nber.org/papers/w31161' },
+        { ok: true, h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. Harvard Business School’un Eylül 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://doi.org/10.2139/ssrn.4573321' },
+        { ok: false, h: 'Stanford’da bu adla bir çalışma yok. 1.200 yönetici de, yüzde 32 de uydurma. AI uydururken ayrıntı da uydurur.' }
       ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Tarih tutmuyor', 'Kaynak 2021 tarihli, ChatGPT ise Kasım 2022’de çıktı. 2021’de yapılmış bir çalışma ChatGPT kullanan yöneticileri ölçemez.'],
+          ['Yazar yok', 'Diğer iki kaynakta araştırmacıların adı var, bunda yalnızca kurumun adı var.'],
+          ['Ölçü belirsiz', 'Hangi kararın hatalı sayıldığı ve bunun nasıl ölçüldüğü belli değil.'],
+          ['Fazla işinize yarıyor', 'Yönetim kuruluna koymak isteyeceğiniz en güçlü cümle bu. İsteğinize en çok uyan bulgu en çok kontrolü hak eder.']
+        ]
+      },
       gercek: [
         { e: 'Gerçek hayattan', m: 'Mayıs 2025’te Chicago Sun-Times gazetesinin yaz ekinde 15 kitaplık bir okuma listesi yayımlandı. Listedeki ilk 10 kitap yoktu. Isabel Allende’nin “Tidewater Dreams” romanı da bunlardan biriydi. Listeyi hazırlayan yazar AI kullandığını ve kontrol etmediğini söyledi.' },
         { e: 'Bir adım daha', m: '2025’te Harvard Business Review’da yayımlanan bir deneyde yaklaşık 300 yönetici, Nvidia hissesinin bir ay sonraki fiyatını tahmin etti. ChatGPT’ye danışanlar, birbiriyle konuşanlara göre daha iyimser, daha emin ve daha kötü tahminler yaptı. Uydurma bulgu, gerçek bir deneyin bulduğunun tersini söylüyordu.' }
       ],
-      hap: 'Kaynak varsa açıp bakın. Kaynağın var olması da yetmez, rakamı kaynağın içinde bulun.'
+      hap: 'Uydurma kaynak gerçeğiyle aynı güvenle yazılır. Tarihi, yazarı ya da ölçüsü tutmayan kaynağı açıp kontrol edin.'
     }
   ];
   var ANAHTAR = 'hataAvi.v1';
@@ -223,7 +239,7 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
       '<p class="giris-metin">AI kendinden emin yazar ama her zaman doğru yazmaz. Her turda AI’a sorulan soruyu ve verdiği cevabı göreceksiniz. Cevabın içinde bir hata saklı olabilir, sizin işiniz onu bulmak.</p></div>' +
       '<div class="kart"><p class="etiket">Nasıl oynanır</p><ol class="kural">' +
       '<li><span class="rozet">1</span><span>Durumu ve AI’ın cevabını dikkatle okuyun.</span></li>' +
-      '<li><span class="rozet">2</span><span>Kaynakları, rakamları ve iddiaları kontrol edin. Telefonunuzdan internette arama yapabilirsiniz.</span></li>' +
+      '<li><span class="rozet">2</span><span>Şüphe uyandıran ayrıntılara bakın. Tarihler, isimler ve rakamlar birbirini tutuyor mu? İsterseniz telefonunuzdan arama da yapabilirsiniz.</span></li>' +
       '<li><span class="rozet">3</span><span>Süre bitmeden cevabınızı seçin. Her doğru cevap bir puan.</span></li></ol></div>' +
       '<div class="kart"><p class="etiket">Turlar</p><p>' + TURLAR.length + ' tur var, her turda farklı bir hata türü saklı. Hangi türün sorulduğunu cevap verdikten sonra göreceksiniz.</p></div>' +
       '<div class="form"><label for="masa">Masanızın adı</label><input id="masa" maxlength="24" placeholder="Örneğin Masa 3" value="' + esc(durum.masa) + '"></div>' +
@@ -280,6 +296,9 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
       '<div class="sonuc-ust"><p class="ust">Tur ' + (durum.i + 1) + ' · Cevap</p><h1>' + baslik + '</h1>' +
       '<p class="giris-metin">' + esc(t.dogruMetin) + (secilen && !c.dogru ? ' Siz ‘' + esc(secilen[1]) + '’ dediniz.' : '') + '</p>' + cip + '</div>' +
       '<div class="tur-kart"><p class="etiket">Bu turdaki hata türü</p><b>' + esc(t.ad) + '</b><p>' + esc(t.tanim) + '</p></div>' +
+      (t.isaretler ? '<div class="isaret"><p class="etiket">' + esc(t.isaretler.baslik) + '</p><ul>' + t.isaretler.liste.map(function (x) {
+        return '<li>' + ik('i-uyari') + '<div><b>' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></div></li>';
+      }).join('') + '</ul></div>' : '') +
       '<ol class="kontrol">' + t.maddeler.map(function (m, j) {
         var k = t.kontrol[j];
         return '<li class="' + (k.ok ? '' : 'uydurma') + '"><span class="rozet">' + (j + 1) + '</span><div>' +
