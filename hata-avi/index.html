@@ -82,6 +82,15 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
 .bulgular p { margin: 0; font-size: 16px; line-height: 1.5; }
 .bulgular .kay { margin-top: 4px; font-size: 14px; line-height: 1.4; color: var(--metin2); }
 .bulgular .kay b { font-weight: 600; color: var(--metin); margin-right: 2px; }
+.belge { background: var(--kagit); border: 2px solid var(--cizgi); border-radius: 16px; padding: 14px 16px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 10px; color: var(--metin); }
+.belge-ust { display: flex; align-items: center; gap: 8px; }
+.belge-ust .ik { width: 22px; height: 22px; color: var(--metin2); }
+.belge-ust b { font-weight: 600; font-size: 15px; line-height: 1.3; }
+.belge ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.belge li { font-size: 16px; line-height: 1.45; }
+.belge table { border-collapse: collapse; min-width: 240px; font-variant-numeric: tabular-nums; }
+.belge td { padding: 7px 0; border-top: 1px solid var(--cizgi); font-size: 16px; line-height: 1.3; }
+.belge td + td { text-align: right; font-weight: 600; padding-left: 24px; }
 
 /* seçenekler */
 .secenekler { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -141,6 +150,7 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
   <symbol id="i-saat" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-yz" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
   <symbol id="i-uyari" viewBox="0 0 24 24"><path d="M12 3.8L21.2 19.5H2.8z"/><path d="M12 9.5v4.5M12 16.8v.2"/></symbol>
+  <symbol id="i-belge" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
   <symbol id="i-dis" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
 </svg>
 
@@ -178,9 +188,9 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
       dogru: '3',
       dogruMetin: '3. bulgunun kaynağı uydurma.',
       kontrol: [
-        { ok: true, h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. NBER’in Nisan 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://www.nber.org/papers/w31161' },
-        { ok: true, h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. Harvard Business School’un Eylül 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://doi.org/10.2139/ssrn.4573321' },
-        { ok: false, h: 'Stanford’da bu adla bir çalışma yok. 1.200 yönetici de, yüzde 32 de uydurma. AI uydururken ayrıntı da uydurur.' }
+        { ok: true, etiket: 'Gerçek kaynak', h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. NBER’in Nisan 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://www.nber.org/papers/w31161' },
+        { ok: true, etiket: 'Gerçek kaynak', h: 'Yazarları, tarihi ve kaç kişiyle yapıldığı belli. Harvard Business School’un Eylül 2023 tarihli çalışması, rakamlar kaynakla aynı.', link: 'https://doi.org/10.2139/ssrn.4573321' },
+        { ok: false, etiket: 'Uydurma kaynak', h: 'Stanford’da bu adla bir çalışma yok. 1.200 yönetici de, yüzde 32 de uydurma. AI uydururken ayrıntı da uydurur.' }
       ],
       isaretler: {
         baslik: 'Şüphe uyandırması gereken işaretler',
@@ -196,9 +206,235 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
         { e: 'Bir adım daha', m: '2025’te Harvard Business Review’da yayımlanan bir deneyde yaklaşık 300 yönetici, Nvidia hissesinin bir ay sonraki fiyatını tahmin etti. ChatGPT’ye danışanlar, birbiriyle konuşanlara göre daha iyimser, daha emin ve daha kötü tahminler yaptı. Uydurma bulgu, gerçek bir deneyin bulduğunun tersini söylüyordu.' }
       ],
       hap: 'Uydurma kaynak gerçeğiyle aynı güvenle yazılır. Tarihi, yazarı ya da ölçüsü tutmayan kaynağı açıp kontrol edin.'
+    },
+    {
+      ad: 'Uydurma rakam',
+      tanim: 'Hiçbir veriye dayanmayan bir istatistik, oran ya da tutar.',
+      sure: 180,
+      durum: 'Şirketiniz evlere çatı tipi güneş paneli kurmaya başlıyor. Duyuru için AI’dan kısa bir LinkedIn metni istediniz ve iki bilgi verdiniz.',
+      istek: 'Yeni güneş paneli hizmetimiz için kısa bir LinkedIn duyurusu yazar mısın? İlk yıl 500 eve kurulum yapacağız, her kurulum iki günde bitiyor.',
+      giris: 'Tabii. Duyurunuz için üç cümlelik bir metin.',
+      maddeler: [
+        { t: 'Güneş 20 yıldır dünyada en hızlı büyüyen elektrik kaynağı ve güneşten üretilen elektrik 2024’te yüzde 29 arttı.',
+          k: 'Ember, Global Electricity Review 2025' },
+        { t: 'Bugün dünyada üretilen elektriğin dörtte biri güneşten geliyor.' },
+        { t: 'İlk yıl 500 eve kurulum yapacağız ve her kurulumu iki günde tamamlıyoruz.' }
+      ],
+      kapanis: 'Güneşe geçmek için en doğru zaman şimdi.',
+      soru: 'Hangi cümlede hata var?',
+      secenekler: [['1', '1. cümle'], ['2', '2. cümle'], ['3', '3. cümle'], ['0', 'Hata yok, hepsi doğru']],
+      dogru: '2',
+      dogruMetin: '2. cümledeki rakam uydurma.',
+      kontrol: [
+        { ok: true, etiket: 'Doğru', h: 'Ember’in raporuna göre güneş 20 yıldır en hızlı büyüyen elektrik kaynağı, üretimi 2024’te yüzde 29 arttı.', link: 'https://ember-energy.org/latest-insights/global-electricity-review-2025/' },
+        { ok: false, etiket: 'Uydurma rakam', h: 'Aynı rapora göre güneş 2024’te dünyadaki elektriğin yüzde 6,9’unu üretti. Dörtte bir, gerçek payın üç buçuk katından fazla.' },
+        { ok: true, etiket: 'Doğru', h: '500 ev ve iki gün sizin mesajınızdan geliyor, doğru aktarılmış.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Kaynağı yok', 'Metindeki öteki dünya rakamının kaynağı var, bunun yok.'],
+          ['Sizden gelmiyor', '500 ev ve iki gün sizin verdiğiniz bilgiler. Dörtte birin nereden geldiği belli değil.'],
+          ['Sağduyuya uymuyor', 'Dünyada elektriğin yaklaşık yüzde 60’ı hâlâ fosil yakıtlardan üretiliyor. Güneş dörtte bire çıksaydı, enerji sektöründe herkesin bildiği bir haber olurdu.'],
+          ['Metne fazla iyi oturuyor', 'Duyuruyu en güçlü gösteren cümle bu. En çok işinize yarayan rakamı en çok kontrol edin.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Şubat 2025’te Google, Super Bowl için hazırladığı reklamlardan birinde Gemini’ın Wisconsin’deki bir peynir dükkânı için yazdığı tanıtım metnini gösterdi. Metne göre Gouda, dünyadaki peynir tüketiminin yüzde 50 ila 60’ını oluşturuyordu. Bu rakamı destekleyen bir veri yoktu. Google önce rakamın birçok internet sitesinde geçtiğini söyledi, sonra reklamı yeniden düzenleyip rakamı çıkardı.' }
+      ],
+      hap: 'Kaynağı olmayan rakamı kullanmayın. Rakam sağduyuya uymuyorsa, metinde ne kadar iyi durursa dursun çıkarın.'
+    },
+    {
+      ad: 'Yanlış ayrıntı',
+      tanim: 'Konu doğru, ama bir tarih, isim, yer ya da sıra yanlış.',
+      sure: 180,
+      durum: 'Şirket bülteninde AI’ın kısa tarihçesine yer vereceksiniz. AI’dan üç dönüm noktasını birer cümleyle yazmasını istediniz.',
+      istek: 'Şirket bültenimiz için AI tarihinden üç dönüm noktasını birer cümleyle yazar mısın?',
+      giris: 'Tabii. Bülteniniz için üç dönüm noktası.',
+      maddeler: [
+        { t: '1996’da IBM’in Deep Blue bilgisayarı, dünya satranç şampiyonu Garry Kasparov’u yendi. Bir makine, dünya şampiyonunu ilk kez bir maçta yenmiş oldu.' },
+        { t: '2020’de Google DeepMind’ın geliştirdiği AlphaFold, proteinlerin üç boyutlu şeklini tahmin etme problemini çözdü. Bu çalışma 2024’te Nobel Kimya Ödülü’nü getirdi.' },
+        { t: 'Kasım 2022’de çıkan ChatGPT, beş gün içinde bir milyon kullanıcıya ulaştı.' }
+      ],
+      kapanis: 'Bu üç an, AI’ın laboratuvardan günlük hayata nasıl geçtiğini gösteriyor.',
+      soru: 'Hangi maddede hata var?',
+      secenekler: [['1', '1. madde'], ['2', '2. madde'], ['3', '3. madde'], ['0', 'Hata yok, hepsi doğru']],
+      dogru: '1',
+      dogruMetin: '1. maddedeki yıl yanlış.',
+      kontrol: [
+        { ok: false, etiket: 'Yanlış ayrıntı', h: 'Deep Blue maçı 1997’de kazandı, bu eğitimin ilk sorusunun cevabıydı. 1996’daki ilk maçı Kasparov 4’e 2 kazanmıştı, Deep Blue o maçta yalnızca bir oyun almıştı. AI iki maçı birleştirdi.' },
+        { ok: true, etiket: 'Doğru', h: 'AlphaFold problemi 2020’de çözdü. Demis Hassabis ve John Jumper bu çalışmayla 2024 Nobel Kimya Ödülü’nün yarısını aldı.' },
+        { ok: true, etiket: 'Doğru', h: 'ChatGPT 30 Kasım 2022’de çıktı ve beş gün sonra bir milyon kullanıcıyı geçti. Şaşırtıcı ama doğru.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Bu eğitimde gördünüz', 'Bir makinenin dünya şampiyonunu ilk kez yendiği yıl, bugünün ilk sorusuydu. Cevap 1997’ydi.'],
+          ['Gerçeğe çok yakın', '1996’da gerçekten bir maç oynandı. Yanlış ayrıntı çoğu zaman bir yıl ya da bir isim kadar küçüktür, bu yüzden gözden kaçar.'],
+          ['Cümlenin geri kalanı doğru', 'Deep Blue, Kasparov ve ilk zafer doğru. Konunun doğru olması ayrıntının da doğru olduğunu göstermez.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Şubat 2023’te Google, sohbet robotu Bard’ı bir tanıtım videosuyla duyurdu. Bard, James Webb Uzay Teleskobu’nun Güneş Sistemi dışındaki gezegenlerin ilk fotoğraflarını çektiğini söyledi. Webb bu gezegenlerin fotoğrafını gerçekten çekmişti ama ilk değildi, ilk fotoğraf 2004’te başka bir teleskopla çekilmişti. Hata fark edilince Alphabet hisseleri gün içinde yüzde 9’a kadar düştü ve şirket bir günde yaklaşık 100 milyar dolar piyasa değeri kaybetti.' }
+      ],
+      hap: 'Konu doğru diye ayrıntı doğru olmaz. Tarihi, ismi ve sırayı ayrıca kontrol edin.'
+    },
+    {
+      ad: 'Hesap hatası',
+      tanim: 'Rakamlar doğru, ama toplama, yüzde ya da oran hesabı yanlış.',
+      sure: 180,
+      durum: 'Bölgenizin ilk üç aydaki elektrik giderini yönetime raporlayacaksınız. Rakamları AI’a verip kısa bir yorum istediniz.',
+      belge: { ad: 'Elektrik gideri, ilk üç ay', tablo: [['Ocak', '1.250.000 TL'], ['Şubat', '1.500.000 TL'], ['Mart', '1.200.000 TL']] },
+      istek: 'Ekteki üç aylık elektrik giderini yönetim için kısaca yorumlar mısın?',
+      giris: 'Tabii. Üç ayın kısa yorumu.',
+      maddeler: [
+        { t: 'Şubatta gider ocağa göre yüzde 20 artarak 1,5 milyon TL’ye çıktı.' },
+        { t: 'Üç ayın toplamı 3,95 milyon TL, aylık ortalama yaklaşık 1,32 milyon TL.' },
+        { t: 'Martta gider yüzde 20 azaldı ve böylece ocaktaki seviyesine geri döndü.' }
+      ],
+      kapanis: 'Kısacası şubattaki artış geçici oldu ve gider martta normale döndü.',
+      soru: 'Hangi maddede hata var?',
+      secenekler: [['1', '1. madde'], ['2', '2. madde'], ['3', '3. madde'], ['0', 'Hata yok, hepsi doğru']],
+      dogru: '3',
+      dogruMetin: '3. maddedeki hesap yanlış.',
+      kontrol: [
+        { ok: true, etiket: 'Doğru', h: 'Artış 250 bin TL, bu da 1.250.000 TL’nin yüzde 20’si.' },
+        { ok: true, etiket: 'Doğru', h: '1,25 + 1,5 + 1,2 = 3,95 milyon TL. Üçe bölünce yaklaşık 1,32 milyon TL.' },
+        { ok: false, etiket: 'Hesap hatası', h: 'Azalış gerçekten yüzde 20, ama 1,5 milyonun yüzde 20’si 300 bin TL. Mart, ocaktan 50 bin TL düşük. Gider başlangıç seviyesine dönmedi, onun da altına indi.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Tablo başka söylüyor', 'Ocak 1.250.000 TL, mart 1.200.000 TL. İkisi aynı değil.'],
+          ['Yüzdeler birbirini götürmez', 'Yüzde 20 artıp sonra yüzde 20 azalan bir rakam başladığı yere dönmez, yüzde 4 aşağıda kalır. İkinci yüzde daha büyük bir rakamın yüzdesidir.'],
+          ['Rahatlatan sonuç', '“Gider normale döndü” yönetimin duymak istediği cümle. Böyle cümleler kontrol edilmeden geçer.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Ocak 2023’te teknoloji sitesi CNET, AI’a yazdırdığı bir finans yazısında 10.000 doları yıllık yüzde 3 faizle bankaya yatıran birinin bir yılda 10.300 dolar faiz kazanacağını yazdı. Doğrusu 300 dolar. 10.300 dolar faiz değil, hesaptaki toplam paraydı. Hatalar ortaya çıkınca CNET, AI’a yazdırdığı 77 yazının 41’inde düzeltme yaptı.' }
+      ],
+      hap: 'AI’ın yaptığı hesabı bir kez de siz yapın. Yüzdenin hangi rakama göre hesaplandığına bakın.'
+    },
+    {
+      ad: 'Belgede olmayanı ekleme',
+      tanim: 'Verdiğiniz belgeyi özetlerken belgede olmayan bir tarih, isim, karar ya da rakam ekler.',
+      sure: 180,
+      durum: 'Proje toplantısının notlarını AI’a verdiniz ve ekibe gönderilecek kısa bir özet istediniz.',
+      belge: { ad: 'Toplantı notu, 12 Kasım', satirlar: [
+        'Pilot proje ocak ayında başlayacak.',
+        'Saha ekibinin eğitimini Selin Hanım planlayacak.',
+        'Bütçe onayı için finans ekibinin görüşü beklenecek.',
+        'Tedarikçi seçimi bir sonraki toplantıda konuşulacak.'
+      ] },
+      istek: 'Ekteki toplantı notunu ekibe gönderilecek şekilde özetler misin? Görevleri madde madde yaz.',
+      giris: 'Tabii. Toplantının özeti ve görevler.',
+      maddeler: [
+        { t: 'Pilot proje ocak ayında başlıyor.' },
+        { t: 'Selin Hanım, saha ekibinin eğitimini 15 Aralık’a kadar planlayacak.' },
+        { t: 'Bütçe onayı için finans ekibinin görüşü bekleniyor. Tedarikçi seçimi bir sonraki toplantıda konuşulacak.' }
+      ],
+      kapanis: 'Bu özeti ekibe doğrudan gönderebilirsiniz.',
+      soru: 'Hangi maddede hata var?',
+      secenekler: [['1', '1. madde'], ['2', '2. madde'], ['3', '3. madde'], ['0', 'Hata yok, hepsi doğru']],
+      dogru: '2',
+      dogruMetin: '2. maddedeki tarih belgede yok.',
+      kontrol: [
+        { ok: true, etiket: 'Belgeyle aynı', h: 'Notun ilk satırıyla aynı.' },
+        { ok: false, etiket: 'Belgede yok', h: 'Notta eğitimi Selin Hanım’ın planlayacağı yazıyor, ama hiçbir tarih yok. 15 Aralık’ı AI ekledi. Bu özet giderse Selin Hanım, kimseye söz vermediği bir tarihle karşılaşır.' },
+        { ok: true, etiket: 'Belgeyle aynı', h: 'Notun son iki satırı tek maddede birleştirilmiş, anlam değişmemiş.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Belgede yok', 'Notta hiçbir tarih geçmiyor, özette geçiyor. Belgede olmayan her tarih, isim ve rakam bir soru işaretidir.'],
+          ['Özet belgeden daha kesin', 'Not “planlayacak” diyor ve orada bırakıyor. Özet buna bir son tarih ekleyerek belgeden daha kesin konuşuyor.'],
+          ['Fazla doğal duruyor', 'Görev listelerinde her görevin bir son tarihi olur. AI boşluğu en olası bilgiyle doldurdu, tıpkı bir sonraki kelimeyi tahmin ederken yaptığı gibi.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Ekim 2024’te AP haber ajansı, OpenAI’ın Whisper adlı ses kaydını yazıya döken aracının konuşmada hiç geçmeyen cümleler eklediğini ortaya koydu. Eklenen metinler arasında “hyperactivated antibiotics” adında var olmayan bir ilaç bile vardı. Bir araştırmacı incelediği her 10 kaydın 8’inde uydurma metin buldu. Whisper’a dayanan bir tıbbi not aracı 30 binden fazla hekim tarafından kullanılıyor ve yaklaşık 7 milyon muayeneyi yazıya dökmüştü. Araç ses kayıtlarını sildiği için yazıyı kayıtla karşılaştırmak da mümkün değildi.' }
+      ],
+      hap: 'Özeti belgeyle yan yana okuyun. Belgede olmayan bir tarih, isim ya da rakam gördüğünüzde durun.'
+    },
+    {
+      ad: 'Anlamı ters çevirme',
+      tanim: 'Belgedeki bir koşulu ya da olumsuzluğu tersine çevirir. Yasak serbest, sınırlı sınırsız olur.',
+      sure: 180,
+      durum: 'Şirketin yeni seyahat politikası yayımlandı. Ekibiniz soru soruyor, siz de politikayı AI’a verip kısa bir özet istediniz.',
+      belge: { ad: 'Seyahat politikası, uçuş ve masraf', satirlar: [
+        'Yurt içi uçuşlarda ekonomi sınıfı kullanılır.',
+        'Yurt dışı uçuşlarda business sınıfı yalnızca 6 saati aşan uçuşlarda kullanılabilir.',
+        'Masraflar seyahat dönüşünden sonra 30 gün içinde bildirilir. Süresi geçen bildirimler ödenmez.'
+      ] },
+      istek: 'Ekteki seyahat politikasını ekibim için üç maddede özetler misin?',
+      giris: 'Tabii. Ekibiniz için üç maddelik özet.',
+      maddeler: [
+        { t: 'Yurt dışında 6 saate kadar süren uçuşlarda business sınıfı kullanabilirsiniz.' },
+        { t: 'Yurt içi uçuşlarda ekonomi sınıfı kullanılıyor.' },
+        { t: 'Masraflarınızı dönüşten sonra 30 gün içinde bildirin, süresi geçen bildirimler ödenmiyor.' }
+      ],
+      kapanis: 'Bu özet, ekibinizin en sık sorduğu soruları cevaplıyor.',
+      soru: 'Hangi maddede hata var?',
+      secenekler: [['1', '1. madde'], ['2', '2. madde'], ['3', '3. madde'], ['0', 'Hata yok, hepsi doğru']],
+      dogru: '1',
+      dogruMetin: '1. madde politikanın tersini söylüyor.',
+      kontrol: [
+        { ok: false, etiket: 'Anlam ters', h: 'Politika business sınıfını yalnızca 6 saati aşan uçuşlara veriyor. Özet aynı hakkı 6 saate kadar süren uçuşlara veriyor. Bu özete güvenen biri politikaya aykırı bilet alır.' },
+        { ok: true, etiket: 'Belgeyle aynı', h: 'Politikanın ilk satırıyla aynı.' },
+        { ok: true, etiket: 'Belgeyle aynı', h: '30 günlük süre ve ödenmeme koşulu korunmuş.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Koşul ters dönmüş', 'Belgede “6 saati aşan”, özette “6 saate kadar” yazıyor. Tek ifade değişmiş, anlam tamamen değişmiş.'],
+          ['“Yalnızca” kaybolmuş', 'Belgedeki kısıtlama özette yok. Yalnızca, en az, en fazla gibi kısıtlayan kelimeler özetlerde kolayca kaybolur.'],
+          ['Özet daha cömert', 'Özet size belgeden daha fazla hak tanıyor. İşinize gelen cümleyi iki kez okuyun.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Jake Moffatt, büyükannesinin vefatı üzerine Air Canada’dan bilet aldı. Havayolunun sitesindeki chatbot, yas indirimine seyahatten sonra 90 gün içinde başvurabileceğini söyledi. Şirketin politikası ise bu indirimin seyahatten sonra talep edilemeyeceğini söylüyordu. Air Canada, chatbot’un kendi eylemlerinden sorumlu ayrı bir varlık olduğunu savundu. Kanada’daki uyuşmazlık mahkemesi bunu kabul etmedi ve Şubat 2024’te şirketi 812 Kanada doları ödemeye mahkûm etti.' },
+        { e: 'Bir adım daha', m: '2025’te Royal Society Open Science dergisinde yayımlanan bir çalışmada 10 AI modelinin bilimsel makalelerden yaptığı 4.900 özet incelendi. AI özetleri, bulguları uzmanların yazdığı özetlere göre yaklaşık beş kat daha sık genelledi. “Bu denemedeki hastalar iyileşti” cümlesi “bu tedavi iyileştirir” oluyordu. Modellerden doğruluğa dikkat etmeleri istendiğinde genelleme yapma ihtimalleri neredeyse iki katına çıktı.' }
+      ],
+      hap: 'Özet size belgeden daha cömert davranıyorsa belgeye dönün. Kararı özete göre değil, belgeye göre verin.'
+    },
+    {
+      ad: 'Yanlış varsayımı kabul etme',
+      tanim: 'Sorudaki yanlış bir varsayımı düzeltmez, onun üzerine emin bir cevap kurar.',
+      sure: 180,
+      durum: 'Yönetim toplantısından önce üçüncü çeyrek satışlarını AI ile hazırlıyorsunuz. Tabloyu verip bir soru sordunuz.',
+      belge: { ad: 'Çeyreklik satış, milyon TL', tablo: [['1. çeyrek', '42,0'], ['2. çeyrek', '45,5'], ['3. çeyrek', '47,1']] },
+      istek: 'Ekteki tabloya göre üçüncü çeyrekte satışlarımız neden düştü? Yönetime anlatmak için üç sebep yazar mısın?',
+      giris: 'Tabii. Üçüncü çeyrekteki düşüşün üç olası sebebi.',
+      maddeler: [
+        { t: 'Yaz aylarında kurumsal müşterilerin siparişleri tatil nedeniyle azalmış olabilir.' },
+        { t: 'Fiyat artışları talebi bir miktar düşürmüş olabilir.' },
+        { t: 'Rakiplerin yaz kampanyaları bazı müşterileri çekmiş olabilir.' }
+      ],
+      kapanis: 'Bu üç sebep, düşüşü yönetime açık ve tutarlı biçimde anlatmanızı sağlar.',
+      soru: 'AI’ın cevabındaki hata ne?',
+      secenekler: [['1', '1. sebep tabloyla çelişiyor'], ['2', 'Sebepler birbiriyle çelişiyor'], ['3', 'Satışlar düşmemiş'], ['0', 'Hata yok, sebepler makul']],
+      dogru: '3',
+      dogruMetin: 'Satışlar düşmemiş. AI, sorudaki yanlış varsayımı düzeltmedi.',
+      aciklama: [
+        { e: 'Tablo ne diyor?', m: 'Satışlar 2. çeyrekte 45,5, 3. çeyrekte 47,1 milyon TL. Düşüş yok, yüzde 3,5 artış var. Düşen satışlar değil, büyüme hızı. 2. çeyrekte büyüme yüzde 8,3’tü.' },
+        { e: 'AI’ın söylemesi gereken', m: 'Tabloya göre üçüncü çeyrekte satışlar düşmedi, yüzde 3,5 arttı. Yalnızca büyüme yavaşladı. İsterseniz bunun nedenlerine bakalım.' }
+      ],
+      isaretler: {
+        baslik: 'Şüphe uyandırması gereken işaretler',
+        liste: [
+          ['Tablo soruyla çelişiyor', 'Soru düşüşten bahsediyor, oysa tablodaki son rakam en yüksek rakam.'],
+          ['AI soruyu sorgulamadı', 'Soruda bir varsayım varsa AI sık sık onu doğru kabul eder ve üzerine cevap kurar.'],
+          ['Sebepler her yere uyuyor', 'Tatil, fiyat, rakip. Üç sebep de tablodaki hiçbir rakama dayanmıyor, her şirkete ve her çeyreğe yazılabilir.']
+        ]
+      },
+      gercek: [
+        { e: 'Gerçek hayattan', m: 'Nisan 2025’te kullanıcılar Google’a hiç var olmayan deyimler yazıp sonuna “anlamı” ekledi. “Bir porsuğu iki kez yalayamazsın” diye bir deyim yok. Google’ın AI özeti yine de anlamını açıkladı, bir kez kandırılan birini ikinci kez kandıramazsınız. Google’ın açıklaması şöyleydi, anlamsız ya da yanlış varsayıma dayanan aramalarda sistem eldeki sınırlı içerikten en uygun sonucu bulmaya çalışıyor.' },
+        { e: 'Bir adım daha', m: 'Nisan 2025’te OpenAI, ChatGPT’nin modelini güncelledi. Kullanıcılar kısa sürede modelin her fikre hak verdiğini, sorunlu kararları bile övdüğünü fark etti. OpenAI güncellemeyi birkaç gün içinde geri çekti ve modelin aşırı övgücü ve onaylayıcı olduğunu kabul etti.' }
+      ],
+      hap: 'AI’a sormadan önce sorudaki varsayımı veriyle kontrol edin. AI yanlış bir soruya da emin bir cevap verir.'
     }
   ];
-  var ANAHTAR = 'hataAvi.v1';
+  var ANAHTAR = 'hataAvi.v2';
   var ekran = document.getElementById('ekran');
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -250,11 +486,19 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
     };
   }
 
+  function belgeCiz(b) {
+    if (!b) return '';
+    var ic = b.tablo
+      ? '<table>' + b.tablo.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>'
+      : '<ul>' + b.satirlar.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>';
+    return '<div class="belge"><div class="belge-ust">' + ik('i-belge') + '<b>' + esc(b.ad) + '</b></div>' + ic + '</div>';
+  }
+
   function sohbet(t) {
     return '<div class="sohbet">' +
-      '<div class="siz"><p class="balon-ad">Siz</p><div class="balon">' + esc(t.istek) + '</div></div>' +
+      '<div class="siz"><p class="balon-ad">Siz</p>' + belgeCiz(t.belge) + '<div class="balon">' + esc(t.istek) + '</div></div>' +
       '<div class="ai"><p class="balon-ad">' + ik('i-yz') + 'AI</p><div class="balon"><p>' + esc(t.giris) + '</p><ol class="bulgular">' +
-      t.maddeler.map(function (m, j) { return '<li><span class="rozet">' + (j + 1) + '</span><div><p>' + esc(m.t) + '</p><p class="kay"><b>Kaynak</b> ' + esc(m.k) + '</p></div></li>'; }).join('') +
+      t.maddeler.map(function (m, j) { return '<li><span class="rozet">' + (j + 1) + '</span><div><p>' + esc(m.t) + '</p>' + (m.k ? '<p class="kay"><b>Kaynak</b> ' + esc(m.k) + '</p>' : '') + '</div></li>'; }).join('') +
       '</ol><p>' + esc(t.kapanis) + '</p></div></div></div>';
   }
 
@@ -296,17 +540,18 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
       '<div class="sonuc-ust"><p class="ust">Tur ' + (durum.i + 1) + ' · Cevap</p><h1>' + baslik + '</h1>' +
       '<p class="giris-metin">' + esc(t.dogruMetin) + (secilen && !c.dogru ? ' Siz ‘' + esc(secilen[1]) + '’ dediniz.' : '') + '</p>' + cip + '</div>' +
       '<div class="tur-kart"><p class="etiket">Bu turdaki hata türü</p><b>' + esc(t.ad) + '</b><p>' + esc(t.tanim) + '</p></div>' +
-      (t.isaretler ? '<div class="isaret"><p class="etiket">' + esc(t.isaretler.baslik) + '</p><ul>' + t.isaretler.liste.map(function (x) {
+      (t.aciklama || []).map(function (g) { return '<div class="gercek"><p class="etiket">' + esc(g.e) + '</p><p class="m">' + esc(g.m) + '</p></div>'; }).join('') +
+      (t.isaretler ?'<div class="isaret"><p class="etiket">' + esc(t.isaretler.baslik) + '</p><ul>' + t.isaretler.liste.map(function (x) {
         return '<li>' + ik('i-uyari') + '<div><b>' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></div></li>';
       }).join('') + '</ul></div>' : '') +
-      '<ol class="kontrol">' + t.maddeler.map(function (m, j) {
+      (t.kontrol ? '<ol class="kontrol">' + t.maddeler.map(function (m, j) {
         var k = t.kontrol[j];
         return '<li class="' + (k.ok ? '' : 'uydurma') + '"><span class="rozet">' + (j + 1) + '</span><div>' +
-          '<span class="hukum' + (k.ok ? '' : ' kotu') + '">' + ik(k.ok ? 'i-tik' : 'i-x') + (k.ok ? 'Gerçek kaynak' : 'Uydurma kaynak') + '</span>' +
-          '<p class="c">' + esc(m.k) + '</p><p class="h">' + esc(k.h) + '</p>' +
+          '<span class="hukum' + (k.ok ? '' : ' kotu') + '">' + ik(k.ok ? 'i-tik' : 'i-x') + esc(k.etiket || (k.ok ? 'Doğru' : 'Hatalı')) + '</span>' +
+          '<p class="c">' + esc(m.k || m.t) + '</p><p class="h">' + esc(k.h) + '</p>' +
           (k.link ? '<a href="' + k.link + '" target="_blank" rel="noopener">Kaynağı aç ' + ik('i-dis') + '</a>' : '') +
           '</div></li>';
-      }).join('') + '</ol>' +
+      }).join('') + '</ol>' : '') +
       t.gercek.map(function (g) { return '<div class="gercek"><p class="etiket">' + esc(g.e) + '</p><p class="m">' + esc(g.m) + '</p></div>'; }).join('') +
       '<div class="hap"><p class="etiket">Akılda kalsın</p><p>' + esc(t.hap) + '</p></div>' +
       '<div class="ileri"><button type="button" class="tus ana" id="sonraki">' + (son ? 'Sonuçları gör' : 'Sonraki tur') + ' ' + ik('i-ok') + '</button></div>' +
@@ -326,7 +571,7 @@ h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; 
         var c = durum.cevap[j] || {};
         return '<li><span>' + (j + 1) + '. tur, ' + esc(t.ad.toLocaleLowerCase('tr')) + '</span><span class="hukum' + (c.dogru ? '' : ' kotu') + '">' + ik(c.dogru ? 'i-tik' : 'i-x') + (c.dogru ? 'Buldunuz' : 'Kaçtı') + '</span></li>';
       }).join('') + '</ol>' +
-      '<div class="hap"><p class="etiket">Akılda kalsın</p><p>AI’ın en emin cümlesi bile kontrol ister. Kaynağı açın, rakamı bulun, son kararı siz verin.</p></div>' +
+      '<div class="hap"><p class="etiket">Akılda kalsın</p><p>' + TURLAR.length + ' turda ' + TURLAR.length + ' farklı hata gördünüz ve hepsi aynı güvenle yazılmıştı. Kaynağı açın, hesabı yapın, belgeyle karşılaştırın, son kararı siz verin.</p></div>' +
       '</div>';
   }
 
