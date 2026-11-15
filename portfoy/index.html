@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Portföy analizi · Veriyi vermeden analiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600&display=swap">
+<style>
+/* Layout: a five-stage table activity. The page never sees the Excel files; it guides the table through describing
+   their structure, composes the prompts, and checks the answers their own AI-written tool produces. */
+:root {
+  --zemin: #EFE7DA; --yuzey: #F9F5EE; --kagit: #FFFCF6; --cizgi: #DDD2C0; --kesik: #B8AC99;
+  --metin: #2A241C; --metin2: #6A5F50; --metin-h: #43392D; --vurgu: #C9471A; --tus-metin: #F9F5EE; --koyu2: #D9CDBB; --iyi: #3D6B4F;
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', Arial, sans-serif; --govde: 'Barlow', Arial, Helvetica, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(110px + env(safe-area-inset-top, 0px)); }
+body { margin: 0; background: var(--zemin); color: var(--metin); font-family: var(--govde); font-size: 16px; line-height: 1.5; }
+button, input, textarea { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--vurgu); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.ik { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--zemin); }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--zemin); border-bottom: 1px solid var(--cizgi); }
+.bar-in { max-width: 880px; margin: 0 auto; padding-block: 12px 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 16px; }
+.marka { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.marka b { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1; white-space: nowrap; }
+.marka span { font-size: 14px; color: var(--metin2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sag { display: flex; align-items: baseline; gap: 14px; font-variant-numeric: tabular-nums; }
+.sag span { font-size: 13px; color: var(--metin2); white-space: nowrap; }
+.sag b { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1; color: var(--metin); }
+.sag .az b { color: var(--vurgu); }
+.turlar { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.turlar li { height: 4px; border-radius: 2px; background: var(--cizgi); transition: background .3s; }
+.turlar li.gecti { background: var(--metin2); }
+.turlar li.simdi { background: var(--vurgu); }
+
+.ekran { max-width: 880px; margin: 0 auto; padding-block: 28px 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.sahne { display: flex; flex-direction: column; gap: 22px; }
+.baslik { display: flex; flex-direction: column; gap: 10px; }
+.ust { margin: 0; font-size: 15px; font-weight: 500; color: var(--metin2); }
+h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(36px, 7vw, 54px); line-height: 1.02; text-wrap: balance; }
+h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.1; }
+.giris-metin { margin: 0; font-size: 18px; line-height: 1.5; color: var(--metin2); max-width: 64ch; }
+.not { font-size: 14px; color: var(--metin2); margin: 0; }
+
+.tus { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 10px 24px; border-radius: 999px; font-size: 17px; font-weight: 500; cursor: pointer; text-decoration: none; transition: background .2s, border-color .2s, color .2s, transform .1s; }
+.tus:active { transform: scale(.98); }
+.tus.ana { background: var(--metin); border: 2px solid var(--metin); color: var(--tus-metin); }
+.tus.ana:hover { background: var(--metin-h); border-color: var(--metin-h); }
+.tus.ana:disabled { background: var(--kesik); border-color: var(--kesik); cursor: not-allowed; transform: none; }
+.tus.ikinci { background: transparent; border: 2px solid var(--kesik); color: var(--metin); }
+.tus.ikinci:hover { border-color: var(--metin2); }
+.tus.kucuk { min-height: 40px; padding: 6px 16px; font-size: 15px; }
+.ileri { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.ileri.yay { justify-content: space-between; }
+
+.kart { background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.kart > p { margin: 0; }
+.etiket { margin: 0; font-size: 14px; font-weight: 500; color: var(--metin2); }
+.form { display: flex; flex-direction: column; gap: 8px; }
+.form label { font-weight: 500; }
+.form input { min-height: 52px; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); padding: 10px 16px; font-size: 18px; }
+.kural { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.kural li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; }
+.rozet { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; border: 2px solid var(--cizgi); font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--metin2); background: var(--kagit); flex: none; }
+.isaret-liste { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+.indir { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dosya { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--cizgi); background: var(--kagit); text-decoration: none; }
+.dosya:hover { border-color: var(--kesik); }
+.dosya b { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; word-break: break-word; }
+.dosya span { font-size: 14px; color: var(--metin2); }
+.gizli { align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--vurgu); border: 1.5px solid var(--vurgu); border-radius: 6px; padding: 0 6px; }
+
+textarea.yapi { width: 100%; min-height: 360px; resize: vertical; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); padding: 14px 16px; font-family: var(--mono); font-size: 14px; line-height: 1.55; }
+.sonuc { border-radius: 14px; padding: 14px 16px; border: 2px solid var(--cizgi); background: var(--kagit); display: flex; flex-direction: column; gap: 8px; }
+.sonuc.iyi { border-color: var(--iyi); }
+.sonuc.kotu { border-color: var(--vurgu); }
+.sonuc p { margin: 0; }
+.sonuc b.baslik-iyi { color: var(--iyi); }
+.sonuc b.baslik-kotu { color: var(--vurgu); }
+.sonuc ul { margin: 0; padding-left: 20px; }
+.sonuc code, .kod-ici { font-family: var(--mono); font-size: 13.5px; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 6px; padding: 0 5px; }
+
+.prompt { position: relative; border-radius: 14px; border: 2px solid var(--metin); background: var(--kagit); }
+.prompt-ust { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--cizgi); }
+.prompt-ust b { font-size: 14px; font-weight: 600; }
+.prompt pre { margin: 0; padding: 14px 16px 16px; font-family: var(--mono); font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; max-height: 420px; overflow: auto; }
+.prompt pre .yer { background: #F3E6C9; border-radius: 4px; }
+
+.adimlar { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: a; }
+.adimlar li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start; }
+
+.soru { border: 2px solid var(--metin); }
+.soru h2 { font-size: 24px; }
+.secenekler { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.secenek { min-height: 52px; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); font-size: 16px; font-weight: 500; line-height: 1.2; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: border-color .15s, background .15s, color .15s; }
+.secenek i { width: 20px; height: 20px; border-radius: 999px; border: 2px solid var(--kesik); flex: none; background: var(--kagit); }
+.secenek[aria-pressed="true"] { border-color: var(--metin); background: var(--metin); color: var(--tus-metin); }
+.secenek[aria-pressed="true"] i { border-color: var(--tus-metin); background: radial-gradient(circle, var(--tus-metin) 0 4px, transparent 5px); }
+.secenek:disabled { cursor: default; opacity: .75; }
+.sayi { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.sayi input { width: 140px; min-height: 50px; border-radius: 14px; border: 2px solid var(--kesik); background: var(--kagit); padding: 8px 14px; font-size: 20px; font-variant-numeric: tabular-nums; }
+.cip { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; border: 2px solid var(--iyi); color: var(--iyi); }
+.cip.kotu { border-color: var(--vurgu); color: var(--vurgu); }
+.cip .ik { width: 16px; height: 16px; stroke-width: 2.4; }
+
+.hap { background: var(--metin); color: var(--tus-metin); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.hap p { margin: 0; font-size: 19px; line-height: 1.45; }
+.hap .etiket { color: var(--koyu2); }
+.kpi { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.kpi-d { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(64px, 16vw, 96px); line-height: .9; color: var(--vurgu); font-variant-numeric: tabular-nums; }
+.ozet { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ozet li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--yuzey); border: 2px solid var(--cizgi); border-radius: 14px; padding: 12px 16px; }
+.alt { max-width: 880px; margin: 0 auto; padding-block: 18px calc(24px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--metin2); }
+.alt button { background: none; border: 0; padding: 0; font-size: 13px; color: var(--metin2); text-decoration: underline; cursor: pointer; }
+@media (max-width: 640px) { .indir { grid-template-columns: 1fr; } .secenekler { grid-template-columns: 1fr; } textarea.yapi { min-height: 300px; font-size: 13px; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-geri" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-tik" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-indir" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></symbol>
+  <symbol id="i-kopya" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></symbol>
+  <symbol id="i-kilit" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="marka"><b>Portföy analizi</b><span id="masa-ad"></span></div>
+    <div class="sag"><span id="asama-no"></span><span id="saat-kap" hidden>Süre <b id="kalan">40:00</b></span><span id="puan-kap" hidden>Puan <b id="puan">0</b></span></div>
+    <ol class="turlar" id="turlar"><li></li><li></li><li></li><li></li><li></li></ol>
+  </div>
+</header>
+<main class="ekran" id="ekran"></main>
+<footer class="alt"><span>Dosyalardaki şirketler, kişiler ve rakamlar kurgusal</span><button type="button" id="sifirla">Baştan başla</button></footer>
+
+<script>
+(function () {
+  var SURE = 40 * 60;
+  var DOSYALAR = [
+    ['Portfoy_Musteriler.xlsx', 'Müşteriler ve sözleşmeler'],
+    ['Tuketim_2025_2026.xlsx', 'Aylık doğalgaz ve elektrik tüketimi'],
+    ['Finans_Fatura_Tahsilat.xlsx', 'Faturalar ve ödemeler']
+  ];
+  var ISIMLER = ["Karaçam Tekstil", "Ilgaz Dokuma", "Mavera İplik", "Serin Örme", "Gökova Boya Apre", "Lacivert Konfeksiyon", "Akyaka Gıda", "Sarıçiçek Süt", "Tepe Un Sanayi", "Bereket Yem", "Narlı Konserve", "Doruk Seramik", "Kumsal Cam", "Çini Karo", "Demirkaya Döküm", "Çelikyol Profil", "Örs Metal", "Yaprak Plastik", "Berrak Kimya", "Ladin Boya", "Lodos Oto Parça", "Pervane Makine", "Kızılırmak Kağıt", "Mavikıyı Otel", "Kırlangıç Otel", "Zeytinlik Resort", "Gün Batımı Otel", "Lavanta Butik Otel", "Sedir Termal Otel", "Çınaraltı AVM", "Yeşilvadi AVM", "Meydan Çarşı AVM", "Şifa Tıp Merkezi", "Umut Hastanesi", "Papatya Bakımevi", "Liman Lojistik", "Kutup Soğuk Hava Deposu", "Pusula Plaza", "Atrium İş Merkezi", "Bolluk Market", "Ayşe Kaya", "Deniz Yılmaz", "Kerem Aydın", "Murat Demir", "Selin Arslan"];
+  var ISKELET = [
+    'Dosya 1, Portfoy_Musteriler.xlsx',
+    'İlk sayfa Bilgi adında bir kapak, veri içermiyor. Diğer sayfalarda ilk satır başlık.',
+    'Müşteriler sayfası, her satır bir müşteri. Kolonlar ve tipleri ...',
+    'Sözleşmeler sayfası, her satır bir sözleşme. Kolonlar ve tipleri ...',
+    '',
+    'Dosya 2, Tuketim_2025_2026.xlsx',
+    '...',
+    '',
+    'Dosya 3, Finans_Fatura_Tahsilat.xlsx',
+    '...',
+    '',
+    'Dosyalar arasındaki bağlantılar ...',
+    'Birimler ve biçimler ...'
+  ].join('\n');
+
+  var P1 = ['Bilgisayarımda çalışacak tek bir HTML dosyası yazmanı istiyorum. Bu dosya üç Excel dosyasını tarayıcıda açıp analiz edecek.',
+    'Dosyalar şirket için gizli. Bu yüzden içlerindeki veriyi sana vermiyorum, yalnızca yapılarını anlatıyorum. Örnek veri uydurma.',
+    '',
+    'Kurallar',
+    '1. Her şey tek bir HTML dosyasında olsun. Dosyaya çift tıklayınca tarayıcıda açılsın.',
+    '2. Excel dosyalarını okumak için yalnızca şu kütüphaneyi kullan. <script src="{LIB}"><\/script>',
+    '3. Veri hiçbir yere gönderilmesin. Başka bir kütüphane ya da internet kaynağı kullanma.',
+    '4. Üç dosya için üç ayrı dosya seçme düğmesi olsun.',
+    '5. Dosyalar yüklenince her sayfadan kaç satır okunduğunu bir tabloda göster.',
+    '6. Tarih kolonları Excel tarihi olarak saklanıyor. Dosyayı cellDates seçeneği olmadan oku, tarihleri XLSX.SSF.parse_date_code ile gün, ay ve yıla çevir. Böylece saat dilimi yüzünden bir gün kayma olmaz.',
+    '7. Kodun tamamını tek seferde yaz, açıklamayı kısa tut.',
+    '',
+    'Dosyaların yapısı',
+    '{YAPI}'].join('\n');
+  var P2 = ['Araca yeni bir bölüm ekle, sektöre göre doğalgaz tüketimi.',
+    'Tüketim dosyasındaki Müşteri Kodu, portföy dosyasındaki Müşteri No ile aynı bilgi. Sektör, portföy dosyasının Müşteriler sayfasında.',
+    '1. Her sektör için 2025 Ocak ile Ekim arası ve 2026 Ocak ile Ekim arası doğalgaz tüketimini topla.',
+    '2. İki toplamı ve değişim yüzdesini bir tabloda göster, en çok düşenden başlayarak sırala.',
+    '3. Her sektörün aylık toplamını kütüphane kullanmadan, SVG ile çizgi grafik olarak göster.',
+    'Mevcut bölümleri koru, kodun tamamını yeniden yaz.'].join('\n');
+  var P3 = ['Araca yeni bir bölüm ekle, taahhüt gerçekleşmesi.',
+    '1. Sözleşmeler sayfasındaki doğalgaz sözleşmelerini al. Her müşterinin en fazla bir doğalgaz sözleşmesi var.',
+    '2. Her müşterinin 2025 yılı toplam doğalgaz tüketimini Yıllık Taahhüt değerine böl. İkisi de Sm³ cinsinden.',
+    '3. Sonucu gerçekleşme yüzdesi olarak müşteri adıyla birlikte göster, en düşükten başla.',
+    '4. Yüzde 70’in altındakileri kırmızı göster ve kaç tane olduklarını yaz.',
+    'Mevcut bölümleri koru, kodun tamamını yeniden yaz.'].join('\n');
+  var P4 = ['Araca yeni bir bölüm ekle, ödeme gecikmeleri.',
+    '1. Tahsilatlar sayfasındaki ödemeleri Fatura No ile Faturalar sayfasına bağla. Bir faturaya birden fazla ödeme gelebilir.',
+    '2. Ödemelerin toplamı fatura tutarına ulaştığı gün fatura kapanmış sayılsın. 1 TL’den küçük farkları yok say.',
+    '3. Fatura son ödeme tarihinden sonra kapandıysa ya da 10.11.2026 itibarıyla kapanmadıysa gecikmiş say.',
+    '4. Faturaları Müşteri No ile Müşteriler sayfasına bağla ve gecikme oranını müşteri temsilcisine göre göster, en yüksekten başla.',
+    'Mevcut bölümleri koru, kodun tamamını yeniden yaz.'].join('\n');
+  var P5 = ['Son olarak bir risk listesi ekle. Şu üç koşulu birlikte sağlayan müşterileri listele.',
+    '1. Doğalgaz sözleşmesinin bitiş tarihi 28.02.2027 ya da daha önce.',
+    '2. 2026 Ocak ile Ekim arası doğalgaz tüketimi, 2025’in aynı dönemine göre yüzde 25’ten fazla düşmüş.',
+    '3. Dönemi en yeni olan son üç doğalgaz faturası gecikmiş, gecikme tanımı bir önceki bölümdeki gibi.',
+    'Her müşteri için adını, bitiş tarihini, tüketim değişimini ve son üç faturanın durumunu göster.',
+    'Mevcut bölümleri koru, kodun tamamını yeniden yaz.'].join('\n');
+
+  var SORULAR = {
+    q1: { tip: 'sayi', soru: 'Araç Müşteriler sayfasından kaç satır okudu?', dogru: '40',
+      aciklama: 'Müşteriler sayfasında 40 müşteri var. Aracınız farklı bir sayı gösteriyorsa kapak sayfasını ya da başlık satırını yanlış okuyor olabilir, Copilot’a bunu söyleyin.' },
+    q2: { tip: 'secim', soru: '2026’nın ilk on ayında doğalgaz tüketimi en çok düşen sektör hangisi?', secenekler: ['Tekstil', 'Metal', 'Seramik', 'Turizm'], dogru: 'Tekstil',
+      aciklama: 'Tekstilin tüketimi bir önceki yılın aynı dönemine göre yüzde 18,9 düştü. Turizm ise yüzde 7 arttı. Sektör bilgisi tüketim dosyasında yok, bu sonuç iki dosya birleşince çıkıyor.' },
+    q3: { tip: 'sayi', soru: '2025’te taahhüdünün yüzde 70’inden azını kullanan kaç doğalgaz sözleşmesi var?', dogru: '4',
+      aciklama: 'Dört müşteri, Mavera İplik, Çini Karo, Gökova Boya Apre ve Örs Metal, 2025’te taahhüdünün yüzde 58 ile 66’sı arasında kaldı. Sözleşme yenilenirken bu fark pazarlığın konusu olur.' },
+    q4: { tip: 'secim', soru: 'Gecikmeli ödeme oranı en yüksek müşteri temsilcisi kim?', secenekler: ['Ayşe Kaya', 'Murat Demir', 'Selin Arslan', 'Kerem Aydın', 'Deniz Yılmaz'], dogru: 'Kerem Aydın',
+      aciklama: 'Kerem Aydın’ın müşterilerinde faturaların yüzde 36,5’i gecikmiş, diğer temsilcilerde en fazla yüzde 7,6. Portföyünün çoğu tekstil. Ödemeler bir dosyada, temsilci başka bir dosyada.' },
+    q5: { tip: 'secim', soru: 'Risk listesindeki müşteri hangisi?', secenekler: ['Karaçam Tekstil', 'Lacivert Konfeksiyon', 'Kumsal Cam', 'Akyaka Gıda'], dogru: 'Karaçam Tekstil',
+      aciklama: 'Karaçam Tekstil. Doğalgaz tüketimi yüzde 33,6 düştü, son üç faturası gecikti ve sözleşmesi 31.01.2027’de bitiyor. Bu bilgi tek bir dosyada yok, üç dosya birleşince ortaya çıkıyor.' }
+  };
+  var ASAMALAR = ['a1', 'a2', 'a3', 'a4', 'a5'];
+  var ADLAR = { a1: 'Dosyaları tanıyın', a2: 'Aracı yazdırın', a3: 'Birleştirin', a4: 'Ödemeler ve risk', a5: 'Doğrulayın' };
+  var ANAHTAR = 'portfoy.v1';
+  var ekran = document.getElementById('ekran');
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function ik(id) { return '<svg class="ik" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+  function libUrl() { try { return new URL('lib/xlsx.full.min.js', location.href).href; } catch (e) { return 'lib/xlsx.full.min.js'; } }
+
+  var durum = yukle() || yeni();
+  function yeni() { return { faz: 'giris', masa: '', basla: 0, yapi: ISKELET, cevap: {}, secim: {}, kontrol: false }; }
+  function yukle() { try { var s = JSON.parse(localStorage.getItem(ANAHTAR)); return s && s.faz ? s : null; } catch (e) { return null; } }
+  function kaydet() { try { localStorage.setItem(ANAHTAR, JSON.stringify(durum)); } catch (e) {} }
+  function puan() { return Object.keys(durum.cevap).filter(function (k) { return durum.cevap[k] && durum.cevap[k].dogru; }).length; }
+
+  function ust() {
+    $('masa-ad').textContent = durum.masa || '';
+    var i = ASAMALAR.indexOf(durum.faz);
+    var lis = $('turlar').children;
+    for (var j = 0; j < lis.length; j++) lis[j].className = durum.faz === 'son' || j < i ? 'gecti' : (j === i ? 'simdi' : '');
+    $('asama-no').textContent = i >= 0 ? 'Aşama ' + (i + 1) + '/5' : '';
+    $('saat-kap').hidden = durum.faz === 'giris' || durum.faz === 'son';
+    $('puan-kap').hidden = durum.faz === 'giris';
+    $('puan').textContent = puan();
+  }
+  function git(faz) { durum.faz = faz; kaydet(); ciz(); window.scrollTo(0, 0); }
+  function ciz() {
+    ust();
+    ({ giris: girisCiz, a1: a1Ciz, a2: a2Ciz, a3: a3Ciz, a4: a4Ciz, a5: a5Ciz, son: sonCiz })[durum.faz]();
+    saatGuncelle();
+  }
+
+  function dosyalar() {
+    return '<div class="kart"><p class="etiket">Dosyalar</p><div class="indir">' + DOSYALAR.map(function (d) {
+      return '<a class="dosya" href="dosyalar/' + d[0] + '" download><span class="gizli">GİZLİ</span><b>' + ik('i-indir') + esc(d[0]) + '</b><span>' + esc(d[1]) + '</span></a>';
+    }).join('') + '</div><p class="not">Üç dosyayı bilgisayarınıza indirin ve Excel’de açın. Dosyaları hiçbir AI aracına yüklemeyin.</p></div>';
+  }
+  function promptKart(id, baslik, metin) {
+    return '<div class="prompt"><div class="prompt-ust"><b>' + esc(baslik) + '</b><button type="button" class="tus ikinci kucuk" data-kopya="' + id + '">' + ik('i-kopya') + '<span>Kopyala</span></button></div><pre id="' + id + '">' + metin + '</pre></div>';
+  }
+  function kopyaBagla() {
+    ekran.querySelectorAll('[data-kopya]').forEach(function (b) {
+      b.onclick = function () {
+        var t = $(b.dataset.kopya).textContent;
+        var bitti = function () { var s = b.querySelector('span'); s.textContent = 'Kopyalandı'; setTimeout(function () { s.textContent = 'Kopyala'; }, 1800); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(bitti, function () { eskiKopya(t); bitti(); });
+        else { eskiKopya(t); bitti(); }
+      };
+    });
+  }
+  function eskiKopya(t) { var a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(a); }
+
+  function soruKart(id) {
+    var s = SORULAR[id], c = durum.cevap[id];
+    var govde;
+    if (s.tip === 'sayi') {
+      govde = '<div class="sayi"><input id="in-' + id + '" inputmode="numeric" autocomplete="off" placeholder="Sayı" value="' + esc(c ? c.v : (durum.secim[id] || '')) + '"' + (c ? ' disabled' : '') + '>' +
+        (c ? '' : '<button type="button" class="tus ana" data-cevap="' + id + '">Cevapla ' + ik('i-ok') + '</button>') + '</div>';
+    } else {
+      var sec = c ? c.v : durum.secim[id];
+      govde = '<div class="secenekler">' + s.secenekler.map(function (o) {
+        return '<button type="button" class="secenek" data-soru="' + id + '" data-s="' + esc(o) + '" aria-pressed="' + (sec === o) + '"' + (c ? ' disabled' : '') + '><i></i>' + esc(o) + '</button>';
+      }).join('') + '</div>' + (c ? '' : '<div class="ileri"><button type="button" class="tus ana" data-cevap="' + id + '"' + (sec ? '' : ' disabled') + '>Cevapla ' + ik('i-ok') + '</button></div>');
+    }
+    var sonuc = c ? '<div class="sonuc ' + (c.dogru ? 'iyi' : 'kotu') + '"><span class="cip' + (c.dogru ? '' : ' kotu') + '">' + ik(c.dogru ? 'i-tik' : 'i-x') + (c.dogru ? 'Doğru, bir puan' : 'Doğrusu ' + esc(s.dogru)) + '</span><p>' + esc(s.aciklama) + '</p></div>' : '';
+    return '<div class="kart soru" id="kart-' + id + '"><p class="etiket">Kontrol sorusu</p><h2>' + esc(s.soru) + '</h2>' + govde + sonuc + '</div>';
+  }
+  function soruBagla() {
+    ekran.querySelectorAll('.secenek[data-soru]').forEach(function (b) {
+      b.onclick = function () {
+        var id = b.dataset.soru; durum.secim[id] = b.dataset.s; kaydet();
+        ekran.querySelectorAll('.secenek[data-soru="' + id + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.s === durum.secim[id])); });
+        var g = ekran.querySelector('[data-cevap="' + id + '"]'); if (g) g.disabled = false;
+      };
+    });
+    ekran.querySelectorAll('input[id^="in-"]').forEach(function (inp) { inp.oninput = function () { durum.secim[inp.id.slice(3)] = inp.value; kaydet(); }; });
+    ekran.querySelectorAll('[data-cevap]').forEach(function (b) {
+      b.onclick = function () {
+        var id = b.dataset.cevap, s = SORULAR[id], v;
+        if (s.tip === 'sayi') { v = ($('in-' + id).value || '').replace(/[^\d]/g, ''); if (!v) { $('in-' + id).focus(); return; } }
+        else { v = durum.secim[id]; if (!v) return; }
+        durum.cevap[id] = { v: v, dogru: v === s.dogru }; kaydet();
+        var y = window.scrollY; ciz(); window.scrollTo(0, y);
+      };
+    });
+  }
+  function gezinme(onceki, sonraki, sonrakiMetin) {
+    return '<div class="ileri yay">' + (onceki ? '<button type="button" class="tus ikinci" id="geri">' + ik('i-geri') + 'Önceki</button>' : '<span></span>') +
+      '<button type="button" class="tus ana" id="ileri">' + (sonrakiMetin || 'Sonraki aşama') + ' ' + ik('i-ok') + '</button></div>';
+  }
+  function gezinmeBagla(onceki, sonraki) {
+    if ($('geri')) $('geri').onclick = function () { git(onceki); };
+    $('ileri').onclick = function () { git(sonraki); };
+  }
+  function asamaBaslik(id, dk, metin) {
+    var i = ASAMALAR.indexOf(id) + 1;
+    return '<div class="baslik"><p class="ust">' + i + '. aşama · yaklaşık ' + dk + ' dakika</p><h1>' + ADLAR[id] + '</h1>' + metin + '</div>';
+  }
+
+  function girisCiz() {
+    ekran.innerHTML =
+      '<div class="sahne">' +
+      '<div class="baslik"><p class="ust">Masa çalışması · 40 dakika</p><h1>Portföy analizi</h1>' +
+      '<p class="giris-metin">Portföy ekibi üç Excel dosyası gönderdi. İçlerinde 40 kurumsal müşterinin sözleşmeleri, aylık tüketimleri, faturaları ve ödemeleri var. Yönetim yarın portföydeki riskleri soracak.</p>' +
+      '<p class="giris-metin">Sorun şu ki dosyalar gizli. Onları AI aracına yükleyemezsiniz, içlerindeki isimleri ve rakamları AI’a yazamazsınız.</p>' +
+      '<p class="giris-metin">Çözüm, AI’a veriyi değil dosyaların yapısını anlatmak. AI size dosyaları kendi bilgisayarınızda açan bir analiz aracı yazacak. Veri bilgisayarınızdan hiç çıkmayacak.</p></div>' +
+      '<div class="kart"><p class="etiket">Nasıl oynanır</p><ol class="kural">' +
+      '<li><span class="rozet">1</span><span>Beş aşama var. Her aşamada ne yazacağınızı bu sayfa söylüyor.</span></li>' +
+      '<li><span class="rozet">2</span><span>Promptları şirketin onayladığı AI aracında, Copilot’ta kullanın. Dosyaları hiçbir AI aracına yüklemeyin.</span></li>' +
+      '<li><span class="rozet">3</span><span>Yazdırdığınız araçla beş kontrol sorusunu cevaplayın. Her doğru cevap bir puan.</span></li></ol>' +
+      '<p class="not">Bu sayfayı dizüstü bilgisayarda açın. Excel ve Copilot da aynı bilgisayarda olsun.</p></div>' +
+      dosyalar() +
+      '<div class="form"><label for="masa">Masanızın adı</label><input id="masa" maxlength="24" placeholder="Örneğin Masa 3" value="' + esc(durum.masa) + '"></div>' +
+      '<div class="ileri"><button type="button" class="tus ana" id="basla">Başla ' + ik('i-ok') + '</button></div></div>';
+    $('basla').onclick = function () {
+      durum.masa = $('masa').value.trim(); if (!durum.basla) durum.basla = Date.now(); git('a1');
+    };
+  }
+
+  function a1Ciz() {
+    ekran.innerHTML =
+      '<div class="sahne">' + asamaBaslik('a1', 7,
+        '<p class="giris-metin">Üç dosyayı Excel’de açın ve AI’a onları tarif edin. İsim, kod, rakam ya da örnek satır yazmayın, yalnızca yapıyı anlatın.</p>') +
+      '<div class="kart"><p class="etiket">İyi bir yapı açıklamasında neler olur?</p><ul class="isaret-liste">' +
+      '<li>Dosya ve sayfa adları, olduğu gibi</li>' +
+      '<li>Hangi sayfada veri var, başlık hangi satırda</li>' +
+      '<li>Kolon adları olduğu gibi ve tipleri, metin, sayı ya da tarih</li>' +
+      '<li>Birimler, örneğin Sm³, kWh, MWh, TL</li>' +
+      '<li>Tabloları birbirine bağlayan kolonlar, adları farklı olsa bile</li>' +
+      '<li>Dönem ve tarih biçimleri</li></ul>' +
+      '<p class="not">Örnek bir satır, “Müşteriler sayfasında Müşteri No metin, Müşteri Adı metin, Müşteri Olma Tarihi tarih.”</p></div>' +
+      '<div class="form"><label for="yapi">Yapı açıklamanız</label><textarea id="yapi" class="yapi" spellcheck="false">' + esc(durum.yapi) + '</textarea>' +
+      '<p class="not">' + ik('i-kilit') + ' Bu kutuya yazdıklarınız yalnızca bu tarayıcıda kalır, hiçbir yere gönderilmez.</p></div>' +
+      '<div class="ileri"><button type="button" class="tus ana" id="kontrol">Gizlilik kontrolü</button></div>' +
+      '<div id="kontrol-sonuc"></div>' +
+      gezinme('giris', 'a2') + '</div>';
+    $('yapi').oninput = function () { durum.yapi = $('yapi').value; kaydet(); };
+    $('kontrol').onclick = function () { $('kontrol-sonuc').innerHTML = gizlilikCiz(durum.yapi); };
+    gezinmeBagla('giris', 'a2');
+  }
+  function gizlilik(t) {
+    var sorun = [], kucuk = t.toLocaleLowerCase('tr');
+    ISIMLER.forEach(function (n) { if (kucuk.indexOf(n.toLocaleLowerCase('tr')) >= 0) sorun.push(['İsim', n]); });
+    (t.match(/\b(?:M\d{3}|FT\d{4,}|TH\d{4,}|S-\d{3,})\b/g) || []).forEach(function (k) { sorun.push(['Kayıt kodu', k]); });
+    (t.match(/\d[\d.,]*\d|\d/g) || []).forEach(function (n) {
+      var d = n.replace(/[.,]/g, '');
+      if (d.length >= 4 && !/^20(2[4-9])$/.test(d)) sorun.push(['Rakam', n]);
+    });
+    var yer = (t.match(/\.\.\./g) || []).length;
+    return { sorun: sorun, yer: yer };
+  }
+  function gizlilikCiz(t) {
+    var g = gizlilik(t), parca = [];
+    if (!g.sorun.length) parca.push('<div class="sonuc iyi"><b class="baslik-iyi">' + ik('i-tik') + ' İsim, kayıt kodu ya da rakam bulunamadı.</b><p>Bu açıklama yalnızca yapıyı anlatıyor, AI’a verilebilir.</p></div>');
+    else parca.push('<div class="sonuc kotu"><b class="baslik-kotu">Açıklamada veriden parçalar var</b><ul>' + g.sorun.slice(0, 12).map(function (s) { return '<li>' + esc(s[0]) + ' <code>' + esc(s[1]) + '</code></li>'; }).join('') + '</ul><p>Bunları çıkarın. Biçimi anlatmak yeterli, örneğin “M harfi ve üç rakamdan oluşan bir kod”.</p></div>');
+    if (g.yer) parca.push('<div class="sonuc"><p>Açıklamada hâlâ doldurulmamış ' + g.yer + ' yer var, “...” ile işaretli.</p></div>');
+    return parca.join('');
+  }
+
+  function a2Ciz() {
+    var p1 = esc(P1).replace('{LIB}', esc(libUrl())).replace('{YAPI}', '<span class="yer">' + esc(durum.yapi.trim() || 'Yapı açıklamanızı birinci aşamada yazın') + '</span>');
+    ekran.innerHTML =
+      '<div class="sahne">' + asamaBaslik('a2', 10,
+        '<p class="giris-metin">Şimdi AI’dan analiz aracını isteyin. Yapı açıklamanız promptun sonuna eklendi.</p>') +
+      '<div class="kart"><p class="etiket">Adımlar</p><ol class="adimlar">' +
+      '<li><span class="rozet">1</span><span>Aşağıdaki promptu kopyalayıp Copilot’a yapıştırın.</span></li>' +
+      '<li><span class="rozet">2</span><span>Gelen kodun tamamını kopyalayın. Not Defteri’ni açıp kodu yapıştırın.</span></li>' +
+      '<li><span class="rozet">3</span><span>Farklı kaydet deyin. Dosya adına <span class="kod-ici">portfoy-araci.html</span> yazın, kayıt türünde Tüm dosyalar’ı seçin.</span></li>' +
+      '<li><span class="rozet">4</span><span>Kaydettiğiniz dosyaya çift tıklayın, tarayıcıda açılacak. Üç Excel dosyasını seçin.</span></li></ol></div>' +
+      promptKart('p1', 'Prompt 1 · Analiz aracı', p1) +
+      '<div class="kart"><p class="etiket">Sorun çıkarsa</p><ul class="isaret-liste">' +
+      '<li>Kod yarım geldiyse Copilot’a “Kodun tamamını tek seferde yeniden yaz” deyin.</li>' +
+      '<li>Araç açılıyor ama dosyaları okumuyorsa ekranda ne gördüğünüzü Copilot’a anlatın. Bir hata mesajı varsa onu da yapıştırın, yapıştırmadan önce içinde isim ya da rakam olmadığına bakın.</li>' +
+      '<li>Excel’i okuyan kütüphane bu sitede duruyor. Bu sayfa açılıyorsa kütüphane de açılır.</li></ul></div>' +
+      soruKart('q1') + gezinme('a1', 'a3') + '</div>';
+    kopyaBagla(); soruBagla(); gezinmeBagla('a1', 'a3');
+  }
+  function a3Ciz() {
+    ekran.innerHTML =
+      '<div class="sahne">' + asamaBaslik('a3', 10,
+        '<p class="giris-metin">Tüketim dosyasında müşterinin sektörü yok, sektör portföy dosyasında. İki dosyayı birleştirmeden sektörlere bakamazsınız.</p>') +
+      promptKart('p2', 'Prompt 2 · Sektöre göre tüketim', esc(P2)) +
+      soruKart('q2') +
+      promptKart('p3', 'Prompt 3 · Taahhüt gerçekleşmesi', esc(P3)) +
+      soruKart('q3') + gezinme('a2', 'a4') + '</div>';
+    kopyaBagla(); soruBagla(); gezinmeBagla('a2', 'a4');
+  }
+  function a4Ciz() {
+    ekran.innerHTML =
+      '<div class="sahne">' + asamaBaslik('a4', 10,
+        '<p class="giris-metin">Ödemelerde müşteri numarası yok. Ödemeden faturaya, faturadan müşteriye, müşteriden temsilciye gitmek gerekiyor.</p>') +
+      promptKart('p4', 'Prompt 4 · Ödeme gecikmeleri', esc(P4)) +
+      soruKart('q4') +
+      promptKart('p5', 'Prompt 5 · Risk listesi', esc(P5)) +
+      soruKart('q5') + gezinme('a3', 'a5') + '</div>';
+    kopyaBagla(); soruBagla(); gezinmeBagla('a3', 'a5');
+  }
+  function a5Ciz() {
+    ekran.innerHTML =
+      '<div class="sahne">' + asamaBaslik('a5', 3,
+        '<p class="giris-metin">Araç ne kadar emin görünürse görünsün, bir sonucu elle kontrol edin. Risk listesindeki müşteriyle başlayın.</p>') +
+      '<div class="kart"><p class="etiket">Kontrol</p><ol class="adimlar">' +
+      '<li><span class="rozet">1</span><span>Müşteriler sayfasında müşterinin numarasını bulun.</span></li>' +
+      '<li><span class="rozet">2</span><span>Faturalar sayfasında bu numaraya ve doğalgaza filtre koyun. Son üç dönemin fatura numaralarını ve son ödeme tarihlerini not edin.</span></li>' +
+      '<li><span class="rozet">3</span><span>Tahsilatlar sayfasında bu faturaları arayın. Ödemeler son ödeme tarihinden sonra mı gelmiş, hiç gelmemiş mi?</span></li></ol>' +
+      '<div class="ileri"><button type="button" class="tus ' + (durum.kontrol ? 'ana' : 'ikinci') + '" id="kontrol-tik">' + ik('i-tik') + (durum.kontrol ? 'Kontrol ettik' : 'Kontrol ettik, işaretle') + '</button></div></div>' +
+      gezinme('a4', 'son', 'Sonuçları gör') + '</div>';
+    $('kontrol-tik').onclick = function () { durum.kontrol = !durum.kontrol; kaydet(); a5Ciz(); };
+    gezinmeBagla('a4', 'son');
+  }
+  function sonCiz() {
+    var ids = Object.keys(SORULAR);
+    ekran.innerHTML =
+      '<div class="sahne">' +
+      '<div class="baslik"><p class="ust">Sonuç' + (durum.masa ? ' · ' + esc(durum.masa) : '') + '</p><h1>Analiz tamam</h1>' +
+      '<p class="giris-metin">AI dosyaların içini hiç görmedi, yalnızca yapısını öğrendi. Veri sizin bilgisayarınızda kaldı.</p></div>' +
+      '<div class="kart kpi"><div><p class="etiket">Toplam puanınız</p><p class="not">Beş soruda en yüksek puan beş.</p></div><p class="kpi-d">' + puan() + '</p></div>' +
+      '<ol class="ozet">' + ids.map(function (id, j) {
+        var c = durum.cevap[id];
+        return '<li><span>' + (j + 1) + '. ' + esc(SORULAR[id].soru) + '</span><span class="cip' + (c && c.dogru ? '' : ' kotu') + '">' + ik(c && c.dogru ? 'i-tik' : 'i-x') + (c ? (c.dogru ? 'Doğru' : 'Yanlış') : 'Boş') + '</span></li>';
+      }).join('') + '</ol>' +
+      '<div class="hap"><p class="etiket">Akılda kalsın</p><p>AI’a veriyi değil, verinin yapısını anlatın. Aracı AI yazsın, veriyi siz açın, sonucu siz doğrulayın.</p></div>' +
+      '<div class="ileri"><button type="button" class="tus ikinci" id="geri-don">' + ik('i-geri') + 'Aşamalara dön</button></div></div>';
+    $('geri-don').onclick = function () { git('a5'); };
+  }
+
+  function saatGuncelle() {
+    if (!durum.basla || durum.faz === 'giris' || durum.faz === 'son') return;
+    var kalan = SURE - Math.floor((Date.now() - durum.basla) / 1000);
+    $('kalan').textContent = kalan > 0 ? Math.floor(kalan / 60) + ':' + String(kalan % 60).padStart(2, '0') : 'Süre doldu';
+    $('saat-kap').classList.toggle('az', kalan <= 300);
+  }
+  setInterval(saatGuncelle, 1000);
+
+  $('sifirla').onclick = function () {
+    if (durum.faz !== 'giris' && !confirm('Baştan başlamak istediğinize emin misiniz? Cevaplarınız ve yapı açıklamanız silinecek.')) return;
+    var masa = durum.masa; durum = yeni(); durum.masa = masa; kaydet(); ciz(); window.scrollTo(0, 0);
+  };
+  ciz();
+})();
+</script>
+</body>
+</html>
